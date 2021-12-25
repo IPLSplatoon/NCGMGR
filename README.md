@@ -1,4 +1,4 @@
-# test-app
+# NCGMGR
 
 ## Project setup
 ```

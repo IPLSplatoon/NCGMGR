@@ -1,11 +1,11 @@
 [package]
-name = "app"
+name = "ncgmgr"
 version = "0.1.0"
 description = "A Tauri App"
-authors = ["you"]
+authors = ["inkfarer"]
 license = ""
 repository = ""
-default-run = "app"
+default-run = "ncgmgr"
 edition = "2018"
 build = "src/build.rs"
 
