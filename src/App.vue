@@ -18,7 +18,7 @@ export default defineComponent({
     setup () {
         const installFolder = ref('')
 
-        listen('log:install', e => {
+        listen('log', e => {
             console.log((e.payload as { message: string }).message)
         })
 

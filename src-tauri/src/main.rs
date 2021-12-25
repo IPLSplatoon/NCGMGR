@@ -4,8 +4,10 @@ windows_subsystem = "windows"
 )]
 
 use git2::Repository;
+use crate::log::{emit, emit_process_output};
 
 mod npm;
+mod log;
 
 const NODECG_GIT_PATH: &str = "https://github.com/nodecg/nodecg.git";
 const NODECG_TAG: &str = "v1.8.1";
@@ -30,8 +32,15 @@ fn clone_nodecg(path: &str) -> Result<String, String> {
 }
 
 #[tauri::command(async)]
-fn install_nodecg(path: String) -> Result<String, String> {
-    clone_nodecg(&path).and_then(|_result| npm::install_npm_dependencies(&path))
+fn install_nodecg(handle: tauri::AppHandle, path: String) -> Result<String, String> {
+    log::emit(&handle, "Starting NodeCG install...");
+    clone_nodecg(&path).and_then(|_result| {
+        emit(&handle, "Installing npm dependencies...");
+        npm::install_npm_dependencies(&path).and_then(|child| {
+            emit_process_output(&handle, child);
+            Ok("OK".to_string())
+        })
+    })
 }
 
 fn main() {

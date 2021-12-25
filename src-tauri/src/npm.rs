@@ -1,11 +1,11 @@
-use std::process::Command;
+use std::process::{Child, Command, Stdio};
 
-pub fn install_npm_dependencies(path: &str) -> Result<String, String> {
-    match Command::new("npm")
-        .args(["i", "--production"])
+pub fn install_npm_dependencies(path: &str) -> Result<Child, String> {
+    Command::new("npm")
+        .args(["i", "--production", "--no-progress"])
         .current_dir(path)
-        .status() {
-        Ok(status) => Ok(format!("Installing npm dependencies succeeded with code \"{}\"", status)),
-        Err(e) => Err(format!("Failed to install npm dependencies: {}", e.to_string()))
-    }
+        .stdout(Stdio::piped())
+        .stderr(Stdio::piped())
+        .spawn()
+        .or_else(|_| Err("Failed to spawn npm process".to_string()))
 }
