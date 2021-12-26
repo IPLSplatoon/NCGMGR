@@ -36,9 +36,23 @@ fn install_nodecg(handle: tauri::AppHandle, path: String) -> Result<String, Stri
     log::emit(&handle, "Starting NodeCG install...");
     clone_nodecg(&path).and_then(|_result| {
         log::emit(&handle, "Installing npm dependencies...");
-        npm::install_npm_dependencies(&path).and_then(|child| {
-            log::emit_process_output(&handle, child);
-            Ok("OK".to_string())
+        npm::install_npm_dependencies(&path).and_then(|mut child| {
+            log::emit_process_output(&handle, child.stdout.take().unwrap(), child.stderr.take().unwrap());
+            match child.wait_with_output() {
+                Ok(result) => {
+                    if result.status.success() {
+                        Ok("OK".to_string())
+                    } else {
+                        let code = result.status.code();
+                        if code.is_some() {
+                            Err(format!("Installing npm dependencies failed with status code {}", code.unwrap().to_string()).to_string())
+                        } else {
+                            Err("Failed to install npm dependencies".to_string())
+                        }
+                    }
+                },
+                Err(_) => Err(format!("Failed to install npm dependencies"))
+            }
         })
     })
 }
