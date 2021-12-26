@@ -1,18 +1,9 @@
 import LogOverlay from '@/components/logOverlay.vue'
-import { createStore } from 'vuex'
-import { LogStore, logStoreKey } from '@/store/log'
+import { logStoreKey } from '@/store/log'
 import { mount } from '@vue/test-utils'
+import { createLogStore } from '@/__mocks__/store'
 
 describe('LogOverlay', () => {
-    function createLogStore () {
-        return createStore<LogStore>({
-            state: {
-                lines: [],
-                completed: false
-            }
-        })
-    }
-
     it('matches snapshot', () => {
         const store = createLogStore()
         store.state.lines = [{ message: 'LINE A' }, { message: 'LINE ERROR!!!', type: 'error' }]

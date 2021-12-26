@@ -1,5 +1,8 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`App matches snapshot 1`] = `<button data-test="install-directory-select-button">Select folder</button><br> Installation folder: "/install/path" <br><button data-test="install-button">Install</button>`;
-
-exports[`App template matches snapshot 1`] = `<button>Select folder</button><br> Installation folder: "" <br><button disabled="">Install</button>`;
+exports[`App matches snapshot 1`] = `
+<div class="layout vertical">
+  <div>Installation folder: "/install/path"</div><button data-test="install-directory-select-button">Select folder</button><button data-test="install-button">Install</button>
+</div>
+<log-overlay-stub title="Installing..." visible="false"></log-overlay-stub>
+`;

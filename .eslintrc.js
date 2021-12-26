@@ -26,6 +26,12 @@ module.exports = {
       env: {
         jest: true
       }
+    },
+    {
+      files: ['*.test.ts'],
+      rules: {
+        '@typescript-eslint/no-var-requires': 0
+      }
     }
   ]
 }

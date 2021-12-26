@@ -1,25 +1,11 @@
 import { mockTauri, mockTauriDialog } from '@/__mocks__/tauri'
 import App from '../App.vue'
 import { shallowMount } from '@vue/test-utils'
-import { createStore } from 'vuex'
-import { configStoreKey, Configuration } from '@/store/config'
+import { configStoreKey } from '@/store/config'
+import { createConfigStore, createLogStore } from '@/__mocks__/store'
+import { logStoreKey } from '@/store/log'
 
 describe('App', () => {
-    function createConfigStore () {
-        return createStore<Configuration>({
-            state: {
-                installPath: '/install/path'
-            },
-            actions: {
-                load: jest.fn(),
-                persist: jest.fn()
-            },
-            mutations: {
-                setInstallPath: jest.fn()
-            }
-        })
-    }
-
     it('matches snapshot', () => {
         const wrapper = shallowMount(App, {
             global: {
@@ -100,18 +86,23 @@ describe('App', () => {
     })
 
     it('handles installation', () => {
-        const store = createConfigStore()
-        store.state.installPath = '/install/path'
+        const configStore = createConfigStore()
+        configStore.state.installPath = '/install/path'
+        const logStore = createLogStore()
+        jest.spyOn(logStore, 'commit')
+        mockTauri.invoke.mockResolvedValue({})
         const wrapper = shallowMount(App, {
             global: {
                 plugins: [
-                    [store, configStoreKey]
+                    [configStore, configStoreKey],
+                    [logStore, logStoreKey]
                 ]
             }
         })
 
         wrapper.get('[data-test="install-button"]').trigger('click')
 
+        expect(logStore.commit).toHaveBeenCalledWith('reset')
         expect(mockTauri.invoke).toHaveBeenCalledWith('install_nodecg', { path: '/install/path' })
     })
 })
