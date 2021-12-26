@@ -4,7 +4,7 @@ windows_subsystem = "windows"
 )]
 
 use git2::Repository;
-use crate::log::{emit, emit_process_output};
+use tauri::{Menu, MenuItem, Submenu};
 
 mod npm;
 mod log;
@@ -35,17 +35,22 @@ fn clone_nodecg(path: &str) -> Result<String, String> {
 fn install_nodecg(handle: tauri::AppHandle, path: String) -> Result<String, String> {
     log::emit(&handle, "Starting NodeCG install...");
     clone_nodecg(&path).and_then(|_result| {
-        emit(&handle, "Installing npm dependencies...");
+        log::emit(&handle, "Installing npm dependencies...");
         npm::install_npm_dependencies(&path).and_then(|child| {
-            emit_process_output(&handle, child);
+            log::emit_process_output(&handle, child);
             Ok("OK".to_string())
         })
     })
 }
 
 fn main() {
+    let menu = Menu::new()
+        .add_native_item(MenuItem::About("NCGMGR".to_string()))
+        .add_native_item(MenuItem::Quit);
+
     tauri::Builder::default()
         .invoke_handler(tauri::generate_handler![install_nodecg])
+        .menu(Menu::new().add_submenu(Submenu::new("NCGMGR", menu)))
         .run(tauri::generate_context!())
         .expect("error while running tauri application");
 }

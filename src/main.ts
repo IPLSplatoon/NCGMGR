@@ -1,5 +1,7 @@
 import { createApp } from 'vue'
 import App from './App.vue'
-import store from './store'
+import { configStore, configStoreKey } from './store/config'
 
-createApp(App).use(store).mount('#app')
+createApp(App)
+    .use(configStore, configStoreKey)
+    .mount('#app')

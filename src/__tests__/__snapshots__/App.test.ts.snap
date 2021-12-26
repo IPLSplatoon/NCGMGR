@@ -1,0 +1,3 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`App template matches snapshot 1`] = `<button>Select folder</button><br> Installation folder: "" <br><button disabled="">Install</button>`;
