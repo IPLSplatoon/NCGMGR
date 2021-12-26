@@ -35,6 +35,7 @@ export default defineComponent({
 
 <style lang="scss" scoped>
 @import '../../styles/layout';
+@import '../../styles/colors';
 
 .overlay-leave-active {
     transition: opacity 100ms ease-in;
@@ -58,18 +59,19 @@ export default defineComponent({
 
     z-index: 1000;
 
-    background-color: rgba(0, 0, 0, 0.25);
+    background-color: rgba(0, 0, 0, 0.35);
 
     .ipl-overlay__content {
         max-width: 90%;
         max-height: 80%;
-        background-color: white;
-        outline: 1px solid #222;
+        background-color: var(--background-primary);
         overflow-y: auto;
         overflow-x: hidden;
         padding: 8px;
         display: block;
         position: relative;
+        border-radius: 5px;
+        filter: drop-shadow(2px 2px 3px rgba(0, 0, 0, 0.5));
     }
 }
 </style>

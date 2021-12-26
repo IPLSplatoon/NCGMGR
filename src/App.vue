@@ -1,10 +1,10 @@
 <template>
     <div class="layout vertical">
-        <button @click="selectDirectory" data-test="install-directory-select-button">Select folder</button>
         <div>Installation folder: "{{ installFolder }}"</div>
+        <button @click="selectDirectory" data-test="install-directory-select-button">Select folder</button>
         <button @click="doInstall" :disabled="installDisabled" data-test="install-button">Install</button>
-        <log-overlay title="Installing..." v-model:visible="showLog" />
     </div>
+    <log-overlay title="Installing..." v-model:visible="showLog" />
 </template>
 
 <script lang="ts">
@@ -63,12 +63,5 @@ export default defineComponent({
 </script>
 
 <style lang="scss">
-#app {
-    font-family: Avenir, Helvetica, Arial, sans-serif;
-    -webkit-font-smoothing: antialiased;
-    -moz-osx-font-smoothing: grayscale;
-    text-align: center;
-    color: #2c3e50;
-    margin-top: 60px;
-}
+@import 'src/styles/window';
 </style>

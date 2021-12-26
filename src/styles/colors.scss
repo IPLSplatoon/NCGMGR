@@ -1,0 +1,40 @@
+$green: #00A651;
+$green-hover: #009549;
+$green-active: #008541;
+$red: #e74e36;
+$red-hover: #cf4631;
+$red-active: #b93e2b;
+$blue: #6155BD;
+$blue-hover: #574caa;
+$blue-active: #4e4497;
+$yellow: #ffc700;
+$yellow-hover: #e5b300;
+$yellow-active: #cc9f00;
+
+$error-color: #e74e36;
+$error-background-color: rgba(231, 78, 54, 0.1);
+
+$warning-color: #FDD835;
+$warning-background-color: rgba(253, 216, 53, 0.1);
+
+$info-color: #3E62F0;
+$info-background-color: rgba(62, 98, 240, 0.1);
+
+$input-color: #737373;
+$input-color-active: white;
+
+:root {
+    --text-color: white;
+    --background-primary: #262F40;
+    --background-secondary: #2F3A4F;
+    --background-tertiary: #181e29;
+}
+
+@media (prefers-color-scheme: light) {
+    :root {
+        --text-color: #222;
+        --background-primary: white;
+        --background-secondary: #ECECEC;
+        --background-tertiary: #CECECE;
+    }
+}

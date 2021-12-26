@@ -1,11 +1,11 @@
 <template>
     <ipl-overlay v-model:visible="modelVisible" class="log-overlay">
         <div class="layout vertical center-horizontal">
-            <h2>{{title}}</h2>
-            <div class="log-display">
+            <h2 class="m-b-8">{{title}}</h2>
+            <div class="log-display m-b-8">
                 <span :class="`type-${line.type ?? 'unknown'}`" v-for="(line, i) in log" :key="`log-line_${i}`">{{ line.message }}</span>
             </div>
-            <button @click="modelVisible = false" class="m-t-8" :disabled="!completed" data-test="close-button">Close</button>
+            <button @click="modelVisible = false" :disabled="!completed" data-test="close-button">Close</button>
         </div>
     </ipl-overlay>
 </template>
@@ -55,17 +55,20 @@ export default defineComponent({
 <style lang="scss" scoped>
 @import 'src/styles/layout';
 @import 'src/styles/text';
+@import 'src/styles/colors';
 
 .log-overlay {
     .log-display {
         font-family: monospace;
-        width: 100%;
+        width: 95%;
         max-height: 400px;
         text-align: left;
-        border: 1px solid #222;
-        padding: 2px;
+        border: 1px solid $input-color;
+        padding: 4px 2px;
         min-height: 64px;
         overflow: scroll;
+        color: var(--text-color);
+        background-color: var(--background-secondary);
 
         span {
             margin-left: 6px;
@@ -73,7 +76,7 @@ export default defineComponent({
             white-space: nowrap;
 
             &.type-error {
-                color: red;
+                color: $error-color;
             }
         }
     }
