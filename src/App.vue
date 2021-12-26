@@ -1,38 +1,43 @@
 <template>
-    <button @click="selectDirectory" data-test="install-directory-select-button">Select folder</button>
-    <br>
-    Installation folder: "{{ installFolder }}"
-    <br>
-    <button @click="doInstall" :disabled="installDisabled" data-test="install-button">Install</button>
+    <div class="layout vertical">
+        <button @click="selectDirectory" data-test="install-directory-select-button">Select folder</button>
+        <div>Installation folder: "{{ installFolder }}"</div>
+        <button @click="doInstall" :disabled="installDisabled" data-test="install-button">Install</button>
+        <log-overlay title="Installing..." v-model:visible="showLog" />
+    </div>
 </template>
 
 <script lang="ts">
-import { computed, defineComponent } from 'vue'
+import { computed, defineComponent, ref } from 'vue'
 import isEmpty from 'lodash/isEmpty'
 import { invoke } from '@tauri-apps/api/tauri'
-import { listen } from '@tauri-apps/api/event'
 import { useConfigStore } from '@/store/config'
 import { open } from '@tauri-apps/api/dialog'
+import LogOverlay from '@/components/logOverlay.vue'
+import { logPromiseResult } from '@/util/log'
+import { useLogStore } from '@/store/log'
 
 export default defineComponent({
     name: 'App',
 
+    components: { LogOverlay },
+
     setup () {
         const config = useConfigStore()
+        const logStore = useLogStore()
         config.dispatch('load')
+
+        const showLog = ref(false)
 
         const installFolder = computed({
             get: () => config.state.installPath,
             set: (newValue: string) => config.commit('setInstallPath', newValue)
         })
 
-        listen('log', e => {
-            console.log((e.payload as { message: string }).message)
-        })
-
         return {
             installDisabled: computed(() => isEmpty(installFolder.value)),
             installFolder,
+            showLog,
             async selectDirectory () {
                 const path = await open({ directory: true })
 
@@ -46,7 +51,11 @@ export default defineComponent({
                 config.dispatch('persist')
             },
             async doInstall () {
-                await invoke('install_nodecg', { path: installFolder.value })
+                logStore.commit('reset')
+                showLog.value = true
+                const invocation = invoke('install_nodecg', { path: installFolder.value })
+                logPromiseResult(invocation)
+                await invocation
             }
         }
     }
