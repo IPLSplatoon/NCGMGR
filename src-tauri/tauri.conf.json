@@ -54,7 +54,7 @@
     "windows": [
       {
         "label": "main",
-        "title": "NGCMGR",
+        "title": "NCGMGR",
         "width": 400,
         "height": 600,
         "resizable": false,
