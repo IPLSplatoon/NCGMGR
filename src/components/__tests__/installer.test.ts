@@ -3,9 +3,8 @@ import { config, flushPromises, shallowMount } from '@vue/test-utils'
 import { configStoreKey } from '@/store/config'
 import { createConfigStore, createLogStore, createStatusStore } from '@/__mocks__/store'
 import { logStoreKey } from '@/store/log'
-import { PackageStatus } from '@/types/package'
 import Installer from '../Installer.vue'
-import { statusStoreKey } from '@/store/status'
+import { NodecgStatus, statusStoreKey } from '@/store/status'
 
 describe('Installer', () => {
     config.global.stubs = {
@@ -72,7 +71,7 @@ describe('Installer', () => {
     it('disables installation if installation is not possible', async () => {
         const statusStore = createStatusStore()
         statusStore.state.nodecg = {
-            status: PackageStatus.UNABLE_TO_INSTALL,
+            status: NodecgStatus.UNABLE_TO_INSTALL,
             message: 'Unable!'
         }
         const store = createConfigStore()
@@ -92,7 +91,7 @@ describe('Installer', () => {
     it('enables installation if installation is possible', async () => {
         const statusStore = createStatusStore()
         statusStore.state.nodecg = {
-            status: PackageStatus.READY_TO_INSTALL,
+            status: NodecgStatus.READY_TO_INSTALL,
             message: 'Ready!'
         }
         const store = createConfigStore()
@@ -112,7 +111,7 @@ describe('Installer', () => {
     it('disables installation if installation is completed', async () => {
         const statusStore = createStatusStore()
         statusStore.state.nodecg = {
-            status: PackageStatus.INSTALLED,
+            status: NodecgStatus.INSTALLED,
             message: 'OK!'
         }
         const store = createConfigStore()
@@ -132,7 +131,7 @@ describe('Installer', () => {
     it('disables installation if installation status is unknown', async () => {
         const statusStore = createStatusStore()
         statusStore.state.nodecg = {
-            status: PackageStatus.UNKNOWN,
+            status: NodecgStatus.UNKNOWN,
             message: '?'
         }
         const store = createConfigStore()

@@ -1,12 +1,18 @@
-import { PackageStatus } from '@/types/package'
 import { createStore, Store, useStore } from 'vuex'
 import { getNodecgStatus } from '@/service/nodecg'
 import { configStore } from '@/store/config'
 import { InjectionKey } from 'vue'
 
+export enum NodecgStatus {
+    UNKNOWN,
+    READY_TO_INSTALL,
+    INSTALLED,
+    UNABLE_TO_INSTALL
+}
+
 export interface StatusStore {
     nodecg: {
-        status: PackageStatus
+        status: NodecgStatus
         message: string
     }
 }
@@ -14,13 +20,13 @@ export interface StatusStore {
 export const statusStore: Store<StatusStore> = createStore<StatusStore>({
     state: {
         nodecg: {
-            status: PackageStatus.UNKNOWN,
+            status: NodecgStatus.UNKNOWN,
             message: ''
         }
     },
     actions: {
         async checkNodecgStatus (store) {
-            store.state.nodecg.status = PackageStatus.UNKNOWN
+            store.state.nodecg.status = NodecgStatus.UNKNOWN
             store.state.nodecg.message = 'Checking status...'
 
             try {
@@ -29,7 +35,7 @@ export const statusStore: Store<StatusStore> = createStore<StatusStore>({
                 store.state.nodecg.status = status
             } catch (e) {
                 store.state.nodecg.message = e.toString()
-                store.state.nodecg.status = PackageStatus.UNABLE_TO_INSTALL
+                store.state.nodecg.status = NodecgStatus.UNABLE_TO_INSTALL
             }
         }
     }

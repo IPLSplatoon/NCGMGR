@@ -6,7 +6,7 @@
         </status-row>
         <div class="layout horizontal m-t-8">
             <ipl-button label="Select folder" @click="selectDirectory" data-test="install-directory-select-button" />
-            <ipl-button label="Install" :disabled="nodecgStatus !== PackageStatus.READY_TO_INSTALL" data-test="install-button" @click="doInstall" class="m-l-8" color="green" />
+            <ipl-button label="Install" :disabled="nodecgStatus !== NodecgStatus.READY_TO_INSTALL" data-test="install-button" @click="doInstall" class="m-l-8" color="green" />
         </div>
     </ipl-space>
     <log-overlay title="Installing..." v-model:visible="showLog" />
@@ -23,8 +23,7 @@ import { useLogStore } from '@/store/log'
 import IplButton from '@/components/ipl/iplButton.vue'
 import IplSpace from '@/components/ipl/iplSpace.vue'
 import StatusRow from '@/components/statusRow.vue'
-import { PackageStatus } from '@/types/package'
-import { useStatusStore } from '@/store/status'
+import { NodecgStatus, useStatusStore } from '@/store/status'
 
 export default defineComponent({
     name: 'Installer',
@@ -43,7 +42,7 @@ export default defineComponent({
             set: (newValue: string) => config.commit('setInstallPath', newValue)
         })
 
-        const nodecgStatus = computed<PackageStatus>(() => statusStore.state.nodecg.status)
+        const nodecgStatus = computed<NodecgStatus>(() => statusStore.state.nodecg.status)
 
         onMounted(() => {
             statusStore.dispatch('checkNodecgStatus')
@@ -54,14 +53,14 @@ export default defineComponent({
             installFolder,
             showLog,
             nodecgStatus: nodecgStatus,
-            PackageStatus,
+            NodecgStatus,
             nodecgStatusColor: computed(() => {
                 switch (nodecgStatus.value) {
-                    case PackageStatus.READY_TO_INSTALL:
+                    case NodecgStatus.READY_TO_INSTALL:
                         return 'yellow'
-                    case PackageStatus.INSTALLED:
+                    case NodecgStatus.INSTALLED:
                         return 'green'
-                    case PackageStatus.UNABLE_TO_INSTALL:
+                    case NodecgStatus.UNABLE_TO_INSTALL:
                         return 'red'
                     default:
                         return 'gray'
