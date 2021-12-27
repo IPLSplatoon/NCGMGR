@@ -1,32 +1,23 @@
 import { mockTauri, mockTauriDialog } from '@/__mocks__/tauri'
 import { config, flushPromises, shallowMount } from '@vue/test-utils'
 import { configStoreKey } from '@/store/config'
-import { createConfigStore, createLogStore } from '@/__mocks__/store'
+import { createConfigStore, createLogStore, createStatusStore } from '@/__mocks__/store'
 import { logStoreKey } from '@/store/log'
 import { PackageStatus } from '@/types/package'
 import Installer from '../Installer.vue'
-import { getNodecgStatus } from '@/util/package'
-import Mock = jest.Mock
-
-jest.mock('@/util/package')
+import { statusStoreKey } from '@/store/status'
 
 describe('Installer', () => {
     config.global.stubs = {
         IplSpace: false
     }
 
-    beforeEach(() => {
-        (getNodecgStatus as Mock).mockResolvedValue({
-            status: PackageStatus.INSTALLED,
-            message: 'Status!'
-        })
-    })
-
     it('matches snapshot', () => {
         const wrapper = shallowMount(Installer, {
             global: {
                 plugins: [
-                    [createConfigStore(), configStoreKey]
+                    [createConfigStore(), configStoreKey],
+                    [createStatusStore(), statusStoreKey]
                 ]
             }
         })
@@ -41,7 +32,8 @@ describe('Installer', () => {
         const wrapper = shallowMount(Installer, {
             global: {
                 plugins: [
-                    [store, configStoreKey]
+                    [store, configStoreKey],
+                    [createStatusStore(), statusStoreKey]
                 ]
             }
         })
@@ -63,7 +55,8 @@ describe('Installer', () => {
         const wrapper = shallowMount(Installer, {
             global: {
                 plugins: [
-                    [store, configStoreKey]
+                    [store, configStoreKey],
+                    [createStatusStore(), statusStoreKey]
                 ]
             }
         })
@@ -77,16 +70,17 @@ describe('Installer', () => {
     })
 
     it('disables installation if installation is not possible', async () => {
-        (getNodecgStatus as Mock).mockResolvedValue({
+        const statusStore = createStatusStore()
+        statusStore.state.nodecg = {
             status: PackageStatus.UNABLE_TO_INSTALL,
-            message: 'Status?'
-        })
+            message: 'Unable!'
+        }
         const store = createConfigStore()
-        store.state.installPath = '/install/path'
         const wrapper = await shallowMount(Installer, {
             global: {
                 plugins: [
-                    [store, configStoreKey]
+                    [store, configStoreKey],
+                    [statusStore, statusStoreKey]
                 ]
             }
         })
@@ -96,16 +90,17 @@ describe('Installer', () => {
     })
 
     it('enables installation if installation is possible', async () => {
-        (getNodecgStatus as Mock).mockResolvedValue({
+        const statusStore = createStatusStore()
+        statusStore.state.nodecg = {
             status: PackageStatus.READY_TO_INSTALL,
-            message: 'Status?'
-        })
+            message: 'Ready!'
+        }
         const store = createConfigStore()
-        store.state.installPath = '/install/path'
         const wrapper = await shallowMount(Installer, {
             global: {
                 plugins: [
-                    [store, configStoreKey]
+                    [store, configStoreKey],
+                    [statusStore, statusStoreKey]
                 ]
             }
         })
@@ -115,16 +110,37 @@ describe('Installer', () => {
     })
 
     it('disables installation if installation is completed', async () => {
-        (getNodecgStatus as Mock).mockResolvedValue({
+        const statusStore = createStatusStore()
+        statusStore.state.nodecg = {
             status: PackageStatus.INSTALLED,
-            message: 'Status?'
-        })
+            message: 'OK!'
+        }
         const store = createConfigStore()
-        store.state.installPath = '/install/path'
         const wrapper = await shallowMount(Installer, {
             global: {
                 plugins: [
-                    [store, configStoreKey]
+                    [store, configStoreKey],
+                    [statusStore, statusStoreKey]
+                ]
+            }
+        })
+        await flushPromises()
+
+        expect(wrapper.getComponent('[data-test="install-button"]').attributes().disabled).toEqual('true')
+    })
+
+    it('disables installation if installation status is unknown', async () => {
+        const statusStore = createStatusStore()
+        statusStore.state.nodecg = {
+            status: PackageStatus.UNKNOWN,
+            message: '?'
+        }
+        const store = createConfigStore()
+        const wrapper = await shallowMount(Installer, {
+            global: {
+                plugins: [
+                    [store, configStoreKey],
+                    [statusStore, statusStoreKey]
                 ]
             }
         })
@@ -143,7 +159,8 @@ describe('Installer', () => {
             global: {
                 plugins: [
                     [configStore, configStoreKey],
-                    [logStore, logStoreKey]
+                    [logStore, logStoreKey],
+                    [createStatusStore(), statusStoreKey]
                 ]
             }
         })

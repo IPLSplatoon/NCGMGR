@@ -13,7 +13,7 @@
 </template>
 
 <script lang="ts">
-import { computed, defineComponent, Ref, ref } from 'vue'
+import { computed, defineComponent, onMounted, ref } from 'vue'
 import isEmpty from 'lodash/isEmpty'
 import { invoke } from '@tauri-apps/api/tauri'
 import { useConfigStore } from '@/store/config'
@@ -24,7 +24,7 @@ import IplButton from '@/components/ipl/iplButton.vue'
 import IplSpace from '@/components/ipl/iplSpace.vue'
 import StatusRow from '@/components/statusRow.vue'
 import { PackageStatus } from '@/types/package'
-import { getNodecgStatus } from '@/util/package'
+import { useStatusStore } from '@/store/status'
 
 export default defineComponent({
     name: 'Installer',
@@ -34,6 +34,7 @@ export default defineComponent({
     setup () {
         const config = useConfigStore()
         const logStore = useLogStore()
+        const statusStore = useStatusStore()
 
         const showLog = ref(false)
 
@@ -42,30 +43,17 @@ export default defineComponent({
             set: (newValue: string) => config.commit('setInstallPath', newValue)
         })
 
-        const nodecgStatus: Ref<PackageStatus | null> = ref(null)
-        const nodecgStatusMessage = ref('Status unknown')
+        const nodecgStatus = computed<PackageStatus>(() => statusStore.state.nodecg.status)
 
-        const checkNodecgStatus = async () => {
-            nodecgStatusMessage.value = 'Checking status...'
-            nodecgStatus.value = null
-
-            try {
-                const { status, message } = await getNodecgStatus(installFolder.value)
-                nodecgStatusMessage.value = message
-                nodecgStatus.value = status
-            } catch (e) {
-                nodecgStatusMessage.value = e.toString()
-                nodecgStatus.value = PackageStatus.UNABLE_TO_INSTALL
-            }
-        }
-
-        checkNodecgStatus()
+        onMounted(() => {
+            statusStore.dispatch('checkNodecgStatus')
+        })
 
         return {
             installDisabled: computed(() => isEmpty(installFolder.value)),
             installFolder,
             showLog,
-            nodecgStatus,
+            nodecgStatus: nodecgStatus,
             PackageStatus,
             nodecgStatusColor: computed(() => {
                 switch (nodecgStatus.value) {
@@ -79,7 +67,7 @@ export default defineComponent({
                         return 'gray'
                 }
             }),
-            nodecgStatusMessage,
+            nodecgStatusMessage: computed(() => statusStore.state.nodecg.message),
             async selectDirectory () {
                 const path = await open({ directory: true })
 
@@ -91,7 +79,7 @@ export default defineComponent({
                     installFolder.value = path
                 }
                 config.dispatch('persist')
-                checkNodecgStatus()
+                statusStore.dispatch('checkNodecgStatus')
             },
             async doInstall () {
                 logStore.commit('reset')
@@ -99,7 +87,7 @@ export default defineComponent({
                 const invocation = invoke('install_nodecg', { path: installFolder.value })
                 logStore.dispatch('logPromiseResult', invocation)
                 await invocation
-                checkNodecgStatus()
+                statusStore.dispatch('checkNodecgStatus')
             }
         }
     }

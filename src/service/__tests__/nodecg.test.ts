@@ -1,5 +1,5 @@
 import { mockTauriFs } from '@/__mocks__/tauri'
-import { getNodecgStatus } from '@/util/package'
+import { getNodecgStatus } from '@/service/nodecg'
 import { PackageStatus } from '@/types/package'
 
 describe('getNodecgStatus', () => {
@@ -24,7 +24,7 @@ describe('getNodecgStatus', () => {
 
         expect(result).toEqual({
             status: PackageStatus.INSTALLED,
-            message: 'Found NodeCG v1.2.3'
+            message: 'Found NodeCG v1.2.3.'
         })
         expect(mockTauriFs.readDir).toHaveBeenCalledWith('/dir/')
         expect(mockTauriFs.readTextFile).toHaveBeenCalledWith('/dir/package.json')

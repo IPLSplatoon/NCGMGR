@@ -23,7 +23,7 @@ export async function getNodecgStatus (directory: string): Promise<{ status: Pac
             if (packageJson.name === 'nodecg') {
                 return {
                     status: PackageStatus.INSTALLED,
-                    message: `Found NodeCG v${packageJson.version}`
+                    message: `Found NodeCG v${packageJson.version}.`
                 }
             } else {
                 return {
