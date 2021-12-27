@@ -45,7 +45,7 @@ fn install_nodecg(handle: tauri::AppHandle, path: String) -> Result<String, Stri
                     } else {
                         let code = result.status.code();
                         if code.is_some() {
-                            Err(format!("Installing npm dependencies failed with status code {}", code.unwrap().to_string()).to_string())
+                            Err(format!("Installing npm dependencies failed with status code {}", code.unwrap().to_string()))
                         } else {
                             Err("Failed to install npm dependencies".to_string())
                         }

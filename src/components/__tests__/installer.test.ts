@@ -1,17 +1,29 @@
 import { mockTauri, mockTauriDialog } from '@/__mocks__/tauri'
-import App from '../App.vue'
 import { config, flushPromises, shallowMount } from '@vue/test-utils'
 import { configStoreKey } from '@/store/config'
 import { createConfigStore, createLogStore } from '@/__mocks__/store'
 import { logStoreKey } from '@/store/log'
+import { PackageStatus } from '@/types/package'
+import Installer from '../Installer.vue'
+import { getNodecgStatus } from '@/util/package'
+import Mock = jest.Mock
 
-describe('App', () => {
+jest.mock('@/util/package')
+
+describe('Installer', () => {
     config.global.stubs = {
         IplSpace: false
     }
 
+    beforeEach(() => {
+        (getNodecgStatus as Mock).mockResolvedValue({
+            status: PackageStatus.INSTALLED,
+            message: 'Status!'
+        })
+    })
+
     it('matches snapshot', () => {
-        const wrapper = shallowMount(App, {
+        const wrapper = shallowMount(Installer, {
             global: {
                 plugins: [
                     [createConfigStore(), configStoreKey]
@@ -26,7 +38,7 @@ describe('App', () => {
         const store = createConfigStore()
         jest.spyOn(store, 'dispatch')
         jest.spyOn(store, 'commit')
-        const wrapper = shallowMount(App, {
+        const wrapper = shallowMount(Installer, {
             global: {
                 plugins: [
                     [store, configStoreKey]
@@ -41,14 +53,14 @@ describe('App', () => {
         expect(mockTauriDialog.open).toHaveBeenCalledWith({ directory: true })
         expect(store.commit).toHaveBeenCalledWith('setInstallPath', '/new/path')
         expect(store.dispatch).toHaveBeenCalledWith('persist')
-        expect(store.dispatch).toHaveBeenCalledTimes(2)
+        expect(store.dispatch).toHaveBeenCalledTimes(1)
     })
 
     it('handles directory selection getting cancelled', async () => {
         const store = createConfigStore()
         jest.spyOn(store, 'dispatch')
         jest.spyOn(store, 'commit')
-        const wrapper = shallowMount(App, {
+        const wrapper = shallowMount(Installer, {
             global: {
                 plugins: [
                     [store, configStoreKey]
@@ -61,35 +73,64 @@ describe('App', () => {
         await flushPromises()
 
         expect(store.commit).not.toHaveBeenCalled()
-        expect(store.dispatch).toHaveBeenCalledTimes(1)
+        expect(store.dispatch).not.toHaveBeenCalled()
     })
 
-    it('disables installation if no install directory is selected', () => {
+    it('disables installation if installation is not possible', async () => {
+        (getNodecgStatus as Mock).mockResolvedValue({
+            status: PackageStatus.UNABLE_TO_INSTALL,
+            message: 'Status?'
+        })
         const store = createConfigStore()
-        store.state.installPath = ''
-        const wrapper = shallowMount(App, {
+        store.state.installPath = '/install/path'
+        const wrapper = await shallowMount(Installer, {
             global: {
                 plugins: [
                     [store, configStoreKey]
                 ]
             }
         })
+        await flushPromises()
 
         expect(wrapper.getComponent('[data-test="install-button"]').attributes().disabled).toEqual('true')
     })
 
-    it('enables installation if install directory is selected', () => {
+    it('enables installation if installation is possible', async () => {
+        (getNodecgStatus as Mock).mockResolvedValue({
+            status: PackageStatus.READY_TO_INSTALL,
+            message: 'Status?'
+        })
         const store = createConfigStore()
         store.state.installPath = '/install/path'
-        const wrapper = shallowMount(App, {
+        const wrapper = await shallowMount(Installer, {
             global: {
                 plugins: [
                     [store, configStoreKey]
                 ]
             }
         })
+        await flushPromises()
 
         expect(wrapper.getComponent('[data-test="install-button"]').attributes().disabled).toEqual('false')
+    })
+
+    it('disables installation if installation is completed', async () => {
+        (getNodecgStatus as Mock).mockResolvedValue({
+            status: PackageStatus.INSTALLED,
+            message: 'Status?'
+        })
+        const store = createConfigStore()
+        store.state.installPath = '/install/path'
+        const wrapper = await shallowMount(Installer, {
+            global: {
+                plugins: [
+                    [store, configStoreKey]
+                ]
+            }
+        })
+        await flushPromises()
+
+        expect(wrapper.getComponent('[data-test="install-button"]').attributes().disabled).toEqual('true')
     })
 
     it('handles installation', () => {
@@ -98,7 +139,7 @@ describe('App', () => {
         const logStore = createLogStore()
         jest.spyOn(logStore, 'commit')
         mockTauri.invoke.mockResolvedValue({})
-        const wrapper = shallowMount(App, {
+        const wrapper = shallowMount(Installer, {
             global: {
                 plugins: [
                     [configStore, configStoreKey],

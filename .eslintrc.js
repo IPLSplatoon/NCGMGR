@@ -30,7 +30,8 @@ module.exports = {
     {
       files: ['*.test.ts'],
       rules: {
-        '@typescript-eslint/no-var-requires': 0
+        '@typescript-eslint/no-var-requires': 0,
+        'import/first': 'off'
       }
     }
   ]

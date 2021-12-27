@@ -15,3 +15,10 @@ export const mockTauriDialog = {
 }
 
 jest.mock('@tauri-apps/api/dialog', () => mockTauriDialog)
+
+export const mockTauriFs = {
+    readDir: jest.fn(),
+    readTextFile: jest.fn()
+}
+
+jest.mock('@tauri-apps/api/fs', () => mockTauriFs)

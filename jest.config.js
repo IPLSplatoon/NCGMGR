@@ -4,5 +4,8 @@ module.exports = {
     transform: {
         '^.+\\.vue$': 'vue-jest'
     },
+    moduleNameMapper: {
+        '@/(.*)$': '<rootDir>/src/$1'
+    },
     resetMocks: true
 }
