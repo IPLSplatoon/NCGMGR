@@ -1,10 +1,13 @@
 import { mockTauriEvent } from '@/__mocks__/tauri'
 import { logStore } from '@/store/log'
+import { flushPromises } from '@vue/test-utils'
 
 describe('logStore', () => {
-    logStore.replaceState({
-        lines: [],
-        completed: false
+    beforeEach(() => {
+        logStore.replaceState({
+            lines: [],
+            completed: false
+        })
     })
 
     describe('insertLine', () => {
@@ -54,6 +57,30 @@ describe('logStore', () => {
             })
 
             expect(logStore.state.lines).toEqual([{ message: 'MESSAGE!' }])
+        })
+    })
+
+    describe('logPromiseResult', () => {
+        it('inserts successful result into store', async () => {
+            logStore.dispatch('logPromiseResult', Promise.resolve())
+            await flushPromises()
+
+            expect(logStore.state.lines).toEqual([{
+                message: 'Success!',
+                type: 'success'
+            }])
+            expect(logStore.state.completed).toEqual(true)
+        })
+
+        it('inserts unsuccessful result into store', async () => {
+            logStore.dispatch('logPromiseResult', Promise.reject(new Error('Failed!')))
+            await flushPromises()
+
+            expect(logStore.state.lines).toEqual([{
+                message: 'Error: Failed!',
+                type: 'error'
+            }])
+            expect(logStore.state.completed).toEqual(true)
         })
     })
 })

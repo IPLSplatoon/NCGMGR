@@ -19,7 +19,6 @@ import { invoke } from '@tauri-apps/api/tauri'
 import { useConfigStore } from '@/store/config'
 import { open } from '@tauri-apps/api/dialog'
 import LogOverlay from '@/components/logOverlay.vue'
-import { logPromiseResult } from '@/util/log'
 import { useLogStore } from '@/store/log'
 import IplButton from '@/components/ipl/iplButton.vue'
 import IplSpace from '@/components/ipl/iplSpace.vue'
@@ -98,8 +97,9 @@ export default defineComponent({
                 logStore.commit('reset')
                 showLog.value = true
                 const invocation = invoke('install_nodecg', { path: installFolder.value })
-                logPromiseResult(invocation)
+                logStore.dispatch('logPromiseResult', invocation)
                 await invocation
+                checkNodecgStatus()
             }
         }
     }

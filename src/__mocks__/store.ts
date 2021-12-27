@@ -27,6 +27,9 @@ export function createLogStore (): Store<LogStore> {
             reset: jest.fn(),
             insertLine: jest.fn(),
             setCompleted: jest.fn()
+        },
+        actions: {
+            logPromiseResult: jest.fn()
         }
     })
 }

@@ -61,8 +61,8 @@ export default defineComponent({
 .log-overlay {
     .log-display {
         font-family: monospace;
-        width: 99%;
-        max-height: 400px;
+        width: calc(100vw - 65px);
+        max-height: 350px;
         text-align: left;
         border: 1px solid $input-color;
         padding: 4px 2px;

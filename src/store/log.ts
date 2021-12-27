@@ -30,6 +30,21 @@ export const logStore = createStore<LogStore>({
             listen('log', (event: Event<LogEvent>) => {
                 store.state.lines.push(event.payload)
             })
+        },
+        logPromiseResult (store, promise: Promise<unknown>) {
+            promise.then(() => {
+                store.commit('insertLine', {
+                    message: 'Success!',
+                    type: 'success'
+                })
+            }).catch(e => {
+                store.commit('insertLine', {
+                    message: String(e),
+                    type: 'error'
+                })
+            }).finally(() => {
+                store.commit('setCompleted', true)
+            })
         }
     }
 })
