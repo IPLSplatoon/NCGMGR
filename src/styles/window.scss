@@ -4,7 +4,6 @@
 
 #app {
     text-align: center;
-    margin-top: 60px;
 }
 
 body {
@@ -13,7 +12,8 @@ body {
 
     font-family: 'Roboto', sans-serif;
     color: var(--text-color);
-    background-color: var(--background-primary);
+    background-color: var(--background-secondary);
+    padding: 12px 8px;
 }
 
 * {

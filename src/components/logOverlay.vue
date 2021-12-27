@@ -5,7 +5,7 @@
             <div class="log-display m-b-8">
                 <span :class="`type-${line.type ?? 'unknown'}`" v-for="(line, i) in log" :key="`log-line_${i}`">{{ line.message }}</span>
             </div>
-            <button @click="modelVisible = false" :disabled="!completed" data-test="close-button">Close</button>
+            <ipl-button @click="modelVisible = false" :disabled="!completed" data-test="close-button" label="Close" />
         </div>
     </ipl-overlay>
 </template>
@@ -13,6 +13,7 @@
 <script lang="ts">
 import { computed, defineComponent } from 'vue'
 import IplOverlay from '@/components/ipl/iplOverlay.vue'
+import IplButton from '@/components/ipl/iplButton.vue'
 import { useLogStore } from '@/store/log'
 
 export default defineComponent({
@@ -20,7 +21,7 @@ export default defineComponent({
 
     emits: ['update:visible'],
 
-    components: { IplOverlay },
+    components: { IplOverlay, IplButton },
 
     props: {
         title: {
@@ -60,7 +61,7 @@ export default defineComponent({
 .log-overlay {
     .log-display {
         font-family: monospace;
-        width: 95%;
+        width: 99%;
         max-height: 400px;
         text-align: left;
         border: 1px solid $input-color;

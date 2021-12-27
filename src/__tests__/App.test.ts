@@ -1,11 +1,15 @@
 import { mockTauri, mockTauriDialog } from '@/__mocks__/tauri'
 import App from '../App.vue'
-import { shallowMount } from '@vue/test-utils'
+import { config, flushPromises, shallowMount } from '@vue/test-utils'
 import { configStoreKey } from '@/store/config'
 import { createConfigStore, createLogStore } from '@/__mocks__/store'
 import { logStoreKey } from '@/store/log'
 
 describe('App', () => {
+    config.global.stubs = {
+        IplSpace: false
+    }
+
     it('matches snapshot', () => {
         const wrapper = shallowMount(App, {
             global: {
@@ -31,8 +35,10 @@ describe('App', () => {
         })
         mockTauriDialog.open.mockResolvedValue('/new/path')
 
-        await wrapper.get('[data-test="install-directory-select-button"]').trigger('click')
+        wrapper.getComponent('[data-test="install-directory-select-button"]').vm.$emit('click')
+        await flushPromises()
 
+        expect(mockTauriDialog.open).toHaveBeenCalledWith({ directory: true })
         expect(store.commit).toHaveBeenCalledWith('setInstallPath', '/new/path')
         expect(store.dispatch).toHaveBeenCalledWith('persist')
         expect(store.dispatch).toHaveBeenCalledTimes(2)
@@ -51,7 +57,8 @@ describe('App', () => {
         })
         mockTauriDialog.open.mockResolvedValue(null)
 
-        await wrapper.get('[data-test="install-directory-select-button"]').trigger('click')
+        wrapper.getComponent('[data-test="install-directory-select-button"]').vm.$emit('click')
+        await flushPromises()
 
         expect(store.commit).not.toHaveBeenCalled()
         expect(store.dispatch).toHaveBeenCalledTimes(1)
@@ -68,7 +75,7 @@ describe('App', () => {
             }
         })
 
-        expect((wrapper.get('[data-test="install-button"]').element as HTMLButtonElement).disabled).toEqual(true)
+        expect(wrapper.getComponent('[data-test="install-button"]').attributes().disabled).toEqual('true')
     })
 
     it('enables installation if install directory is selected', () => {
@@ -82,7 +89,7 @@ describe('App', () => {
             }
         })
 
-        expect((wrapper.get('[data-test="install-button"]').element as HTMLButtonElement).disabled).toEqual(false)
+        expect(wrapper.getComponent('[data-test="install-button"]').attributes().disabled).toEqual('false')
     })
 
     it('handles installation', () => {
@@ -100,7 +107,7 @@ describe('App', () => {
             }
         })
 
-        wrapper.get('[data-test="install-button"]').trigger('click')
+        wrapper.getComponent('[data-test="install-button"]').vm.$emit('click')
 
         expect(logStore.commit).toHaveBeenCalledWith('reset')
         expect(mockTauri.invoke).toHaveBeenCalledWith('install_nodecg', { path: '/install/path' })

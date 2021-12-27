@@ -36,13 +36,14 @@ export default defineComponent({
 <style lang="scss" scoped>
 @import '../../styles/layout';
 @import '../../styles/colors';
+@import '../../styles/constants';
 
 .overlay-leave-active {
-    transition: opacity 100ms ease-in;
+    transition: opacity $transition-duration-low ease-in;
 }
 
 .overlay-enter-active, {
-    transition: opacity 100ms ease-out;
+    transition: opacity $transition-duration-low ease-out;
 }
 
 .overlay-enter-from,
@@ -59,7 +60,7 @@ export default defineComponent({
 
     z-index: 1000;
 
-    background-color: rgba(0, 0, 0, 0.35);
+    background-color: rgba(0, 0, 0, 0.5);
 
     .ipl-overlay__content {
         max-width: 90%;
@@ -70,7 +71,7 @@ export default defineComponent({
         padding: 8px;
         display: block;
         position: relative;
-        border-radius: 5px;
+        border-radius: $border-radius-outer;
         filter: drop-shadow(2px 2px 3px rgba(0, 0, 0, 0.5));
     }
 }

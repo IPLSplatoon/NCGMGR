@@ -1,14 +1,13 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`LogOverlay matches snapshot 1`] = `
-<transition-stub class="log-overlay">
-  <div class="ipl-overlay__wrapper layout horizontal center-horizontal center-vertical">
-    <div class="ipl-overlay__content">
-      <div class="layout vertical center-horizontal">
-        <h2 class="m-b-8">Log Overlay</h2>
-        <div class="log-display m-b-8"><span class="type-unknown">LINE A</span><span class="type-error">LINE ERROR!!!</span></div><button disabled="" data-test="close-button">Close</button>
-      </div>
+<div class="ipl-overlay__wrapper layout horizontal center-horizontal center-vertical log-overlay">
+  <div class="ipl-overlay__content">
+    <div class="layout vertical center-horizontal">
+      <h2 class="m-b-8">Log Overlay</h2>
+      <div class="log-display m-b-8"><span class="type-unknown">LINE A</span><span class="type-error">LINE ERROR!!!</span></div>
+      <ipl-button-stub label="Close" color="blue" disabled="true" async="false" progressmessage="Working..." successmessage="Done!" requiresconfirmation="false" shortconfirmationmessage="false" small="false" disableonsuccess="false" data-test="close-button"></ipl-button-stub>
     </div>
   </div>
-</transition-stub>
+</div>
 `;

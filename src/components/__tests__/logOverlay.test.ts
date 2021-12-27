@@ -1,9 +1,13 @@
 import LogOverlay from '@/components/logOverlay.vue'
 import { logStoreKey } from '@/store/log'
-import { mount } from '@vue/test-utils'
+import { config, mount } from '@vue/test-utils'
 import { createLogStore } from '@/__mocks__/store'
 
 describe('LogOverlay', () => {
+    config.global.stubs = {
+        IplButton: true
+    }
+
     it('matches snapshot', () => {
         const store = createLogStore()
         store.state.lines = [{ message: 'LINE A' }, { message: 'LINE ERROR!!!', type: 'error' }]
@@ -37,7 +41,7 @@ describe('LogOverlay', () => {
             }
         })
 
-        expect((wrapper.get('[data-test="close-button"]').element as HTMLButtonElement).disabled).toEqual(true)
+        expect(wrapper.getComponent('[data-test="close-button"]').attributes().disabled).toEqual('true')
     })
 
     it('enables close button if log state is completed', () => {
@@ -55,7 +59,7 @@ describe('LogOverlay', () => {
             }
         })
 
-        expect((wrapper.get('[data-test="close-button"]').element as HTMLButtonElement).disabled).toEqual(false)
+        expect(wrapper.getComponent('[data-test="close-button"]').attributes().disabled).toEqual('false')
     })
 
     it('closes overlay on close button click', () => {
@@ -73,7 +77,7 @@ describe('LogOverlay', () => {
             }
         })
 
-        wrapper.get('[data-test="close-button"]').trigger('click')
+        wrapper.getComponent('[data-test="close-button"]').vm.$emit('click')
 
         const emitted = wrapper.emitted('update:visible')
         expect(emitted?.length).toEqual(1)

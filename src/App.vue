@@ -1,9 +1,11 @@
 <template>
-    <div class="layout vertical">
+    <ipl-space class="layout vertical">
         <div>Installation folder: "{{ installFolder }}"</div>
-        <button @click="selectDirectory" data-test="install-directory-select-button">Select folder</button>
-        <button @click="doInstall" :disabled="installDisabled" data-test="install-button">Install</button>
-    </div>
+        <div class="layout horizontal m-t-8">
+            <ipl-button label="Select folder" @click="selectDirectory" data-test="install-directory-select-button" />
+            <ipl-button label="Install" :disabled="installDisabled" data-test="install-button" @click="doInstall" class="m-l-8" />
+        </div>
+    </ipl-space>
     <log-overlay title="Installing..." v-model:visible="showLog" />
 </template>
 
@@ -16,11 +18,13 @@ import { open } from '@tauri-apps/api/dialog'
 import LogOverlay from '@/components/logOverlay.vue'
 import { logPromiseResult } from '@/util/log'
 import { useLogStore } from '@/store/log'
+import IplButton from '@/components/ipl/iplButton.vue'
+import IplSpace from '@/components/ipl/iplSpace.vue'
 
 export default defineComponent({
     name: 'App',
 
-    components: { LogOverlay },
+    components: { IplSpace, IplButton, LogOverlay },
 
     setup () {
         const config = useConfigStore()
@@ -64,4 +68,5 @@ export default defineComponent({
 
 <style lang="scss">
 @import 'src/styles/window';
+@import 'src/styles/layout';
 </style>
