@@ -1,7 +1,9 @@
+import { mockTauri } from '@/__mocks__/tauri'
 import BundleManager from '@/components/bundleManager.vue'
-import { createNodecgStore } from '@/__mocks__/store'
-import { config, mount } from '@vue/test-utils'
+import { createConfigStore, createNodecgStore } from '@/__mocks__/store'
+import { config, flushPromises, mount } from '@vue/test-utils'
 import { nodecgStoreKey } from '@/store/nodecg'
+import { configStoreKey } from '@/store/config'
 
 describe('BundleManager', () => {
     config.global.stubs = {
@@ -45,6 +47,71 @@ describe('BundleManager', () => {
         })
 
         expect(wrapper.html()).toMatchSnapshot()
+    })
+
+    it('handles uninstalling a bundle', async () => {
+        const configStore = createConfigStore()
+        configStore.state.installPath = '/nodecg/path'
+        const nodecgStore = createNodecgStore()
+        nodecgStore.state.bundles = [
+            { name: 'Bundle One', version: '1.2.3' },
+            { name: 'Bundle Two', version: '5.0' }
+        ]
+        jest.spyOn(nodecgStore, 'dispatch')
+        const wrapper = mount(BundleManager, {
+            global: {
+                plugins: [
+                    [nodecgStore, nodecgStoreKey],
+                    [configStore, configStoreKey]
+                ]
+            }
+        })
+        mockTauri.invoke.mockResolvedValue({})
+        const bundleRow = wrapper.get('[data-test="bundle_Bundle One"]')
+
+        bundleRow.getComponent('[data-test="uninstall-button"]').vm.$emit('click')
+        await flushPromises()
+
+        expect(wrapper.findComponent('[data-test="uninstall-overlay"]').exists()).toEqual(true)
+        expect(mockTauri.invoke).not.toHaveBeenCalled()
+
+        wrapper.getComponent('[data-test="confirm-uninstall-button"]').vm.$emit('click')
+        await flushPromises()
+
+        expect(wrapper.findComponent('[data-test="uninstall-overlay"]').exists()).toEqual(false)
+        expect(mockTauri.invoke).toHaveBeenCalledWith('uninstall_bundle', {
+            bundleName: 'Bundle One',
+            nodecgPath: '/nodecg/path'
+        })
+        expect(nodecgStore.dispatch).toHaveBeenCalledWith('getBundleList')
+    })
+
+    it('handles bundle uninstallation being cancelled', async () => {
+        const nodecgStore = createNodecgStore()
+        nodecgStore.state.bundles = [
+            { name: 'Bundle One', version: '1.2.3' },
+            { name: 'Bundle Two', version: '5.0' }
+        ]
+        const wrapper = mount(BundleManager, {
+            global: {
+                plugins: [
+                    [nodecgStore, nodecgStoreKey]
+                ]
+            }
+        })
+        mockTauri.invoke.mockResolvedValue({})
+        const bundleRow = wrapper.get('[data-test="bundle_Bundle One"]')
+
+        bundleRow.getComponent('[data-test="uninstall-button"]').vm.$emit('click')
+        await flushPromises()
+
+        expect(wrapper.findComponent('[data-test="uninstall-overlay"]').exists()).toEqual(true)
+
+        wrapper.getComponent('[data-test="cancel-uninstall-button"]').vm.$emit('click')
+        await flushPromises()
+
+        expect(wrapper.findComponent('[data-test="uninstall-overlay"]').exists()).toEqual(false)
+        expect(mockTauri.invoke).not.toHaveBeenCalled()
     })
 
     it('handles refreshing', () => {

@@ -5,6 +5,7 @@ windows_subsystem = "windows"
 
 use git2::Repository;
 use tauri::{Menu, MenuItem, Submenu};
+use std::fs;
 
 mod npm;
 mod log;
@@ -57,13 +58,21 @@ fn install_nodecg(handle: tauri::AppHandle, path: String) -> Result<String, Stri
     })
 }
 
+#[tauri::command(async)]
+fn uninstall_bundle(bundle_name: String, nodecg_path: String) -> Result<String, String> {
+    match fs::remove_dir_all(format!("{}/bundles/{}", nodecg_path, bundle_name)) {
+        Ok(_) => Ok("OK".to_string()),
+        Err(e) => Err(format!("Uninstalling bundle {} failed: {}", bundle_name, e.to_string()))
+    }
+}
+
 fn main() {
     let menu = Menu::new()
         .add_native_item(MenuItem::About("NCGMGR".to_string()))
         .add_native_item(MenuItem::Quit);
 
     tauri::Builder::default()
-        .invoke_handler(tauri::generate_handler![install_nodecg])
+        .invoke_handler(tauri::generate_handler![install_nodecg, uninstall_bundle])
         .menu(Menu::new().add_submenu(Submenu::new("NCGMGR", menu)))
         .run(tauri::generate_context!())
         .expect("error while running tauri application");
