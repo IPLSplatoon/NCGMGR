@@ -67,13 +67,25 @@ fn uninstall_bundle(bundle_name: String, nodecg_path: String) -> Result<String, 
 }
 
 fn main() {
-    let menu = Menu::new()
+    let menu_app = Menu::new()
         .add_native_item(MenuItem::About("NCGMGR".to_string()))
         .add_native_item(MenuItem::Quit);
 
+    let menu_edit = Menu::new()
+        .add_native_item(MenuItem::Cut)
+        .add_native_item(MenuItem::Copy)
+        .add_native_item(MenuItem::Paste)
+        .add_native_item(MenuItem::SelectAll)
+        .add_native_item(MenuItem::Undo)
+        .add_native_item(MenuItem::Redo);
+
+    let menu = Menu::new()
+        .add_submenu(Submenu::new("NCGMGR", menu_app))
+        .add_submenu(Submenu::new("Edit", menu_edit));
+
     tauri::Builder::default()
         .invoke_handler(tauri::generate_handler![install_nodecg, uninstall_bundle])
-        .menu(Menu::new().add_submenu(Submenu::new("NCGMGR", menu)))
+        .menu(menu)
         .run(tauri::generate_context!())
         .expect("error while running tauri application");
 }
