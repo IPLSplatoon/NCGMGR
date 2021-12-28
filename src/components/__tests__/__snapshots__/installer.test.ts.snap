@@ -5,8 +5,8 @@ exports[`Installer matches snapshot 1`] = `
   <div>Installation folder: /install/path</div>
   <status-row-stub color="gray" class="m-t-8"></status-row-stub>
   <div class="layout horizontal m-t-8">
-    <ipl-button-stub label="Select folder" color="blue" disabled="false" async="false" progressmessage="Working..." successmessage="Done!" requiresconfirmation="false" shortconfirmationmessage="false" small="false" disableonsuccess="false" data-test="install-directory-select-button"></ipl-button-stub>
-    <ipl-button-stub label="Install" color="green" disabled="true" async="false" progressmessage="Working..." successmessage="Done!" requiresconfirmation="false" shortconfirmationmessage="false" small="false" disableonsuccess="false" data-test="install-button" class="m-l-8"></ipl-button-stub>
+    <ipl-button-stub label="Select folder" color="blue" disabled="false" async="false" progressmessage="Working..." successmessage="Done!" requiresconfirmation="false" shortconfirmationmessage="false" small="false" disableonsuccess="false" nobackground="false" tooltip="" data-test="install-directory-select-button"></ipl-button-stub>
+    <ipl-button-stub label="Install" color="green" disabled="true" async="false" progressmessage="Working..." successmessage="Done!" requiresconfirmation="false" shortconfirmationmessage="false" small="false" disableonsuccess="false" nobackground="false" tooltip="" data-test="install-button" class="m-l-8"></ipl-button-stub>
   </div>
 </div>
 <log-overlay-stub title="Installing..." visible="false"></log-overlay-stub>

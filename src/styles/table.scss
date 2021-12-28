@@ -1,0 +1,23 @@
+@import 'src/styles/colors.scss';
+
+table {
+    border-collapse: collapse;
+    border-style: hidden;
+}
+
+table td {
+    border-top: 1px solid $input-color;
+}
+
+table td:first-child {
+    width: 100%;
+}
+
+table td, table th {
+    padding: 4px 6px;
+}
+
+thead th {
+    text-align: left;
+    font-weight: 700;
+}

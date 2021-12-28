@@ -79,6 +79,18 @@ describe('iplButton', () => {
         expect(wrapper.find('a').classes()).toContain('small')
     })
 
+    it('gives class to link button element if background is disabled', () => {
+        const wrapper = shallowMount(IplButton, { props: { label: 'Button', noBackground: true } })
+
+        expect(wrapper.find('a').classes()).toContain('no-background')
+    })
+
+    it('gives tooltip to link button element', () => {
+        const wrapper = shallowMount(IplButton, { props: { label: 'Button', tooltip: 'Button!' } })
+
+        expect(wrapper.find('a').element.title).toEqual('Button!')
+    })
+
     it('gives class to link button element if element has icon', () => {
         const wrapper = shallowMount(IplButton, { props: { icon: 'dope-icon' } })
 

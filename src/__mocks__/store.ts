@@ -46,7 +46,8 @@ export function createNodecgStore (): Store<NodecgStore> {
             bundles: []
         },
         actions: {
-            checkNodecgStatus: jest.fn()
+            checkNodecgStatus: jest.fn(),
+            getBundleList: jest.fn()
         }
     })
 }

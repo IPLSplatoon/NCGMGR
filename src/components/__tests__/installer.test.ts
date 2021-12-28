@@ -70,10 +70,7 @@ describe('Installer', () => {
 
     it('disables installation if installation is not possible', async () => {
         const nodecgStore = createNodecgStore()
-        nodecgStore.state.status = {
-            status: NodecgStatus.UNABLE_TO_INSTALL,
-            message: 'Unable!'
-        }
+        nodecgStore.state.status.status = NodecgStatus.UNABLE_TO_INSTALL
         const store = createConfigStore()
         const wrapper = await shallowMount(Installer, {
             global: {
@@ -90,10 +87,7 @@ describe('Installer', () => {
 
     it('enables installation if installation is possible', async () => {
         const nodecgStore = createNodecgStore()
-        nodecgStore.state.status = {
-            status: NodecgStatus.READY_TO_INSTALL,
-            message: 'Ready!'
-        }
+        nodecgStore.state.status.status = NodecgStatus.READY_TO_INSTALL
         const store = createConfigStore()
         const wrapper = await shallowMount(Installer, {
             global: {
@@ -110,10 +104,7 @@ describe('Installer', () => {
 
     it('disables installation if installation is completed', async () => {
         const nodecgStore = createNodecgStore()
-        nodecgStore.state.status = {
-            status: NodecgStatus.INSTALLED,
-            message: 'OK!'
-        }
+        nodecgStore.state.status.status = NodecgStatus.INSTALLED
         const store = createConfigStore()
         const wrapper = await shallowMount(Installer, {
             global: {
@@ -130,10 +121,7 @@ describe('Installer', () => {
 
     it('disables installation if installation status is unknown', async () => {
         const nodecgStore = createNodecgStore()
-        nodecgStore.state.status = {
-            status: NodecgStatus.UNKNOWN,
-            message: '?'
-        }
+        nodecgStore.state.status.status = NodecgStatus.UNKNOWN
         const store = createConfigStore()
         const wrapper = await shallowMount(Installer, {
             global: {

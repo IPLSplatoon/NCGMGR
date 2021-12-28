@@ -1,13 +1,15 @@
 <template>
     <a
         class="ipl-button"
+        :title="tooltip"
         href="#"
         :style="buttonStyle"
         :class="{
             disabled: disabledInternal,
             'has-icon': isIconButton,
             'small': small,
-            'is-loading': buttonState === 'loading'
+            'is-loading': buttonState === 'loading',
+            'no-background': noBackground
         }"
         @click="handleClick"
     >
@@ -86,6 +88,14 @@ export default defineComponent({
         disableOnSuccess: {
             type: Boolean,
             default: false
+        },
+        noBackground: {
+            type: Boolean,
+            default: false
+        },
+        tooltip: {
+            type: String,
+            default: ''
         }
     },
 
@@ -133,7 +143,7 @@ export default defineComponent({
                 const buttonColor = buttonColors[colorInternal.value] ?? colorInternal.value
                 return ({
                     backgroundColor: buttonColor,
-                    color: disabledInternal.value ? themeColors.disabledText : getContrastingTextColor(buttonColor)
+                    ...(!props.noBackground && { color: disabledInternal.value ? themeColors.disabledText : getContrastingTextColor(buttonColor) })
                 })
             }),
             async handleClick () {
@@ -220,6 +230,26 @@ export default defineComponent({
     outline-width: 0;
 
     transition-duration: $transition-duration-low;
+
+    &.no-background {
+        background-color: transparent !important;
+        color: var(--text-button-color);
+
+        &:not(.disabled) {
+            &:hover {
+                color: var(--text-button-color-hover);
+            }
+
+            &:active {
+                color: var(--text-button-color-active);
+            }
+        }
+
+        &.disabled {
+            color: var(--text-button-color-disabled);
+            background-color: transparent !important;
+        }
+    }
 
     &.has-icon {
         flex-grow: 0;
