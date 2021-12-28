@@ -23,7 +23,7 @@ import { useLogStore } from '@/store/log'
 import IplButton from '@/components/ipl/iplButton.vue'
 import IplSpace from '@/components/ipl/iplSpace.vue'
 import StatusRow from '@/components/statusRow.vue'
-import { NodecgStatus, useStatusStore } from '@/store/status'
+import { NodecgStatus, useNodecgStore } from '@/store/nodecg'
 
 export default defineComponent({
     name: 'Installer',
@@ -33,7 +33,7 @@ export default defineComponent({
     setup () {
         const config = useConfigStore()
         const logStore = useLogStore()
-        const statusStore = useStatusStore()
+        const nodecgStore = useNodecgStore()
 
         const showLog = ref(false)
 
@@ -42,10 +42,10 @@ export default defineComponent({
             set: (newValue: string) => config.commit('setInstallPath', newValue)
         })
 
-        const nodecgStatus = computed<NodecgStatus>(() => statusStore.state.nodecg.status)
+        const nodecgStatus = computed<NodecgStatus>(() => nodecgStore.state.status.status)
 
         onMounted(() => {
-            statusStore.dispatch('checkNodecgStatus')
+            nodecgStore.dispatch('checkNodecgStatus')
         })
 
         return {
@@ -66,7 +66,7 @@ export default defineComponent({
                         return 'gray'
                 }
             }),
-            nodecgStatusMessage: computed(() => statusStore.state.nodecg.message),
+            nodecgStatusMessage: computed(() => nodecgStore.state.status.message),
             async selectDirectory () {
                 const path = await open({ directory: true })
 
@@ -78,7 +78,7 @@ export default defineComponent({
                     installFolder.value = path
                 }
                 config.dispatch('persist')
-                statusStore.dispatch('checkNodecgStatus')
+                nodecgStore.dispatch('checkNodecgStatus')
             },
             async doInstall () {
                 logStore.commit('reset')
@@ -86,7 +86,7 @@ export default defineComponent({
                 const invocation = invoke('install_nodecg', { path: installFolder.value })
                 logStore.dispatch('logPromiseResult', invocation)
                 await invocation
-                statusStore.dispatch('checkNodecgStatus')
+                nodecgStore.dispatch('checkNodecgStatus')
             }
         }
     }

@@ -1,6 +1,6 @@
 import { mockTauriFs } from '@/__mocks__/tauri'
 import { getNodecgStatus } from '@/service/nodecg'
-import { NodecgStatus } from '@/store/status'
+import { NodecgStatus } from '@/store/nodecg'
 
 describe('getNodecgStatus', () => {
     it('returns ready to install response when directory is empty', async () => {

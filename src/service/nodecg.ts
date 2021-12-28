@@ -1,7 +1,7 @@
 import { readDir, readTextFile } from '@tauri-apps/api/fs'
 import { PackageSchema } from '@/types/package'
 import isEmpty from 'lodash/isEmpty'
-import { NodecgStatus } from '@/store/status'
+import { NodecgStatus } from '@/store/nodecg'
 
 export async function getNodecgStatus (directory: string): Promise<{ status: NodecgStatus, message: string }> {
     if (isEmpty(directory?.trim())) {
@@ -39,4 +39,33 @@ export async function getNodecgStatus (directory: string): Promise<{ status: Nod
             }
         }
     }
+}
+
+export interface Bundle {
+    name: string
+    version: string
+}
+
+export async function getBundles (directory: string): Promise<Bundle[]> {
+    if (isEmpty(directory.trim())) {
+        throw new Error('No bundle directory provided.')
+    }
+
+    const dir = await readDir(directory + '/bundles', { recursive: true })
+    return Promise.all(
+        dir
+            .filter(entry => entry.children?.some(child => child.name === 'package.json'))
+            .map(async (bundle) => {
+                const packageFile = bundle.children?.find(child => child.name === 'package.json')?.path
+                if (!packageFile) {
+                    throw new Error('Missing package.json')
+                }
+
+                const packageJson = JSON.parse(await readTextFile(packageFile)) as PackageSchema
+
+                return {
+                    name: packageJson.name,
+                    version: packageJson.version
+                }
+            }))
 }

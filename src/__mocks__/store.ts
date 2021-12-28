@@ -1,7 +1,7 @@
 import { createStore, Store } from 'vuex'
 import { Configuration } from '@/store/config'
 import { LogStore } from '@/store/log'
-import { NodecgStatus, StatusStore } from '@/store/status'
+import { NodecgStatus, NodecgStore } from '@/store/nodecg'
 
 export function createConfigStore (): Store<Configuration> {
     return createStore<Configuration>({
@@ -35,13 +35,15 @@ export function createLogStore (): Store<LogStore> {
     })
 }
 
-export function createStatusStore (): Store<StatusStore> {
-    return createStore<StatusStore>({
+export function createNodecgStore (): Store<NodecgStore> {
+    return createStore<NodecgStore>({
         state: {
-            nodecg: {
+            status: {
                 status: NodecgStatus.UNKNOWN,
-                message: ''
-            }
+                message: '',
+                bundlesLoading: false
+            },
+            bundles: []
         },
         actions: {
             checkNodecgStatus: jest.fn()

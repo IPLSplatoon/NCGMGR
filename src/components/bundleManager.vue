@@ -1,12 +1,18 @@
 <template>
     <ipl-space>
-        {{ bundles }}
+        <template v-if="loading">
+            Loading...
+        </template>
+        <template v-else>
+            {{ bundles }}
+        </template>
     </ipl-space>
 </template>
 
 <script lang="ts">
-import { defineComponent, ref } from 'vue'
+import { computed, defineComponent } from 'vue'
 import IplSpace from '@/components/ipl/iplSpace.vue'
+import { useNodecgStore } from '@/store/nodecg'
 
 export default defineComponent({
     name: 'BundleManager',
@@ -14,8 +20,14 @@ export default defineComponent({
     components: { IplSpace },
 
     setup () {
+        const nodecgStore = useNodecgStore()
+
         return {
-            bundles: ref('Bundle manager placeholder')
+            loading: computed(() => nodecgStore.state.status.bundlesLoading),
+            bundles: computed(() => nodecgStore.state.bundles.reduce((existingValue, bundle) => {
+                existingValue += `${bundle.name} (${bundle.version}), `
+                return existingValue
+            }, ''))
         }
     }
 })

@@ -1,15 +1,15 @@
 import App from '@/App.vue'
-import { createStatusStore } from '@/__mocks__/store'
+import { createNodecgStore } from '@/__mocks__/store'
 import { shallowMount } from '@vue/test-utils'
-import { NodecgStatus, statusStoreKey } from '@/store/status'
+import { NodecgStatus, nodecgStoreKey } from '@/store/nodecg'
 
 describe('App', () => {
     it('shows bundle manager if nodecg is installed', () => {
-        const statusStore = createStatusStore()
-        statusStore.state.nodecg.status = NodecgStatus.INSTALLED
+        const nodecgStore = createNodecgStore()
+        nodecgStore.state.status.status = NodecgStatus.INSTALLED
         const wrapper = shallowMount(App, {
             global: {
-                plugins: [[statusStore, statusStoreKey]]
+                plugins: [[nodecgStore, nodecgStoreKey]]
             }
         })
 
@@ -19,11 +19,11 @@ describe('App', () => {
     })
 
     it('hides bundle manager if nodecg is not installed but can be', () => {
-        const statusStore = createStatusStore()
-        statusStore.state.nodecg.status = NodecgStatus.READY_TO_INSTALL
+        const nodecgStore = createNodecgStore()
+        nodecgStore.state.status.status = NodecgStatus.READY_TO_INSTALL
         const wrapper = shallowMount(App, {
             global: {
-                plugins: [[statusStore, statusStoreKey]]
+                plugins: [[nodecgStore, nodecgStoreKey]]
             }
         })
 
@@ -32,11 +32,11 @@ describe('App', () => {
     })
 
     it('hides bundle manager if nodecg is not installed and cannot be installed', () => {
-        const statusStore = createStatusStore()
-        statusStore.state.nodecg.status = NodecgStatus.UNABLE_TO_INSTALL
+        const nodecgStore = createNodecgStore()
+        nodecgStore.state.status.status = NodecgStatus.UNABLE_TO_INSTALL
         const wrapper = shallowMount(App, {
             global: {
-                plugins: [[statusStore, statusStoreKey]]
+                plugins: [[nodecgStore, nodecgStoreKey]]
             }
         })
 
@@ -45,11 +45,11 @@ describe('App', () => {
     })
 
     it('hides bundle manager if nodecg status is unknown', () => {
-        const statusStore = createStatusStore()
-        statusStore.state.nodecg.status = NodecgStatus.UNKNOWN
+        const nodecgStore = createNodecgStore()
+        nodecgStore.state.status.status = NodecgStatus.UNKNOWN
         const wrapper = shallowMount(App, {
             global: {
-                plugins: [[statusStore, statusStoreKey]]
+                plugins: [[nodecgStore, nodecgStoreKey]]
             }
         })
 

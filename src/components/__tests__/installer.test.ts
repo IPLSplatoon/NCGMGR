@@ -1,10 +1,10 @@
 import { mockTauri, mockTauriDialog } from '@/__mocks__/tauri'
 import { config, flushPromises, shallowMount } from '@vue/test-utils'
 import { configStoreKey } from '@/store/config'
-import { createConfigStore, createLogStore, createStatusStore } from '@/__mocks__/store'
+import { createConfigStore, createLogStore, createNodecgStore } from '@/__mocks__/store'
 import { logStoreKey } from '@/store/log'
 import Installer from '../Installer.vue'
-import { NodecgStatus, statusStoreKey } from '@/store/status'
+import { NodecgStatus, nodecgStoreKey } from '@/store/nodecg'
 
 describe('Installer', () => {
     config.global.stubs = {
@@ -16,7 +16,7 @@ describe('Installer', () => {
             global: {
                 plugins: [
                     [createConfigStore(), configStoreKey],
-                    [createStatusStore(), statusStoreKey]
+                    [createNodecgStore(), nodecgStoreKey]
                 ]
             }
         })
@@ -32,7 +32,7 @@ describe('Installer', () => {
             global: {
                 plugins: [
                     [store, configStoreKey],
-                    [createStatusStore(), statusStoreKey]
+                    [createNodecgStore(), nodecgStoreKey]
                 ]
             }
         })
@@ -55,7 +55,7 @@ describe('Installer', () => {
             global: {
                 plugins: [
                     [store, configStoreKey],
-                    [createStatusStore(), statusStoreKey]
+                    [createNodecgStore(), nodecgStoreKey]
                 ]
             }
         })
@@ -69,8 +69,8 @@ describe('Installer', () => {
     })
 
     it('disables installation if installation is not possible', async () => {
-        const statusStore = createStatusStore()
-        statusStore.state.nodecg = {
+        const nodecgStore = createNodecgStore()
+        nodecgStore.state.status = {
             status: NodecgStatus.UNABLE_TO_INSTALL,
             message: 'Unable!'
         }
@@ -79,7 +79,7 @@ describe('Installer', () => {
             global: {
                 plugins: [
                     [store, configStoreKey],
-                    [statusStore, statusStoreKey]
+                    [nodecgStore, nodecgStoreKey]
                 ]
             }
         })
@@ -89,8 +89,8 @@ describe('Installer', () => {
     })
 
     it('enables installation if installation is possible', async () => {
-        const statusStore = createStatusStore()
-        statusStore.state.nodecg = {
+        const nodecgStore = createNodecgStore()
+        nodecgStore.state.status = {
             status: NodecgStatus.READY_TO_INSTALL,
             message: 'Ready!'
         }
@@ -99,7 +99,7 @@ describe('Installer', () => {
             global: {
                 plugins: [
                     [store, configStoreKey],
-                    [statusStore, statusStoreKey]
+                    [nodecgStore, nodecgStoreKey]
                 ]
             }
         })
@@ -109,8 +109,8 @@ describe('Installer', () => {
     })
 
     it('disables installation if installation is completed', async () => {
-        const statusStore = createStatusStore()
-        statusStore.state.nodecg = {
+        const nodecgStore = createNodecgStore()
+        nodecgStore.state.status = {
             status: NodecgStatus.INSTALLED,
             message: 'OK!'
         }
@@ -119,7 +119,7 @@ describe('Installer', () => {
             global: {
                 plugins: [
                     [store, configStoreKey],
-                    [statusStore, statusStoreKey]
+                    [nodecgStore, nodecgStoreKey]
                 ]
             }
         })
@@ -129,8 +129,8 @@ describe('Installer', () => {
     })
 
     it('disables installation if installation status is unknown', async () => {
-        const statusStore = createStatusStore()
-        statusStore.state.nodecg = {
+        const nodecgStore = createNodecgStore()
+        nodecgStore.state.status = {
             status: NodecgStatus.UNKNOWN,
             message: '?'
         }
@@ -139,7 +139,7 @@ describe('Installer', () => {
             global: {
                 plugins: [
                     [store, configStoreKey],
-                    [statusStore, statusStoreKey]
+                    [nodecgStore, nodecgStoreKey]
                 ]
             }
         })
@@ -159,7 +159,7 @@ describe('Installer', () => {
                 plugins: [
                     [configStore, configStoreKey],
                     [logStore, logStoreKey],
-                    [createStatusStore(), statusStoreKey]
+                    [createNodecgStore(), nodecgStoreKey]
                 ]
             }
         })
