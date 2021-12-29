@@ -1,6 +1,6 @@
 import { mockTauriFs } from '@/__mocks__/tauri'
 import { getNodecgStatus } from '@/service/nodecg'
-import { NodecgStatus } from '@/store/nodecg'
+import { InstallStatus } from '@/store/nodecg'
 
 describe('getNodecgStatus', () => {
     it('returns ready to install response when directory is empty', async () => {
@@ -9,7 +9,7 @@ describe('getNodecgStatus', () => {
         const result = await getNodecgStatus('/dir/')
 
         expect(result).toEqual({
-            status: NodecgStatus.READY_TO_INSTALL,
+            status: InstallStatus.READY_TO_INSTALL,
             message: 'Directory is empty. Ready to install...'
         })
         expect(mockTauriFs.readDir).toHaveBeenCalledWith('/dir/')
@@ -23,7 +23,7 @@ describe('getNodecgStatus', () => {
         const result = await getNodecgStatus('/dir/')
 
         expect(result).toEqual({
-            status: NodecgStatus.INSTALLED,
+            status: InstallStatus.INSTALLED,
             message: 'Found NodeCG v1.2.3.'
         })
         expect(mockTauriFs.readDir).toHaveBeenCalledWith('/dir/')
@@ -37,7 +37,7 @@ describe('getNodecgStatus', () => {
         const result = await getNodecgStatus('/directory/')
 
         expect(result).toEqual({
-            status: NodecgStatus.UNABLE_TO_INSTALL,
+            status: InstallStatus.UNABLE_TO_INSTALL,
             message: 'Found unknown package "other_pkg".'
         })
         expect(mockTauriFs.readDir).toHaveBeenCalledWith('/directory/')
@@ -50,7 +50,7 @@ describe('getNodecgStatus', () => {
         const result = await getNodecgStatus('/directory/')
 
         expect(result).toEqual({
-            status: NodecgStatus.UNABLE_TO_INSTALL,
+            status: InstallStatus.UNABLE_TO_INSTALL,
             message: 'Could not find package.json.'
         })
         expect(mockTauriFs.readDir).toHaveBeenCalledWith('/directory/')
@@ -61,7 +61,7 @@ describe('getNodecgStatus', () => {
         const result = await getNodecgStatus('   ')
 
         expect(result).toEqual({
-            status: NodecgStatus.UNABLE_TO_INSTALL,
+            status: InstallStatus.UNABLE_TO_INSTALL,
             message: 'Please select an installation directory.'
         })
         expect(mockTauriFs.readDir).not.toHaveBeenCalled()

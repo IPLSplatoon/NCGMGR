@@ -3,7 +3,7 @@ import { Bundle, getBundles, getNodecgStatus } from '@/service/nodecg'
 import { configStore } from '@/store/config'
 import { InjectionKey } from 'vue'
 
-export enum NodecgStatus {
+export enum InstallStatus {
     UNKNOWN,
     READY_TO_INSTALL,
     INSTALLED,
@@ -12,7 +12,7 @@ export enum NodecgStatus {
 
 export interface NodecgStore {
     status: {
-        status: NodecgStatus
+        installStatus: InstallStatus
         message: string
         bundlesLoading: boolean
     },
@@ -22,7 +22,7 @@ export interface NodecgStore {
 export const nodecgStore: Store<NodecgStore> = createStore<NodecgStore>({
     state: {
         status: {
-            status: NodecgStatus.UNKNOWN,
+            installStatus: InstallStatus.UNKNOWN,
             message: '',
             bundlesLoading: false
         },
@@ -30,21 +30,21 @@ export const nodecgStore: Store<NodecgStore> = createStore<NodecgStore>({
     },
     actions: {
         async checkNodecgStatus (store) {
-            store.state.status.status = NodecgStatus.UNKNOWN
+            store.state.status.installStatus = InstallStatus.UNKNOWN
             store.state.status.message = 'Checking status...'
 
             try {
                 const { status, message } = await getNodecgStatus(configStore.state.installPath)
                 store.state.status.message = message
-                store.state.status.status = status
-                if (status === NodecgStatus.INSTALLED) {
+                store.state.status.installStatus = status
+                if (status === InstallStatus.INSTALLED) {
                     store.dispatch('getBundleList')
                 } else {
                     store.state.bundles = []
                 }
             } catch (e) {
                 store.state.status.message = e.toString()
-                store.state.status.status = NodecgStatus.UNABLE_TO_INSTALL
+                store.state.status.installStatus = InstallStatus.UNABLE_TO_INSTALL
                 store.state.bundles = []
             }
         },

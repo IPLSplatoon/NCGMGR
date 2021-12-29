@@ -39,7 +39,7 @@ import { useLogStore } from '@/store/log'
 import IplButton from '@/components/ipl/iplButton.vue'
 import IplSpace from '@/components/ipl/iplSpace.vue'
 import StatusRow from '@/components/statusRow.vue'
-import { NodecgStatus, useNodecgStore } from '@/store/nodecg'
+import { InstallStatus, useNodecgStore } from '@/store/nodecg'
 
 export default defineComponent({
     name: 'InstallManager',
@@ -58,7 +58,7 @@ export default defineComponent({
             set: (newValue: string) => config.commit('setInstallPath', newValue)
         })
 
-        const nodecgStatus = computed<NodecgStatus>(() => nodecgStore.state.status.status)
+        const nodecgStatus = computed<InstallStatus>(() => nodecgStore.state.status.installStatus)
 
         onMounted(() => {
             nodecgStore.dispatch('checkNodecgStatus')
@@ -69,14 +69,14 @@ export default defineComponent({
             installFolder,
             showLog,
             nodecgStatus: nodecgStatus,
-            NodecgStatus,
+            NodecgStatus: InstallStatus,
             nodecgStatusColor: computed(() => {
                 switch (nodecgStatus.value) {
-                    case NodecgStatus.READY_TO_INSTALL:
+                    case InstallStatus.READY_TO_INSTALL:
                         return 'yellow'
-                    case NodecgStatus.INSTALLED:
+                    case InstallStatus.INSTALLED:
                         return 'green'
-                    case NodecgStatus.UNABLE_TO_INSTALL:
+                    case InstallStatus.UNABLE_TO_INSTALL:
                         return 'red'
                     default:
                         return 'gray'

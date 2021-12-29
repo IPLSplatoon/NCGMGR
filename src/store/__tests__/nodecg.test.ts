@@ -1,4 +1,4 @@
-import { NodecgStatus, nodecgStore } from '@/store/nodecg'
+import { InstallStatus, nodecgStore } from '@/store/nodecg'
 import { getNodecgStatus, getBundles } from '@/service/nodecg'
 import Mock = jest.Mock
 import { configStore } from '@/store/config'
@@ -9,7 +9,7 @@ describe('nodecgStore', () => {
     beforeEach(() => {
         nodecgStore.replaceState({
             status: {
-                status: NodecgStatus.INSTALLED,
+                installStatus: InstallStatus.INSTALLED,
                 message: 'Message!',
                 bundlesLoading: false
             },
@@ -24,19 +24,19 @@ describe('nodecgStore', () => {
 
             nodecgStore.dispatch('checkNodecgStatus')
 
-            expect(nodecgStore.state.status.status).toEqual(NodecgStatus.UNKNOWN)
+            expect(nodecgStore.state.status.installStatus).toEqual(InstallStatus.UNKNOWN)
             expect(nodecgStore.state.status.message).toEqual('Checking status...')
         })
 
         it('sets status', async () => {
             (getNodecgStatus as Mock).mockResolvedValue({
-                status: NodecgStatus.READY_TO_INSTALL,
+                status: InstallStatus.READY_TO_INSTALL,
                 message: 'Message!'
             })
 
             await nodecgStore.dispatch('checkNodecgStatus')
 
-            expect(nodecgStore.state.status.status).toEqual(NodecgStatus.READY_TO_INSTALL)
+            expect(nodecgStore.state.status.installStatus).toEqual(InstallStatus.READY_TO_INSTALL)
             expect(nodecgStore.state.status.message).toEqual('Message!')
         })
 
@@ -45,19 +45,19 @@ describe('nodecgStore', () => {
 
             await nodecgStore.dispatch('checkNodecgStatus')
 
-            expect(nodecgStore.state.status.status).toEqual(NodecgStatus.UNABLE_TO_INSTALL)
+            expect(nodecgStore.state.status.installStatus).toEqual(InstallStatus.UNABLE_TO_INSTALL)
             expect(nodecgStore.state.status.message).toEqual('Error: Failure!')
         })
 
         it('gets bundles if nodecg is installed', async () => {
             (getNodecgStatus as Mock).mockResolvedValue({
-                status: NodecgStatus.INSTALLED,
+                status: InstallStatus.INSTALLED,
                 message: 'Found!'
             })
 
             await nodecgStore.dispatch('checkNodecgStatus')
 
-            expect(nodecgStore.state.status.status).toEqual(NodecgStatus.INSTALLED)
+            expect(nodecgStore.state.status.installStatus).toEqual(InstallStatus.INSTALLED)
             expect(nodecgStore.state.status.message).toEqual('Found!')
             expect(getBundles).toHaveBeenCalled()
         })

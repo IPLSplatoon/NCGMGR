@@ -1,12 +1,12 @@
 import { readDir, readTextFile } from '@tauri-apps/api/fs'
 import { PackageSchema } from '@/types/package'
 import isEmpty from 'lodash/isEmpty'
-import { NodecgStatus } from '@/store/nodecg'
+import { InstallStatus } from '@/store/nodecg'
 
-export async function getNodecgStatus (directory: string): Promise<{ status: NodecgStatus, message: string }> {
+export async function getNodecgStatus (directory: string): Promise<{ status: InstallStatus, message: string }> {
     if (isEmpty(directory?.trim())) {
         return {
-            status: NodecgStatus.UNABLE_TO_INSTALL,
+            status: InstallStatus.UNABLE_TO_INSTALL,
             message: 'Please select an installation directory.'
         }
     }
@@ -14,7 +14,7 @@ export async function getNodecgStatus (directory: string): Promise<{ status: Nod
     const dir = await readDir(directory)
     if (dir.length < 1) {
         return {
-            status: NodecgStatus.READY_TO_INSTALL,
+            status: InstallStatus.READY_TO_INSTALL,
             message: 'Directory is empty. Ready to install...'
         }
     } else {
@@ -23,18 +23,18 @@ export async function getNodecgStatus (directory: string): Promise<{ status: Nod
             const packageJson: PackageSchema = JSON.parse(await readTextFile(packageFile.path))
             if (packageJson.name === 'nodecg') {
                 return {
-                    status: NodecgStatus.INSTALLED,
+                    status: InstallStatus.INSTALLED,
                     message: `Found NodeCG v${packageJson.version}.`
                 }
             } else {
                 return {
-                    status: NodecgStatus.UNABLE_TO_INSTALL,
+                    status: InstallStatus.UNABLE_TO_INSTALL,
                     message: `Found unknown package "${packageJson.name}".`
                 }
             }
         } else {
             return {
-                status: NodecgStatus.UNABLE_TO_INSTALL,
+                status: InstallStatus.UNABLE_TO_INSTALL,
                 message: 'Could not find package.json.'
             }
         }
