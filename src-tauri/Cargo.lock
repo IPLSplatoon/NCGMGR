@@ -1652,6 +1652,7 @@ dependencies = [
  "serde_json",
  "tauri",
  "tauri-build",
+ "unwrap_or",
 ]
 
 [[package]]
@@ -3252,6 +3253,12 @@ name = "unicode-xid"
 version = "0.2.2"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "8ccb82d61f80a663efe1f787a51b16b5a51e3314d6ac365b08639f52387b33f3"
+
+[[package]]
+name = "unwrap_or"
+version = "1.0.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "2fbfe96089af082b3c856f83bdd0b6866241377d9dbea803fb39481151e5742d"
 
 [[package]]
 name = "url"
