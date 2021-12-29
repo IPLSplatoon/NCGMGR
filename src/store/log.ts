@@ -1,49 +1,70 @@
 import { LogEvent } from '@/types/log'
 import { createStore, Store, useStore } from 'vuex'
 import { InjectionKey } from 'vue'
-import { Event, listen } from '@tauri-apps/api/event'
+import { Event, listen, UnlistenFn } from '@tauri-apps/api/event'
 
 export interface LogStore {
-    lines: LogEvent[]
-    completed: boolean
+    lines: Record<string, LogEvent[]>
+    completed: Record<string, boolean>
 }
+
+const unlistenFns: Record<string, UnlistenFn> = {}
 
 export const logStore = createStore<LogStore>({
     state: {
-        lines: [],
-        completed: false
+        lines: {},
+        completed: {}
     },
     mutations: {
-        insertLine (state, line: LogEvent) {
-            state.lines.push(line)
+        insertLine (state, { line, key }: { line: LogEvent, key: string }) {
+            if (!state.lines[key]) {
+                state.lines[key] = []
+            }
+            state.lines[key].push(line)
         },
-        reset (state) {
-            state.lines = []
-            state.completed = false
+        reset (state, key: string) {
+            state.lines[key] = []
+            state.completed[key] = false
         },
-        setCompleted (state, completed: boolean) {
-            state.completed = completed
+        setCompleted (state, { key, completed }: { key: string, completed: boolean }) {
+            state.completed[key] = completed
         }
     },
     actions: {
-        listen (store) {
-            listen('log', (event: Event<LogEvent>) => {
-                store.state.lines.push(event.payload)
+        listen (store, key: string) {
+            if (unlistenFns[key]) {
+                return
+            }
+            return listen(`log:${key}`, (event: Event<LogEvent>) => {
+                store.commit('insertLine', { line: event.payload, key })
+            }).then(unlisten => {
+                unlistenFns[key] = unlisten
             })
         },
-        logPromiseResult (store, promise: Promise<unknown>) {
+        unlisten (store, key: string) {
+            if (unlistenFns[key]) {
+                unlistenFns[key]()
+            }
+        },
+        logPromiseResult (store, { promise, key }: { promise: Promise<unknown>, key: string }) {
             promise.then(() => {
                 store.commit('insertLine', {
-                    message: 'Success!',
-                    type: 'success'
+                    line: {
+                        message: 'Success!',
+                        type: 'success'
+                    },
+                    key
                 })
             }).catch(e => {
                 store.commit('insertLine', {
-                    message: String(e),
-                    type: 'error'
+                    line: {
+                        message: String(e),
+                        type: 'error'
+                    },
+                    key
                 })
             }).finally(() => {
-                store.commit('setCompleted', true)
+                store.commit('setCompleted', { key, completed: true })
             })
         }
     }

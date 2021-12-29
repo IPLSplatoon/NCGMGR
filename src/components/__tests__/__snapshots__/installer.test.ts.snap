@@ -9,5 +9,5 @@ exports[`Installer matches snapshot 1`] = `
     <ipl-button-stub label="Install" color="green" disabled="true" async="false" progressmessage="Working..." successmessage="Done!" requiresconfirmation="false" shortconfirmationmessage="false" small="false" disableonsuccess="false" nobackground="false" tooltip="" data-test="install-button" class="m-l-8"></ipl-button-stub>
   </div>
 </div>
-<log-overlay-stub title="Installing..." visible="false"></log-overlay-stub>
+<log-overlay-stub title="Installing..." logkey="install-nodecg" visible="false"></log-overlay-stub>
 `;

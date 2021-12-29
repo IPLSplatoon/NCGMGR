@@ -11,7 +11,7 @@
 </template>
 
 <script lang="ts">
-import { computed, defineComponent } from 'vue'
+import { computed, defineComponent, onUnmounted, watch } from 'vue'
 import IplOverlay from '@/components/ipl/iplOverlay.vue'
 import IplButton from '@/components/ipl/iplButton.vue'
 import { useLogStore } from '@/store/log'
@@ -31,15 +31,28 @@ export default defineComponent({
         visible: {
             type: Boolean,
             required: true
+        },
+        logKey: {
+            type: String,
+            required: true
         }
     },
 
     setup (props, { emit }) {
         const logStore = useLogStore()
 
+        watch(() => props.logKey, (newValue, oldValue) => {
+            logStore.dispatch('unlisten', oldValue)
+            logStore.dispatch('listen', newValue)
+        }, { immediate: true })
+
+        onUnmounted(() => {
+            logStore.dispatch('unlisten', props.logKey)
+        })
+
         return {
-            log: computed(() => logStore.state.lines),
-            completed: computed(() => logStore.state.completed),
+            log: computed(() => logStore.state.lines[props.logKey] ?? []),
+            completed: computed(() => logStore.state.completed[props.logKey]),
             modelVisible: computed({
                 get () {
                     return props.visible

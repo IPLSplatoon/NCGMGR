@@ -36,9 +36,9 @@ fn clone_nodecg(path: &str) -> Result<String, String> {
     }
 }
 
-fn log_npm_install(handle: &tauri::AppHandle, mut child: Child) -> Result<String, String> {
-    log::emit(&handle, "Installing npm dependencies...");
-    log::emit_process_output(&handle, child.stdout.take().unwrap(), child.stderr.take().unwrap());
+fn log_npm_install(handle: &tauri::AppHandle, mut child: Child, log_key: &str) -> Result<String, String> {
+    log::emit(&handle, log_key, "Installing npm dependencies...");
+    log::emit_process_output(&handle, log_key, child.stdout.take().unwrap(), child.stderr.take().unwrap());
     match child.wait_with_output() {
         Ok(result) => {
             if result.status.success() {
@@ -58,10 +58,11 @@ fn log_npm_install(handle: &tauri::AppHandle, mut child: Child) -> Result<String
 
 #[tauri::command(async)]
 fn install_nodecg(handle: tauri::AppHandle, path: String) -> Result<String, String> {
-    log::emit(&handle, "Starting NodeCG install...");
+    let log_key = "install-nodecg";
+    log::emit(&handle, log_key, "Starting NodeCG install...");
     clone_nodecg(&path).and_then(|_result| {
         npm::install_npm_dependencies(&path).and_then(|child| {
-            log_npm_install(&handle, child)
+            log_npm_install(&handle, child, log_key)
         })
     })
 }
@@ -76,15 +77,16 @@ fn uninstall_bundle(bundle_name: String, nodecg_path: String) -> Result<String, 
 
 #[tauri::command(async)]
 fn install_bundle(handle: tauri::AppHandle, bundle_name: String, bundle_url: String, nodecg_path: String) -> Result<String, String> {
-    log::emit(&handle, &format!("Installing {}...", bundle_name));
+    let log_key = "install-bundle";
+    log::emit(&handle, log_key, &format!("Installing {}...", bundle_name));
 
     let dir_bundles = format!("{}/bundles", nodecg_path);
     if !Path::new(&dir_bundles).exists() {
-        log::emit(&handle, "Creating missing bundles directory");
+        log::emit(&handle, log_key, "Creating missing bundles directory");
         fs::create_dir(dir_bundles).expect("Failed to create bundles directory");
     }
 
-    log::emit(&handle, "Fetching version list...");
+    log::emit(&handle, log_key, "Fetching version list...");
     let mut remote = Remote::create_detached(&bundle_url).expect("Could not create remote");
     let connection = remote.connect_auth(Direction::Fetch, None, None).expect("Could not connect to remote");
     let versions = connection
@@ -103,13 +105,13 @@ fn install_bundle(handle: tauri::AppHandle, bundle_name: String, bundle_url: Str
             }
         }).collect_vec();
 
-    log::emit(&handle, "Cloning repository...");
+    log::emit(&handle, log_key, "Cloning repository...");
     let bundle_path = format!("{}/bundles/{}", nodecg_path, bundle_name);
     match Repository::clone(&bundle_url, bundle_path.clone()) {
         Ok(repo) => {
             if versions.len() > 1 {
                 let latest_version = versions.first().unwrap();
-                log::emit(&handle, &format!("Checking out version {}...", latest_version));
+                log::emit(&handle, log_key, &format!("Checking out version {}...", latest_version));
 
                 let (object, reference) = repo.revparse_ext(latest_version).expect("Object not found");
 
@@ -125,7 +127,7 @@ fn install_bundle(handle: tauri::AppHandle, bundle_name: String, bundle_url: Str
     }
 
     npm::install_npm_dependencies(&bundle_path).and_then(|child| {
-        log_npm_install(&handle, child)
+        log_npm_install(&handle, child, log_key)
     })
 }
 

@@ -83,6 +83,7 @@ describe('Installer', () => {
         await flushPromises()
 
         expect(wrapper.getComponent('[data-test="install-button"]').attributes().disabled).toEqual('true')
+        expect(wrapper.findComponent('[data-test="launch-button"]').exists()).toEqual(false)
     })
 
     it('enables installation if installation is possible', async () => {
@@ -100,9 +101,10 @@ describe('Installer', () => {
         await flushPromises()
 
         expect(wrapper.getComponent('[data-test="install-button"]').attributes().disabled).toEqual('false')
+        expect(wrapper.findComponent('[data-test="launch-button"]').exists()).toEqual(false)
     })
 
-    it('disables installation if installation is completed', async () => {
+    it('shows launch button if nodecg is installed', async () => {
         const nodecgStore = createNodecgStore()
         nodecgStore.state.status.status = NodecgStatus.INSTALLED
         const store = createConfigStore()
@@ -116,7 +118,8 @@ describe('Installer', () => {
         })
         await flushPromises()
 
-        expect(wrapper.getComponent('[data-test="install-button"]').attributes().disabled).toEqual('true')
+        expect(wrapper.findComponent('[data-test="install-button"]').exists()).toEqual(false)
+        expect(wrapper.findComponent('[data-test="launch-button"]').exists()).toEqual(true)
     })
 
     it('disables installation if installation status is unknown', async () => {
@@ -134,6 +137,7 @@ describe('Installer', () => {
         await flushPromises()
 
         expect(wrapper.getComponent('[data-test="install-button"]').attributes().disabled).toEqual('true')
+        expect(wrapper.findComponent('[data-test="launch-button"]').exists()).toEqual(false)
     })
 
     it('handles installation', () => {
@@ -141,20 +145,22 @@ describe('Installer', () => {
         configStore.state.installPath = '/install/path'
         const logStore = createLogStore()
         jest.spyOn(logStore, 'commit')
+        const nodecgStore = createNodecgStore()
+        nodecgStore.state.status.status = NodecgStatus.READY_TO_INSTALL
         mockTauri.invoke.mockResolvedValue({})
         const wrapper = shallowMount(Installer, {
             global: {
                 plugins: [
                     [configStore, configStoreKey],
                     [logStore, logStoreKey],
-                    [createNodecgStore(), nodecgStoreKey]
+                    [nodecgStore, nodecgStoreKey]
                 ]
             }
         })
 
         wrapper.getComponent('[data-test="install-button"]').vm.$emit('click')
 
-        expect(logStore.commit).toHaveBeenCalledWith('reset')
+        expect(logStore.commit).toHaveBeenCalledWith('reset', 'install-nodecg')
         expect(mockTauri.invoke).toHaveBeenCalledWith('install_nodecg', { path: '/install/path' })
     })
 })

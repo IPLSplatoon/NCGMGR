@@ -6,10 +6,26 @@
         </status-row>
         <div class="layout horizontal m-t-8">
             <ipl-button label="Select folder" @click="selectDirectory" data-test="install-directory-select-button" />
-            <ipl-button label="Install" :disabled="nodecgStatus !== NodecgStatus.READY_TO_INSTALL" data-test="install-button" @click="doInstall" class="m-l-8" color="green" />
+            <ipl-button
+                v-if="nodecgStatus === NodecgStatus.INSTALLED"
+                disabled
+                label="Launch"
+                class="m-l-8"
+                color="green"
+                data-test="launch-button"
+            />
+            <ipl-button
+                v-else
+                label="Install"
+                :disabled="nodecgStatus !== NodecgStatus.READY_TO_INSTALL"
+                data-test="install-button"
+                @click="doInstall"
+                class="m-l-8"
+                color="green"
+            />
         </div>
     </ipl-space>
-    <log-overlay title="Installing..." v-model:visible="showLog" />
+    <log-overlay title="Installing..." v-model:visible="showLog" log-key="install-nodecg" />
 </template>
 
 <script lang="ts">
@@ -81,10 +97,10 @@ export default defineComponent({
                 nodecgStore.dispatch('checkNodecgStatus')
             },
             async doInstall () {
-                logStore.commit('reset')
+                logStore.commit('reset', 'install-nodecg')
                 showLog.value = true
                 const invocation = invoke('install_nodecg', { path: installFolder.value })
-                logStore.dispatch('logPromiseResult', invocation)
+                logStore.dispatch('logPromiseResult', { promise: invocation, key: 'install-nodecg' })
                 await invocation
                 nodecgStore.dispatch('checkNodecgStatus')
             }

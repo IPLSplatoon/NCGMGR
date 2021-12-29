@@ -10,7 +10,13 @@ describe('LogOverlay', () => {
 
     it('matches snapshot', () => {
         const store = createLogStore()
-        store.state.lines = [{ message: 'LINE A' }, { message: 'LINE ERROR!!!', type: 'error' }]
+        store.state.lines = {
+            log1: [
+                { message: 'LINE A' },
+                { message: 'LINE ERROR!!!', type: 'error' }
+            ],
+            log2: []
+        }
         const wrapper = mount(LogOverlay, {
             global: {
                 plugins: [
@@ -19,7 +25,8 @@ describe('LogOverlay', () => {
             },
             props: {
                 visible: true,
-                title: 'Log Overlay'
+                title: 'Log Overlay',
+                logKey: 'log1'
             }
         })
 
@@ -28,7 +35,7 @@ describe('LogOverlay', () => {
 
     it('disables close button if log state is not completed', () => {
         const store = createLogStore()
-        store.state.completed = false
+        store.state.completed.logKey = false
         const wrapper = mount(LogOverlay, {
             global: {
                 plugins: [
@@ -37,7 +44,8 @@ describe('LogOverlay', () => {
             },
             props: {
                 visible: true,
-                title: 'Log Overlay'
+                title: 'Log Overlay',
+                logKey: 'logKey'
             }
         })
 
@@ -46,7 +54,7 @@ describe('LogOverlay', () => {
 
     it('enables close button if log state is completed', () => {
         const store = createLogStore()
-        store.state.completed = true
+        store.state.completed['log-key'] = true
         const wrapper = mount(LogOverlay, {
             global: {
                 plugins: [
@@ -55,7 +63,8 @@ describe('LogOverlay', () => {
             },
             props: {
                 visible: true,
-                title: 'Log Overlay'
+                title: 'Log Overlay',
+                logKey: 'log-key'
             }
         })
 
@@ -64,7 +73,7 @@ describe('LogOverlay', () => {
 
     it('closes overlay on close button click', () => {
         const store = createLogStore()
-        store.state.completed = true
+        store.state.completed['key-1'] = true
         const wrapper = mount(LogOverlay, {
             global: {
                 plugins: [
@@ -73,7 +82,8 @@ describe('LogOverlay', () => {
             },
             props: {
                 visible: true,
-                title: 'Log Overlay'
+                title: 'Log Overlay',
+                logKey: 'key-1'
             }
         })
 

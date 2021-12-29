@@ -4,7 +4,6 @@ import { configStore, configStoreKey } from './store/config'
 import { logStore, logStoreKey } from '@/store/log'
 import { nodecgStore, nodecgStoreKey } from '@/store/nodecg'
 
-logStore.dispatch('listen')
 configStore.dispatch('load')
 
 createApp(App)

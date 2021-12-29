@@ -15,7 +15,7 @@
             data-test="install-button"
             @click="doInstall"
         />
-        <log-overlay title="Installing..." v-model:visible="showInstallLog" data-test="bundle-log-overlay" />
+        <log-overlay title="Installing..." v-model:visible="showInstallLog" data-test="bundle-log-overlay" log-key="install-bundle" />
     </ipl-space>
 </template>
 
@@ -66,10 +66,10 @@ export default defineComponent({
             bundlePath,
             bundlePathValidator,
             doInstall: async () => {
-                logStore.commit('reset')
+                logStore.commit('reset', 'install-bundle')
                 showInstallLog.value = true
                 const invocation = invoke('install_bundle', { bundleName, bundleUrl, nodecgPath: configStore.state.installPath })
-                logStore.dispatch('logPromiseResult', invocation)
+                logStore.dispatch('logPromiseResult', { promise: invocation, key: 'install-bundle' })
                 await invocation
                 nodecgStore.dispatch('getBundleList')
             }

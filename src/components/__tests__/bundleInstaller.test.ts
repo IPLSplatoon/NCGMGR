@@ -70,7 +70,7 @@ describe('BundleInstaller', () => {
         wrapper.getComponent('[data-test="install-button"]').vm.$emit('click')
         await flushPromises()
 
-        expect(logStore.commit).toHaveBeenCalledWith('reset')
+        expect(logStore.commit).toHaveBeenCalledWith('reset', 'install-bundle')
         expect(mockTauri.invoke).toHaveBeenCalledWith('install_bundle', { bundleName: 'Cool Bundle', bundleUrl: 'git://bundle', nodecgPath: '/install/path' })
         expect(logStore.dispatch).toHaveBeenCalledWith('logPromiseResult', expect.anything())
         expect(nodecgStore.dispatch).toHaveBeenCalledWith('getBundleList')

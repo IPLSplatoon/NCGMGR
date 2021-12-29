@@ -21,8 +21,8 @@ export function createConfigStore (): Store<Configuration> {
 export function createLogStore (): Store<LogStore> {
     return createStore<LogStore>({
         state: {
-            lines: [],
-            completed: false
+            lines: {},
+            completed: {}
         },
         mutations: {
             reset: jest.fn(),
