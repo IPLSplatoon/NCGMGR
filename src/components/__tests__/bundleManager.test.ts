@@ -7,7 +7,8 @@ import { configStoreKey } from '@/store/config'
 
 describe('BundleManager', () => {
     config.global.stubs = {
-        IplButton: true
+        IplButton: true,
+        BundleInstaller: true
     }
 
     it('matches snapshot when bundles are loading', () => {
@@ -30,6 +31,20 @@ describe('BundleManager', () => {
                 plugins: [[nodecgStore, nodecgStoreKey]]
             }
         })
+
+        expect(wrapper.html()).toMatchSnapshot()
+    })
+
+    it('matches snapshot when installing a bundle', () => {
+        const nodecgStore = createNodecgStore()
+        nodecgStore.state.bundles = []
+        const wrapper = mount(BundleManager, {
+            global: {
+                plugins: [[nodecgStore, nodecgStoreKey]]
+            }
+        })
+
+        wrapper.getComponent('[data-test="install-new-bundle-button"]').vm.$emit('click')
 
         expect(wrapper.html()).toMatchSnapshot()
     })

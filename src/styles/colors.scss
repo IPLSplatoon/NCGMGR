@@ -21,7 +21,6 @@ $info-color: #3E62F0;
 $info-background-color: rgba(62, 98, 240, 0.1);
 
 $input-color: #737373;
-$input-color-active: white;
 
 :root {
     --text-color: white;
@@ -34,6 +33,8 @@ $input-color-active: white;
     --text-button-color-hover: rgba(255, 255, 255, 0.8);
     --text-button-color-active: rgba(255, 255, 255, 1);
     --text-button-color-disabled: rgba(115, 115, 115, 0.6);
+
+    --input-color-active: white;
 }
 
 @media (prefers-color-scheme: light) {
@@ -42,5 +43,7 @@ $input-color-active: white;
         --background-primary: white;
         --background-secondary: #ECECEC;
         --background-tertiary: #CECECE;
+
+        --input-color-active: #222;
     }
 }

@@ -5,10 +5,26 @@ exports[`BundleManager matches snapshot when bundles are loading 1`] = `
   <div class="ipl-space color-dark">
     <div class="header layout horizontal center-vertical">
       <div class="bold grow">Bundles</div>
-      <ipl-button-stub icon="sync" color="blue" disabled="false" async="true" progressmessage="Working..." successmessage="Done!" requiresconfirmation="false" shortconfirmationmessage="false" small="true" disableonsuccess="false" nobackground="true" tooltip="Refresh" class="button" data-test="refresh-button"></ipl-button-stub>
-      <ipl-button-stub icon="plus-circle" color="blue" disabled="true" async="false" progressmessage="Working..." successmessage="Done!" requiresconfirmation="false" shortconfirmationmessage="false" small="true" disableonsuccess="false" nobackground="true" tooltip="Install new bundle" class="button"></ipl-button-stub>
+      <ipl-button-stub icon="sync" color="blue" disabled="false" async="true" progressmessage="Working..." successmessage="Done!" requiresconfirmation="false" shortconfirmationmessage="false" small="true" disableonsuccess="false" nobackground="false" tooltip="Refresh" class="button" data-test="refresh-button"></ipl-button-stub>
+      <ipl-button-stub icon="plus-circle" color="green" disabled="false" async="false" progressmessage="Working..." successmessage="Done!" requiresconfirmation="false" shortconfirmationmessage="false" small="true" disableonsuccess="false" nobackground="false" tooltip="Install new bundle" class="button m-l-6" data-test="install-new-bundle-button"></ipl-button-stub>
     </div>
+    <bundle-installer-stub class="m-b-8" style="display: none;"></bundle-installer-stub>
     <div class="text-center"> Loading... </div>
+  </div>
+  <!--v-if-->
+</div>
+`;
+
+exports[`BundleManager matches snapshot when installing a bundle 1`] = `
+<div>
+  <div class="ipl-space color-dark">
+    <div class="header layout horizontal center-vertical">
+      <div class="bold grow">Bundles</div>
+      <ipl-button-stub icon="sync" color="blue" disabled="false" async="true" progressmessage="Working..." successmessage="Done!" requiresconfirmation="false" shortconfirmationmessage="false" small="true" disableonsuccess="false" nobackground="false" tooltip="Refresh" class="button" data-test="refresh-button"></ipl-button-stub>
+      <ipl-button-stub icon="plus-circle" color="green" disabled="false" async="false" progressmessage="Working..." successmessage="Done!" requiresconfirmation="false" shortconfirmationmessage="false" small="true" disableonsuccess="false" nobackground="false" tooltip="Install new bundle" class="button m-l-6" data-test="install-new-bundle-button"></ipl-button-stub>
+    </div>
+    <bundle-installer-stub class="m-b-8" style="display: none;"></bundle-installer-stub>
+    <div class="text-center"> No bundles installed. </div>
   </div>
   <!--v-if-->
 </div>
@@ -19,9 +35,10 @@ exports[`BundleManager matches snapshot when no bundles are present 1`] = `
   <div class="ipl-space color-dark">
     <div class="header layout horizontal center-vertical">
       <div class="bold grow">Bundles</div>
-      <ipl-button-stub icon="sync" color="blue" disabled="false" async="true" progressmessage="Working..." successmessage="Done!" requiresconfirmation="false" shortconfirmationmessage="false" small="true" disableonsuccess="false" nobackground="true" tooltip="Refresh" class="button" data-test="refresh-button"></ipl-button-stub>
-      <ipl-button-stub icon="plus-circle" color="blue" disabled="true" async="false" progressmessage="Working..." successmessage="Done!" requiresconfirmation="false" shortconfirmationmessage="false" small="true" disableonsuccess="false" nobackground="true" tooltip="Install new bundle" class="button"></ipl-button-stub>
+      <ipl-button-stub icon="sync" color="blue" disabled="false" async="true" progressmessage="Working..." successmessage="Done!" requiresconfirmation="false" shortconfirmationmessage="false" small="true" disableonsuccess="false" nobackground="false" tooltip="Refresh" class="button" data-test="refresh-button"></ipl-button-stub>
+      <ipl-button-stub icon="plus-circle" color="green" disabled="false" async="false" progressmessage="Working..." successmessage="Done!" requiresconfirmation="false" shortconfirmationmessage="false" small="true" disableonsuccess="false" nobackground="false" tooltip="Install new bundle" class="button m-l-6" data-test="install-new-bundle-button"></ipl-button-stub>
     </div>
+    <bundle-installer-stub class="m-b-8" style="display: none;"></bundle-installer-stub>
     <div class="text-center"> No bundles installed. </div>
   </div>
   <!--v-if-->
@@ -33,9 +50,10 @@ exports[`BundleManager matches snapshot with bundle data 1`] = `
   <div class="ipl-space color-dark">
     <div class="header layout horizontal center-vertical">
       <div class="bold grow">Bundles</div>
-      <ipl-button-stub icon="sync" color="blue" disabled="false" async="true" progressmessage="Working..." successmessage="Done!" requiresconfirmation="false" shortconfirmationmessage="false" small="true" disableonsuccess="false" nobackground="true" tooltip="Refresh" class="button" data-test="refresh-button"></ipl-button-stub>
-      <ipl-button-stub icon="plus-circle" color="blue" disabled="true" async="false" progressmessage="Working..." successmessage="Done!" requiresconfirmation="false" shortconfirmationmessage="false" small="true" disableonsuccess="false" nobackground="true" tooltip="Install new bundle" class="button"></ipl-button-stub>
+      <ipl-button-stub icon="sync" color="blue" disabled="false" async="true" progressmessage="Working..." successmessage="Done!" requiresconfirmation="false" shortconfirmationmessage="false" small="true" disableonsuccess="false" nobackground="false" tooltip="Refresh" class="button" data-test="refresh-button"></ipl-button-stub>
+      <ipl-button-stub icon="plus-circle" color="green" disabled="false" async="false" progressmessage="Working..." successmessage="Done!" requiresconfirmation="false" shortconfirmationmessage="false" small="true" disableonsuccess="false" nobackground="false" tooltip="Install new bundle" class="button m-l-6" data-test="install-new-bundle-button"></ipl-button-stub>
     </div>
+    <bundle-installer-stub class="m-b-8" style="display: none;"></bundle-installer-stub>
     <table class="max-width">
       <thead>
         <tr>
@@ -49,14 +67,14 @@ exports[`BundleManager matches snapshot with bundle data 1`] = `
           <td>Bundle One</td>
           <td>1.2.3</td>
           <td class="layout horizontal w-max-content">
-            <ipl-button-stub icon="trash-alt" color="blue" disabled="false" async="false" progressmessage="Working..." successmessage="Done!" requiresconfirmation="false" shortconfirmationmessage="false" small="true" disableonsuccess="false" nobackground="true" tooltip="Uninstall" class="button" data-test="uninstall-button"></ipl-button-stub>
+            <ipl-button-stub icon="trash-alt" color="red" disabled="false" async="false" progressmessage="Working..." successmessage="Done!" requiresconfirmation="false" shortconfirmationmessage="false" small="true" disableonsuccess="false" nobackground="false" tooltip="Uninstall" class="button" data-test="uninstall-button"></ipl-button-stub>
           </td>
         </tr>
         <tr data-test="bundle_Bundle Two">
           <td>Bundle Two</td>
           <td>5.0</td>
           <td class="layout horizontal w-max-content">
-            <ipl-button-stub icon="trash-alt" color="blue" disabled="false" async="false" progressmessage="Working..." successmessage="Done!" requiresconfirmation="false" shortconfirmationmessage="false" small="true" disableonsuccess="false" nobackground="true" tooltip="Uninstall" class="button" data-test="uninstall-button"></ipl-button-stub>
+            <ipl-button-stub icon="trash-alt" color="red" disabled="false" async="false" progressmessage="Working..." successmessage="Done!" requiresconfirmation="false" shortconfirmationmessage="false" small="true" disableonsuccess="false" nobackground="false" tooltip="Uninstall" class="button" data-test="uninstall-button"></ipl-button-stub>
           </td>
         </tr>
       </tbody>

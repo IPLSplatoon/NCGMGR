@@ -4,7 +4,6 @@
             <div class="header layout horizontal center-vertical">
                 <div class="bold grow">Bundles</div>
                 <ipl-button
-                    no-background
                     icon="sync"
                     small
                     tooltip="Refresh"
@@ -13,8 +12,18 @@
                     async
                     data-test="refresh-button"
                 />
-                <ipl-button no-background icon="plus-circle" small tooltip="Install new bundle" class="button" disabled />
+                <ipl-button
+                    icon="plus-circle"
+                    color="green"
+                    small
+                    tooltip="Install new bundle"
+                    class="button m-l-6"
+                    data-test="install-new-bundle-button"
+                    :class="{ active: installingBundle }"
+                    @click="installingBundle = !installingBundle"
+                />
             </div>
+            <bundle-installer v-show="installingBundle" class="m-b-8" />
             <div v-if="loading" class="text-center">
                 Loading...
             </div>
@@ -40,7 +49,7 @@
                             <td>{{ bundle.version }}</td>
                             <td class="layout horizontal w-max-content">
                                 <ipl-button
-                                    no-background
+                                    color="red"
                                     icon="trash-alt"
                                     small
                                     tooltip="Uninstall"
@@ -73,7 +82,7 @@
 </template>
 
 <script lang="ts">
-import { computed, defineComponent, reactive } from 'vue'
+import { computed, defineComponent, reactive, ref } from 'vue'
 import IplSpace from '@/components/ipl/iplSpace.vue'
 import { useNodecgStore } from '@/store/nodecg'
 import IplButton from '@/components/ipl/iplButton.vue'
@@ -84,13 +93,14 @@ import { faTrashAlt } from '@fortawesome/free-solid-svg-icons/faTrashAlt'
 import IplOverlay from '@/components/ipl/iplOverlay.vue'
 import { invoke } from '@tauri-apps/api/tauri'
 import { useConfigStore } from '@/store/config'
+import BundleInstaller from '@/components/bundleInstaller.vue'
 
 library.add(faSync, faPlusCircle, faTrashAlt)
 
 export default defineComponent({
     name: 'BundleManager',
 
-    components: { IplOverlay, IplButton, IplSpace },
+    components: { BundleInstaller, IplOverlay, IplButton, IplSpace },
 
     setup () {
         const nodecgStore = useNodecgStore()
@@ -100,6 +110,8 @@ export default defineComponent({
             visible: false,
             bundleName: ''
         })
+
+        const installingBundle = ref(false)
 
         return {
             loading: computed(() => nodecgStore.state.status.bundlesLoading),
@@ -126,7 +138,9 @@ export default defineComponent({
                 }).finally(() => {
                     nodecgStore.dispatch('getBundleList')
                 })
-            }
+            },
+
+            installingBundle
         }
     }
 })
@@ -139,5 +153,10 @@ export default defineComponent({
 
 .header {
     padding-bottom: 6px;
+}
+
+.button.active {
+    background-color: var(--background-tertiary) !important;
+    color: var(--text-color) !important;
 }
 </style>
