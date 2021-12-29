@@ -9,18 +9,10 @@ describe('LogOverlay', () => {
     }
 
     it('matches snapshot', () => {
-        const store = createLogStore()
-        store.state.lines = {
-            log1: [
-                { message: 'LINE A' },
-                { message: 'LINE ERROR!!!', type: 'error' }
-            ],
-            log2: []
-        }
         const wrapper = mount(LogOverlay, {
             global: {
                 plugins: [
-                    [store, logStoreKey]
+                    [createLogStore(), logStoreKey]
                 ]
             },
             props: {

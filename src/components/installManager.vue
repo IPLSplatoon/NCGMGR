@@ -42,7 +42,7 @@ import StatusRow from '@/components/statusRow.vue'
 import { NodecgStatus, useNodecgStore } from '@/store/nodecg'
 
 export default defineComponent({
-    name: 'Installer',
+    name: 'InstallManager',
 
     components: { StatusRow, IplSpace, IplButton, LogOverlay },
 

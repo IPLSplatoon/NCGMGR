@@ -3,7 +3,7 @@ import { config, flushPromises, shallowMount } from '@vue/test-utils'
 import { configStoreKey } from '@/store/config'
 import { createConfigStore, createLogStore, createNodecgStore } from '@/__mocks__/store'
 import { logStoreKey } from '@/store/log'
-import Installer from '../Installer.vue'
+import InstallManager from '../installManager.vue'
 import { NodecgStatus, nodecgStoreKey } from '@/store/nodecg'
 
 describe('Installer', () => {
@@ -12,7 +12,7 @@ describe('Installer', () => {
     }
 
     it('matches snapshot', () => {
-        const wrapper = shallowMount(Installer, {
+        const wrapper = shallowMount(InstallManager, {
             global: {
                 plugins: [
                     [createConfigStore(), configStoreKey],
@@ -28,7 +28,7 @@ describe('Installer', () => {
         const store = createConfigStore()
         jest.spyOn(store, 'dispatch')
         jest.spyOn(store, 'commit')
-        const wrapper = shallowMount(Installer, {
+        const wrapper = shallowMount(InstallManager, {
             global: {
                 plugins: [
                     [store, configStoreKey],
@@ -51,7 +51,7 @@ describe('Installer', () => {
         const store = createConfigStore()
         jest.spyOn(store, 'dispatch')
         jest.spyOn(store, 'commit')
-        const wrapper = shallowMount(Installer, {
+        const wrapper = shallowMount(InstallManager, {
             global: {
                 plugins: [
                     [store, configStoreKey],
@@ -72,7 +72,7 @@ describe('Installer', () => {
         const nodecgStore = createNodecgStore()
         nodecgStore.state.status.status = NodecgStatus.UNABLE_TO_INSTALL
         const store = createConfigStore()
-        const wrapper = await shallowMount(Installer, {
+        const wrapper = await shallowMount(InstallManager, {
             global: {
                 plugins: [
                     [store, configStoreKey],
@@ -90,7 +90,7 @@ describe('Installer', () => {
         const nodecgStore = createNodecgStore()
         nodecgStore.state.status.status = NodecgStatus.READY_TO_INSTALL
         const store = createConfigStore()
-        const wrapper = await shallowMount(Installer, {
+        const wrapper = await shallowMount(InstallManager, {
             global: {
                 plugins: [
                     [store, configStoreKey],
@@ -108,7 +108,7 @@ describe('Installer', () => {
         const nodecgStore = createNodecgStore()
         nodecgStore.state.status.status = NodecgStatus.INSTALLED
         const store = createConfigStore()
-        const wrapper = await shallowMount(Installer, {
+        const wrapper = await shallowMount(InstallManager, {
             global: {
                 plugins: [
                     [store, configStoreKey],
@@ -126,7 +126,7 @@ describe('Installer', () => {
         const nodecgStore = createNodecgStore()
         nodecgStore.state.status.status = NodecgStatus.UNKNOWN
         const store = createConfigStore()
-        const wrapper = await shallowMount(Installer, {
+        const wrapper = await shallowMount(InstallManager, {
             global: {
                 plugins: [
                     [store, configStoreKey],
@@ -148,7 +148,7 @@ describe('Installer', () => {
         const nodecgStore = createNodecgStore()
         nodecgStore.state.status.status = NodecgStatus.READY_TO_INSTALL
         mockTauri.invoke.mockResolvedValue({})
-        const wrapper = shallowMount(Installer, {
+        const wrapper = shallowMount(InstallManager, {
             global: {
                 plugins: [
                     [configStore, configStoreKey],

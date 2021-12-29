@@ -30,7 +30,9 @@ export function createLogStore (): Store<LogStore> {
             setCompleted: jest.fn()
         },
         actions: {
-            logPromiseResult: jest.fn()
+            logPromiseResult: jest.fn(),
+            listen: jest.fn(),
+            unlisten: jest.fn()
         }
     })
 }
