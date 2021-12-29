@@ -2,7 +2,7 @@
     <div>
         <ipl-space>
             <div class="header layout horizontal center-vertical">
-                <div class="bold grow">Bundles</div>
+                <div class="bold grow m-l-4">Bundles</div>
                 <ipl-button
                     icon="sync"
                     small
