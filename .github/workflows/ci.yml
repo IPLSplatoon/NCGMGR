@@ -42,3 +42,36 @@ jobs:
         with:
           github-token: ${{ secrets['GITHUB_TOKEN'] }}
           result-file: ./NCGMGR/result.json
+
+  build-publish:
+    if: github.ref === 'refs/heads/master'
+    needs: test
+    strategy:
+      fail-fast: false
+      matrix:
+        platform: [ macos-latest, windows-latest ]
+    runs-on: ${{ matrix.platform }}
+    steps:
+      - name: Checkout this repository
+        uses: actions/checkout@v2
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v1
+        with:
+          node-version: 12
+
+      - name: install Rust stable
+        uses: actions-rs/toolchain@v1
+        with:
+          toolchain: stable
+
+      - name: install app dependencies and build it
+        run: yarn && yarn tauri:build
+
+      - uses: tauri-apps/tauri-action@v0
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tagName: ncgmgr-v__VERSION__
+          releaseName: "NCGMGR v__VERSION__"
+          releaseDraft: true
