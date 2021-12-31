@@ -8,11 +8,12 @@
             <ipl-button label="Select folder" @click="selectDirectory" data-test="install-directory-select-button" />
             <ipl-button
                 v-if="nodecgStatus === NodecgStatus.INSTALLED"
-                disabled
+                :disabled="runStatus === RunStatus.RUNNING"
                 label="Launch"
                 class="m-l-8"
                 color="green"
                 data-test="launch-button"
+                @click="doLaunch"
             />
             <ipl-button
                 v-else
@@ -24,6 +25,20 @@
                 color="green"
             />
         </div>
+    </ipl-space>
+    <ipl-space class="m-t-8 layout vertical center-horizontal" v-show="runStatus !== RunStatus.NOT_STARTED">
+        <div class="max-width m-l-6">
+            Log
+        </div>
+        <log-display log-key="run-nodecg" class="m-t-4" />
+        <ipl-button
+            label="Stop"
+            color="red"
+            class="m-t-8"
+            data-test="stop-button"
+            :disabled="runStatus !== RunStatus.RUNNING"
+            @click="doStop"
+        />
     </ipl-space>
     <log-overlay title="Installing..." v-model:visible="showLog" log-key="install-nodecg" />
 </template>
@@ -39,12 +54,13 @@ import { useLogStore } from '@/store/log'
 import IplButton from '@/components/ipl/iplButton.vue'
 import IplSpace from '@/components/ipl/iplSpace.vue'
 import StatusRow from '@/components/statusRow.vue'
-import { InstallStatus, useNodecgStore } from '@/store/nodecg'
+import { InstallStatus, RunStatus, useNodecgStore } from '@/store/nodecg'
+import LogDisplay from '@/components/logDisplay.vue'
 
 export default defineComponent({
     name: 'InstallManager',
 
-    components: { StatusRow, IplSpace, IplButton, LogOverlay },
+    components: { LogDisplay, StatusRow, IplSpace, IplButton, LogOverlay },
 
     setup () {
         const config = useConfigStore()
@@ -103,6 +119,20 @@ export default defineComponent({
                 logStore.dispatch('logPromiseResult', { promise: invocation, key: 'install-nodecg' })
                 await invocation
                 nodecgStore.dispatch('checkNodecgStatus')
+            },
+
+            runStatus: computed(() => nodecgStore.state.status.runStatus),
+            RunStatus,
+            async doLaunch () {
+                logStore.commit('reset', 'run-nodecg')
+                const invocation = invoke('start_nodecg', { path: installFolder.value })
+                logStore.dispatch('logPromiseResult', { promise: invocation, key: 'run-nodecg', noLogOnSuccess: true })
+                await invocation
+                nodecgStore.commit('setRunStatus', RunStatus.RUNNING)
+            },
+            async doStop () {
+                await invoke('stop_nodecg')
+                nodecgStore.commit('setRunStatus', RunStatus.STOPPED)
             }
         }
     }

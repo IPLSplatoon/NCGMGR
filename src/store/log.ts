@@ -46,15 +46,17 @@ export const logStore = createStore<LogStore>({
                 unlistenFns[key]()
             }
         },
-        logPromiseResult (store, { promise, key }: { promise: Promise<unknown>, key: string }) {
+        logPromiseResult (store, { promise, key, noLogOnSuccess }: { promise: Promise<unknown>, key: string, noLogOnSuccess: boolean }) {
             promise.then(() => {
-                store.commit('insertLine', {
-                    line: {
-                        message: 'Success!',
-                        type: 'success'
-                    },
-                    key
-                })
+                if (!noLogOnSuccess) {
+                    store.commit('insertLine', {
+                        line: {
+                            message: 'Success!',
+                            type: 'success'
+                        },
+                        key
+                    })
+                }
             }).catch(e => {
                 store.commit('insertLine', {
                     line: {

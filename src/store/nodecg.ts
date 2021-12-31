@@ -10,9 +10,16 @@ export enum InstallStatus {
     UNABLE_TO_INSTALL
 }
 
+export enum RunStatus {
+    NOT_STARTED,
+    RUNNING,
+    STOPPED
+}
+
 export interface NodecgStore {
     status: {
         installStatus: InstallStatus
+        runStatus: RunStatus
         message: string
         bundlesLoading: boolean
     },
@@ -23,10 +30,16 @@ export const nodecgStore: Store<NodecgStore> = createStore<NodecgStore>({
     state: {
         status: {
             installStatus: InstallStatus.UNKNOWN,
+            runStatus: RunStatus.NOT_STARTED,
             message: '',
             bundlesLoading: false
         },
         bundles: []
+    },
+    mutations: {
+        setRunStatus (state, runStatus: RunStatus) {
+            state.status.runStatus = runStatus
+        }
     },
     actions: {
         async checkNodecgStatus (store) {

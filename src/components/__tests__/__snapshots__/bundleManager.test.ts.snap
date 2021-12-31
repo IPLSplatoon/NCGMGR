@@ -4,7 +4,7 @@ exports[`BundleManager matches snapshot when bundles are loading 1`] = `
 <div>
   <div class="ipl-space color-dark">
     <div class="header layout horizontal center-vertical">
-      <div class="bold grow">Bundles</div>
+      <div class="bold grow m-l-4">Bundles</div>
       <ipl-button-stub icon="sync" color="blue" disabled="false" async="true" progressmessage="Working..." successmessage="Done!" requiresconfirmation="false" shortconfirmationmessage="false" small="true" disableonsuccess="false" nobackground="false" tooltip="Refresh" class="button" data-test="refresh-button"></ipl-button-stub>
       <ipl-button-stub icon="plus-circle" color="green" disabled="false" async="false" progressmessage="Working..." successmessage="Done!" requiresconfirmation="false" shortconfirmationmessage="false" small="true" disableonsuccess="false" nobackground="false" tooltip="Install new bundle" class="button m-l-6" data-test="install-new-bundle-button"></ipl-button-stub>
     </div>
@@ -19,7 +19,7 @@ exports[`BundleManager matches snapshot when installing a bundle 1`] = `
 <div>
   <div class="ipl-space color-dark">
     <div class="header layout horizontal center-vertical">
-      <div class="bold grow">Bundles</div>
+      <div class="bold grow m-l-4">Bundles</div>
       <ipl-button-stub icon="sync" color="blue" disabled="false" async="true" progressmessage="Working..." successmessage="Done!" requiresconfirmation="false" shortconfirmationmessage="false" small="true" disableonsuccess="false" nobackground="false" tooltip="Refresh" class="button" data-test="refresh-button"></ipl-button-stub>
       <ipl-button-stub icon="plus-circle" color="green" disabled="false" async="false" progressmessage="Working..." successmessage="Done!" requiresconfirmation="false" shortconfirmationmessage="false" small="true" disableonsuccess="false" nobackground="false" tooltip="Install new bundle" class="button m-l-6" data-test="install-new-bundle-button"></ipl-button-stub>
     </div>
@@ -34,7 +34,7 @@ exports[`BundleManager matches snapshot when no bundles are present 1`] = `
 <div>
   <div class="ipl-space color-dark">
     <div class="header layout horizontal center-vertical">
-      <div class="bold grow">Bundles</div>
+      <div class="bold grow m-l-4">Bundles</div>
       <ipl-button-stub icon="sync" color="blue" disabled="false" async="true" progressmessage="Working..." successmessage="Done!" requiresconfirmation="false" shortconfirmationmessage="false" small="true" disableonsuccess="false" nobackground="false" tooltip="Refresh" class="button" data-test="refresh-button"></ipl-button-stub>
       <ipl-button-stub icon="plus-circle" color="green" disabled="false" async="false" progressmessage="Working..." successmessage="Done!" requiresconfirmation="false" shortconfirmationmessage="false" small="true" disableonsuccess="false" nobackground="false" tooltip="Install new bundle" class="button m-l-6" data-test="install-new-bundle-button"></ipl-button-stub>
     </div>
@@ -49,7 +49,7 @@ exports[`BundleManager matches snapshot with bundle data 1`] = `
 <div>
   <div class="ipl-space color-dark">
     <div class="header layout horizontal center-vertical">
-      <div class="bold grow">Bundles</div>
+      <div class="bold grow m-l-4">Bundles</div>
       <ipl-button-stub icon="sync" color="blue" disabled="false" async="true" progressmessage="Working..." successmessage="Done!" requiresconfirmation="false" shortconfirmationmessage="false" small="true" disableonsuccess="false" nobackground="false" tooltip="Refresh" class="button" data-test="refresh-button"></ipl-button-stub>
       <ipl-button-stub icon="plus-circle" color="green" disabled="false" async="false" progressmessage="Working..." successmessage="Done!" requiresconfirmation="false" shortconfirmationmessage="false" small="true" disableonsuccess="false" nobackground="false" tooltip="Install new bundle" class="button m-l-6" data-test="install-new-bundle-button"></ipl-button-stub>
     </div>

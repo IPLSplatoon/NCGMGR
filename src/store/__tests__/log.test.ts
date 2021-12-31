@@ -94,6 +94,14 @@ describe('logStore', () => {
             expect(logStore.state.completed).toEqual({ key3: true })
         })
 
+        it('does not insert successful result into store if noLogOnSuccess is true', async () => {
+            logStore.dispatch('logPromiseResult', { promise: Promise.resolve(), key: 'key3', noLogOnSuccess: true })
+            await flushPromises()
+
+            expect(logStore.state.lines).toEqual({})
+            expect(logStore.state.completed).toEqual({ key3: true })
+        })
+
         it('inserts unsuccessful result into store', async () => {
             logStore.dispatch('logPromiseResult', { promise: Promise.reject(new Error('Failed!')), key: 'key2' })
             await flushPromises()

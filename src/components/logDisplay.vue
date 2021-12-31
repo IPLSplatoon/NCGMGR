@@ -1,12 +1,18 @@
 <template>
     <div class="log-display">
-        <span :class="`type-${line.type ?? 'unknown'}`" v-for="(line, i) in log" :key="`log-line_${i}`">{{ line.message }}</span>
+        <span
+            v-for="(line, i) in log"
+            :class="`type-${line.type ?? 'unknown'}`"
+            :key="`log-line_${i}`"
+            v-html="line.message"
+        />
     </div>
 </template>
 
 <script lang="ts">
-import { computed, defineComponent, onUnmounted, watch } from 'vue'
+import { computed, defineComponent, onMounted, onUnmounted, watch } from 'vue'
 import { useLogStore } from '@/store/log'
+import Anser from 'anser'
 
 export default defineComponent({
     name: 'LogDisplay',
@@ -26,14 +32,21 @@ export default defineComponent({
                 logStore.dispatch('unlisten', oldValue)
             }
             logStore.dispatch('listen', newValue)
-        }, { immediate: true })
+        })
+
+        onMounted(() => {
+            logStore.dispatch('listen', props.logKey)
+        })
 
         onUnmounted(() => {
             logStore.dispatch('unlisten', props.logKey)
         })
 
         return {
-            log: computed(() => logStore.state.lines[props.logKey] ?? [])
+            log: computed(() => {
+                const log = logStore.state.lines[props.logKey] ?? []
+                return log.map(line => ({ ...line, message: Anser.ansiToHtml(line.message) }))
+            })
         }
     }
 })
@@ -46,7 +59,7 @@ export default defineComponent({
 
 .log-display {
     font-family: monospace;
-    width: calc(100vw - 65px);
+    width: calc(100vw - 60px);
     max-height: 350px;
     text-align: left;
     border: 1px solid $input-color;
@@ -63,6 +76,10 @@ export default defineComponent({
 
         &.type-error {
             color: $error-color;
+        }
+
+        .foo {
+            color: red;
         }
     }
 }

@@ -5,10 +5,11 @@ windows_subsystem = "windows"
 
 use std::cmp::Ordering;
 use git2::{Direction, Remote, Repository};
-use tauri::{Menu, MenuItem, Submenu};
+use tauri::{Event, Manager, Menu, MenuItem, Submenu};
 use std::{fmt, fs};
 use std::path::Path;
-use std::process::Child;
+use std::process::{Child, ChildStderr, ChildStdout, Command, Stdio};
+use std::sync::Mutex;
 use itertools::Itertools;
 use unwrap_or::unwrap_ok_or;
 
@@ -18,8 +19,64 @@ mod log;
 const NODECG_GIT_PATH: &str = "https://github.com/nodecg/nodecg.git";
 const NODECG_TAG: &str = "v1.8.1";
 
+struct ProcessOutput {
+    stdout: ChildStdout,
+    stderr: ChildStderr
+}
+
+struct ManagedNodecg {
+    process: Mutex<Option<Child>>
+}
+
+impl ManagedNodecg {
+    pub fn new() -> ManagedNodecg {
+        ManagedNodecg {
+            process: Mutex::new(None)
+        }
+    }
+
+    fn start(&self, nodecg_path: &str) -> Result<ProcessOutput, String> {
+        let mut process = unwrap_ok_or!(self.process.lock(), e, { return format_error("Failed to access process", e) });
+
+        if process.is_some() {
+            return Err("NodeCG is already running.".to_string())
+        }
+
+        let mut child = unwrap_ok_or!(
+            Command::new("node")
+                .arg(format!("{}/index.js", nodecg_path))
+                .stdout(Stdio::piped())
+                .stderr(Stdio::piped())
+                .current_dir(nodecg_path)
+                .spawn(), e,
+            { return format_error("Failed to start NodeCG", e) });
+        let stdout = child.stdout.take().unwrap();
+        let stderr = child.stderr.take().unwrap();
+        *process = Some(child);
+
+        Ok(ProcessOutput { stdout, stderr })
+    }
+
+    fn stop(&self) -> Result<(), String> {
+        let mut process = unwrap_ok_or!(self.process.lock(), e, { return format_error("Failed to access process", e) });
+
+        if process.is_none() {
+            return Ok(())
+        }
+
+        unwrap_ok_or!(process.take().unwrap().kill(), e, { return format_error("Failed to kill process", e) });
+        *process = None;
+
+        Ok(())
+    }
+}
+
+fn err_to_string<T: fmt::Display>(msg: &str, err: T) -> String {
+    format!("{}: {}", msg, err.to_string())
+}
+
 fn format_error<F, T: fmt::Display>(msg: &str, err: T) -> Result<F, String> {
-    Err(format!("{}: {}", msg, err.to_string()))
+    Err(err_to_string(msg, err))
 }
 
 fn clone_nodecg(path: &str) -> Result<String, String> {
@@ -142,10 +199,34 @@ fn install_bundle(handle: tauri::AppHandle, bundle_name: String, bundle_url: Str
     })
 }
 
+#[tauri::command(async)]
+fn start_nodecg(handle: tauri::AppHandle, nodecg: tauri::State<ManagedNodecg>, path: String) -> Result<String, String> {
+    let log_key = "run-nodecg";
+    let output = unwrap_ok_or!(nodecg.start(&path), e, { return format_error("Failed to start NodeCG", e) });
+    log::emit_process_output(&handle, log_key, output.stdout, output.stderr);
+
+    Ok("Started successfully".to_string())
+}
+
+#[tauri::command(async)]
+fn stop_nodecg(handle: tauri::AppHandle, nodecg: tauri::State<ManagedNodecg>) -> Result<(), String> {
+    let log_key = "run-nodecg";
+
+    match nodecg.stop() {
+        Ok(_) => {
+            log::emit(&handle, log_key, "Stopped successfully");
+            Ok(())
+        },
+        Err(e) => {
+            log::emit(&handle, log_key, &err_to_string("Failed to stop NodeCG", e.clone()));
+            Err(e)
+        }
+    }
+}
+
 fn main() {
     let menu_app = Menu::new()
-        .add_native_item(MenuItem::About("NCGMGR".to_string()))
-        .add_native_item(MenuItem::Quit);
+        .add_native_item(MenuItem::About("NCGMGR".to_string()));
 
     let menu_edit = Menu::new()
         .add_native_item(MenuItem::Cut)
@@ -159,9 +240,24 @@ fn main() {
         .add_submenu(Submenu::new("NCGMGR", menu_app))
         .add_submenu(Submenu::new("Edit", menu_edit));
 
-    tauri::Builder::default()
-        .invoke_handler(tauri::generate_handler![install_nodecg, uninstall_bundle, install_bundle])
+    let app = tauri::Builder::default()
+        .invoke_handler(tauri::generate_handler![install_nodecg, uninstall_bundle, install_bundle, start_nodecg, stop_nodecg])
         .menu(menu)
-        .run(tauri::generate_context!())
-        .expect("error while running tauri application");
+        .manage(ManagedNodecg::new())
+        .build(tauri::generate_context!())
+        .expect("error while building tauri application");
+
+    app.run(|handle, e| match e {
+        Event::ExitRequested { window_label: _, api, .. } => {
+            let managed_nodecg = handle.state::<ManagedNodecg>();
+            match managed_nodecg.stop() {
+                Ok(_) => {},
+                Err(e) => {
+                    log::emit(&handle, "run-nodecg", &err_to_string("Failed to shut down NodeCG", e));
+                    api.prevent_exit();
+                }
+            }
+        }
+        _ => {}
+    })
 }

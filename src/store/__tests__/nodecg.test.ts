@@ -1,7 +1,7 @@
-import { InstallStatus, nodecgStore } from '@/store/nodecg'
-import { getNodecgStatus, getBundles } from '@/service/nodecg'
-import Mock = jest.Mock
+import { InstallStatus, nodecgStore, RunStatus } from '@/store/nodecg'
+import { getBundles, getNodecgStatus } from '@/service/nodecg'
 import { configStore } from '@/store/config'
+import Mock = jest.Mock
 
 jest.mock('@/service/nodecg')
 
@@ -10,6 +10,7 @@ describe('nodecgStore', () => {
         nodecgStore.replaceState({
             status: {
                 installStatus: InstallStatus.INSTALLED,
+                runStatus: RunStatus.NOT_STARTED,
                 message: 'Message!',
                 bundlesLoading: false
             },
@@ -82,6 +83,14 @@ describe('nodecgStore', () => {
 
             expect(nodecgStore.state.bundles).toEqual([{ name: 'Cool Bundle' }])
             expect(getBundles).toHaveBeenCalledWith('/install/path')
+        })
+    })
+
+    describe('setRunStatus', () => {
+        it('sets run status', () => {
+            nodecgStore.commit('setRunStatus', RunStatus.RUNNING)
+
+            expect(nodecgStore.state.status.runStatus).toEqual(RunStatus.RUNNING)
         })
     })
 })

@@ -4,7 +4,7 @@ import { configStoreKey } from '@/store/config'
 import { createConfigStore, createLogStore, createNodecgStore } from '@/__mocks__/store'
 import { logStoreKey } from '@/store/log'
 import InstallManager from '../installManager.vue'
-import { InstallStatus, nodecgStoreKey } from '@/store/nodecg'
+import { InstallStatus, nodecgStoreKey, RunStatus } from '@/store/nodecg'
 
 describe('Installer', () => {
     config.global.stubs = {
@@ -162,5 +162,104 @@ describe('Installer', () => {
 
         expect(logStore.commit).toHaveBeenCalledWith('reset', 'install-nodecg')
         expect(mockTauri.invoke).toHaveBeenCalledWith('install_nodecg', { path: '/install/path' })
+    })
+
+    it('handles launching', async () => {
+        const configStore = createConfigStore()
+        configStore.state.installPath = '/install/path'
+        const logStore = createLogStore()
+        jest.spyOn(logStore, 'dispatch')
+        jest.spyOn(logStore, 'commit')
+        const nodecgStore = createNodecgStore()
+        nodecgStore.state.status.installStatus = InstallStatus.INSTALLED
+        jest.spyOn(nodecgStore, 'commit')
+        mockTauri.invoke.mockResolvedValue({})
+        const wrapper = shallowMount(InstallManager, {
+            global: {
+                plugins: [
+                    [configStore, configStoreKey],
+                    [logStore, logStoreKey],
+                    [nodecgStore, nodecgStoreKey]
+                ]
+            }
+        })
+
+        wrapper.getComponent('[data-test="launch-button"]').vm.$emit('click')
+        await flushPromises()
+
+        expect(logStore.commit).toHaveBeenCalledWith('reset', 'run-nodecg')
+        expect(mockTauri.invoke).toHaveBeenCalledWith('start_nodecg', { path: '/install/path' })
+        expect(logStore.dispatch).toHaveBeenCalledWith('logPromiseResult', { promise: expect.anything(), key: 'run-nodecg', noLogOnSuccess: true })
+        expect(nodecgStore.commit).toHaveBeenCalledWith('setRunStatus', RunStatus.RUNNING)
+    })
+
+    it('disables stop button if nodecg is not started', () => {
+        const configStore = createConfigStore()
+        const nodecgStore = createNodecgStore()
+        nodecgStore.state.status.runStatus = RunStatus.NOT_STARTED
+        const wrapper = shallowMount(InstallManager, {
+            global: {
+                plugins: [
+                    [configStore, configStoreKey],
+                    [nodecgStore, nodecgStoreKey]
+                ]
+            }
+        })
+
+        expect(wrapper.getComponent('[data-test="stop-button"]').attributes().disabled).toEqual('true')
+    })
+
+    it('disables stop button if nodecg is stopped', () => {
+        const configStore = createConfigStore()
+        const nodecgStore = createNodecgStore()
+        nodecgStore.state.status.runStatus = RunStatus.STOPPED
+        const wrapper = shallowMount(InstallManager, {
+            global: {
+                plugins: [
+                    [configStore, configStoreKey],
+                    [nodecgStore, nodecgStoreKey]
+                ]
+            }
+        })
+
+        expect(wrapper.getComponent('[data-test="stop-button"]').attributes().disabled).toEqual('true')
+    })
+
+    it('enables stop button if nodecg is running', () => {
+        const configStore = createConfigStore()
+        const nodecgStore = createNodecgStore()
+        nodecgStore.state.status.runStatus = RunStatus.RUNNING
+        const wrapper = shallowMount(InstallManager, {
+            global: {
+                plugins: [
+                    [configStore, configStoreKey],
+                    [nodecgStore, nodecgStoreKey]
+                ]
+            }
+        })
+
+        expect(wrapper.getComponent('[data-test="stop-button"]').attributes().disabled).toEqual('false')
+    })
+
+    it('handles nodecg stopping', async () => {
+        const configStore = createConfigStore()
+        const nodecgStore = createNodecgStore()
+        nodecgStore.state.status.runStatus = RunStatus.RUNNING
+        jest.spyOn(nodecgStore, 'commit')
+        mockTauri.invoke.mockResolvedValue({})
+        const wrapper = shallowMount(InstallManager, {
+            global: {
+                plugins: [
+                    [configStore, configStoreKey],
+                    [nodecgStore, nodecgStoreKey]
+                ]
+            }
+        })
+
+        wrapper.getComponent('[data-test="stop-button"]').vm.$emit('click')
+        await flushPromises()
+
+        expect(mockTauri.invoke).toHaveBeenCalledWith('stop_nodecg')
+        expect(nodecgStore.commit).toHaveBeenCalledWith('setRunStatus', RunStatus.STOPPED)
     })
 })

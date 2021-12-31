@@ -8,7 +8,7 @@ describe('LogDisplay', () => {
         const store = createLogStore()
         store.state.lines = {
             log1: [
-                { message: 'LINE A' },
+                { message: '\x1b[31mLINE A' },
                 { message: 'LINE ERROR!!!', type: 'error' }
             ],
             log2: []
