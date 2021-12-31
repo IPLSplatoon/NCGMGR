@@ -44,7 +44,7 @@ jobs:
           result-file: ./NCGMGR/result.json
 
   build-publish:
-    if: github.ref === 'refs/heads/master'
+    if: github.ref == 'refs/heads/master'
     needs: test
     strategy:
       fail-fast: false
