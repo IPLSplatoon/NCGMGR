@@ -34,7 +34,7 @@ jobs:
           toolchain: stable
 
       - name: install app dependencies and build it
-        run: yarn && yarn build
+        run: yarn && yarn tauri:build
 
       - uses: tauri-apps/tauri-action@v0
         env:
