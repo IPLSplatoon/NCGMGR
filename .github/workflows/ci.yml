@@ -1,0 +1,55 @@
+name: CI
+
+on:
+  push:
+  pull_request:
+    branches: [ master ]
+    types: [ opened, closed ]
+  workflow_dispatch:
+
+jobs:
+  lint-deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout this repository
+        uses: actions/checkout@v2
+        with:
+          token: ${{ secrets['GITHUB_TOKEN'] }}
+          ref: ${{ github.ref }}
+          fetch-depth: 0
+          path: ./NCGMGR
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v2
+        with:
+          node-version: '14'
+
+      - name: Set up NPM cache
+        uses: actions/cache@v2
+        with:
+          path: ~/.npm
+          key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
+          restore-keys: |
+            ${{ runner.os }}-node-
+
+      - name: Update NPM
+        run: npm install -g npm@7.19.1
+
+      - name: Install NPM dependencies
+        working-directory: ./NCGMGR
+        run: npm ci
+
+      - name: Run ESLint on source
+        working-directory: ./NCGMGR
+        run: npm run lint
+
+      - name: Run tests
+        working-directory: ./NCGMGR
+        run: npm run test:ci
+
+      - name: Create test report
+        if: ${{ always() }}
+        uses: tanmen/jest-reporter@v1
+        with:
+          github-token: ${{ secrets['GITHUB_TOKEN'] }}
+          result-file: ./NCGMGR/result.json

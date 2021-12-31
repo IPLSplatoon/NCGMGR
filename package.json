@@ -5,6 +5,7 @@
   "scripts": {
     "test:unit": "vue-cli-service test:unit",
     "test:update": "vue-cli-service test:unit -u",
+    "test:ci": "vue-cli-service test:unit --json --outputFile=result.json --testLocationInResults",
     "lint": "vue-cli-service lint",
     "tauri:build": "vue-cli-service tauri:build",
     "tauri:serve": "vue-cli-service tauri:serve"
