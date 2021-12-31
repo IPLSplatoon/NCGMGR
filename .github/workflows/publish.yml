@@ -14,10 +14,6 @@ jobs:
     steps:
       - name: Checkout this repository
         uses: actions/checkout@v2
-        with:
-          token: ${{ secrets['GITHUB_TOKEN'] }}
-          ref: ${{ github.ref }}
-          fetch-depth: 0
 
       - name: Set up Node.js
         uses: actions/setup-node@v2
@@ -47,5 +43,3 @@ jobs:
           tagName: ncgmgr-v__VERSION__
           releaseName: "NCGMGR v__VERSION__"
           releaseDraft: true
-          prerelease: false
-          tauriScript: "npm run tauri:build"
