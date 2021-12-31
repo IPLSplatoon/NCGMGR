@@ -24,28 +24,17 @@ jobs:
         with:
           node-version: '14'
 
-      - name: Set up NPM cache
-        uses: actions/cache@v2
-        with:
-          path: ~/.npm
-          key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
-          restore-keys: |
-            ${{ runner.os }}-node-
-
-      - name: Update NPM
-        run: npm install -g npm@7.19.1
-
-      - name: Install NPM dependencies
+      - name: Install dependencies
         working-directory: ./NCGMGR
-        run: npm ci
+        run: yarn
 
       - name: Run ESLint on source
         working-directory: ./NCGMGR
-        run: npm run lint
+        run: yarn lint
 
       - name: Run tests
         working-directory: ./NCGMGR
-        run: npm run test:ci
+        run: yarn test:ci
 
       - name: Create test report
         if: ${{ always() }}
