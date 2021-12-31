@@ -1,29 +1,11 @@
 # NCGMGR
 
-## Project setup
-```
-npm install
-```
+NodeCG manager, built with Tauri and Vue.js.
 
-### Compiles and hot-reloads for development
-```
-npm run serve
-```
+## Commands
 
-### Compiles and minifies for production
-```
-npm run build
-```
-
-### Run your unit tests
-```
-npm run test:unit
-```
-
-### Lints and fixes files
-```
-npm run lint
-```
-
-### Customize configuration
-See [Configuration Reference](https://cli.vuejs.org/config/).
+- `test:unit` - Run tests
+- `test:update` - Run tests and update snapshots
+- `lint` - Run linter to check for errors in JS
+- `tauri:build` - Build and bundle the application
+- `tauri:serve` - Run the application in a hot-reloading development server
