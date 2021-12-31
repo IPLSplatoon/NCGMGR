@@ -2,6 +2,7 @@ import LogOverlay from '@/components/logOverlay.vue'
 import { logStoreKey } from '@/store/log'
 import { config, mount } from '@vue/test-utils'
 import { createLogStore } from '@/__mocks__/store'
+import IplButton from '@/components/ipl/iplButton.vue'
 
 describe('LogOverlay', () => {
     config.global.stubs = {
@@ -79,7 +80,7 @@ describe('LogOverlay', () => {
             }
         })
 
-        wrapper.getComponent('[data-test="close-button"]').vm.$emit('click')
+        wrapper.getComponent<typeof IplButton>('[data-test="close-button"]').vm.$emit('click')
 
         const emitted = wrapper.emitted('update:visible')
         expect(emitted?.length).toEqual(1)

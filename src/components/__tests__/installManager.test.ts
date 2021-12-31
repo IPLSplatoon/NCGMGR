@@ -5,6 +5,7 @@ import { createConfigStore, createLogStore, createNodecgStore } from '@/__mocks_
 import { logStoreKey } from '@/store/log'
 import InstallManager from '../installManager.vue'
 import { InstallStatus, nodecgStoreKey, RunStatus } from '@/store/nodecg'
+import IplButton from '@/components/ipl/iplButton.vue'
 
 describe('Installer', () => {
     config.global.stubs = {
@@ -38,7 +39,7 @@ describe('Installer', () => {
         })
         mockTauriDialog.open.mockResolvedValue('/new/path')
 
-        wrapper.getComponent('[data-test="install-directory-select-button"]').vm.$emit('click')
+        wrapper.getComponent<typeof IplButton>('[data-test="install-directory-select-button"]').vm.$emit('click')
         await flushPromises()
 
         expect(mockTauriDialog.open).toHaveBeenCalledWith({ directory: true })
@@ -61,7 +62,7 @@ describe('Installer', () => {
         })
         mockTauriDialog.open.mockResolvedValue(null)
 
-        wrapper.getComponent('[data-test="install-directory-select-button"]').vm.$emit('click')
+        wrapper.getComponent<typeof IplButton>('[data-test="install-directory-select-button"]').vm.$emit('click')
         await flushPromises()
 
         expect(store.commit).not.toHaveBeenCalled()
@@ -158,7 +159,7 @@ describe('Installer', () => {
             }
         })
 
-        wrapper.getComponent('[data-test="install-button"]').vm.$emit('click')
+        wrapper.getComponent<typeof IplButton>('[data-test="install-button"]').vm.$emit('click')
 
         expect(logStore.commit).toHaveBeenCalledWith('reset', 'install-nodecg')
         expect(mockTauri.invoke).toHaveBeenCalledWith('install_nodecg', { path: '/install/path' })
@@ -184,7 +185,7 @@ describe('Installer', () => {
             }
         })
 
-        wrapper.getComponent('[data-test="launch-button"]').vm.$emit('click')
+        wrapper.getComponent<typeof IplButton>('[data-test="launch-button"]').vm.$emit('click')
         await flushPromises()
 
         expect(logStore.commit).toHaveBeenCalledWith('reset', 'run-nodecg')
@@ -256,7 +257,7 @@ describe('Installer', () => {
             }
         })
 
-        wrapper.getComponent('[data-test="stop-button"]').vm.$emit('click')
+        wrapper.getComponent<typeof IplButton>('[data-test="stop-button"]').vm.$emit('click')
         await flushPromises()
 
         expect(mockTauri.invoke).toHaveBeenCalledWith('stop_nodecg')

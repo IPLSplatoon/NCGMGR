@@ -4,6 +4,7 @@ import { createConfigStore, createNodecgStore } from '@/__mocks__/store'
 import { config, flushPromises, mount } from '@vue/test-utils'
 import { nodecgStoreKey } from '@/store/nodecg'
 import { configStoreKey } from '@/store/config'
+import IplButton from '@/components/ipl/iplButton.vue'
 
 describe('BundleManager', () => {
     config.global.stubs = {
@@ -44,7 +45,7 @@ describe('BundleManager', () => {
             }
         })
 
-        wrapper.getComponent('[data-test="install-new-bundle-button"]').vm.$emit('click')
+        wrapper.getComponent<typeof IplButton>('[data-test="install-new-bundle-button"]').vm.$emit('click')
 
         expect(wrapper.html()).toMatchSnapshot()
     })
@@ -84,13 +85,13 @@ describe('BundleManager', () => {
         mockTauri.invoke.mockResolvedValue({})
         const bundleRow = wrapper.get('[data-test="bundle_Bundle One"]')
 
-        bundleRow.getComponent('[data-test="uninstall-button"]').vm.$emit('click')
+        bundleRow.getComponent<typeof IplButton>('[data-test="uninstall-button"]').vm.$emit('click')
         await flushPromises()
 
         expect(wrapper.findComponent('[data-test="uninstall-overlay"]').exists()).toEqual(true)
         expect(mockTauri.invoke).not.toHaveBeenCalled()
 
-        wrapper.getComponent('[data-test="confirm-uninstall-button"]').vm.$emit('click')
+        wrapper.getComponent<typeof IplButton>('[data-test="confirm-uninstall-button"]').vm.$emit('click')
         await flushPromises()
 
         expect(wrapper.findComponent('[data-test="uninstall-overlay"]').exists()).toEqual(false)
@@ -117,12 +118,12 @@ describe('BundleManager', () => {
         mockTauri.invoke.mockResolvedValue({})
         const bundleRow = wrapper.get('[data-test="bundle_Bundle One"]')
 
-        bundleRow.getComponent('[data-test="uninstall-button"]').vm.$emit('click')
+        bundleRow.getComponent<typeof IplButton>('[data-test="uninstall-button"]').vm.$emit('click')
         await flushPromises()
 
         expect(wrapper.findComponent('[data-test="uninstall-overlay"]').exists()).toEqual(true)
 
-        wrapper.getComponent('[data-test="cancel-uninstall-button"]').vm.$emit('click')
+        wrapper.getComponent<typeof IplButton>('[data-test="cancel-uninstall-button"]').vm.$emit('click')
         await flushPromises()
 
         expect(wrapper.findComponent('[data-test="uninstall-overlay"]').exists()).toEqual(false)
@@ -138,7 +139,7 @@ describe('BundleManager', () => {
             }
         })
 
-        wrapper.getComponent('[data-test="refresh-button"]').vm.$emit('click')
+        wrapper.getComponent<typeof IplButton>('[data-test="refresh-button"]').vm.$emit('click')
 
         expect(nodecgStore.dispatch).toHaveBeenCalledTimes(1)
         expect(nodecgStore.dispatch).toHaveBeenCalledWith('getBundleList')

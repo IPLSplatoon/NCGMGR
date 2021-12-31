@@ -7,6 +7,8 @@ import { createConfigStore, createLogStore, createNodecgStore } from '@/__mocks_
 import { logStoreKey } from '@/store/log'
 import { nodecgStoreKey } from '@/store/nodecg'
 import { configStoreKey } from '@/store/config'
+import IplButton from '@/components/ipl/iplButton.vue'
+import IplInput from '@/components/ipl/iplInput.vue'
 
 jest.mock('@/util/nodecg')
 
@@ -27,7 +29,7 @@ describe('BundleInstaller', () => {
         (normalizeBundlePath as Mock).mockReturnValue({ isValid: false })
         const wrapper = mount(BundleInstaller)
 
-        wrapper.getComponent('[data-test="bundle-path-input"]').vm.$emit('update:modelValue', 'git://new-path')
+        wrapper.getComponent<typeof IplInput>('[data-test="bundle-path-input"]').vm.$emit('update:modelValue', 'git://new-path')
         await flushPromises()
 
         expect(wrapper.getComponent('[data-test="install-button"]').attributes().disabled).toEqual('true')
@@ -38,7 +40,7 @@ describe('BundleInstaller', () => {
         (normalizeBundlePath as Mock).mockReturnValue({ isValid: true })
         const wrapper = mount(BundleInstaller)
 
-        wrapper.getComponent('[data-test="bundle-path-input"]').vm.$emit('update:modelValue', 'git://new-path')
+        wrapper.getComponent<typeof IplInput>('[data-test="bundle-path-input"]').vm.$emit('update:modelValue', 'git://new-path')
         await flushPromises()
 
         expect(wrapper.getComponent('[data-test="install-button"]').attributes().disabled).toEqual('false')
@@ -65,9 +67,9 @@ describe('BundleInstaller', () => {
             }
         })
 
-        wrapper.getComponent('[data-test="bundle-path-input"]').vm.$emit('update:modelValue', 'git://new-path')
+        wrapper.getComponent<typeof IplInput>('[data-test="bundle-path-input"]').vm.$emit('update:modelValue', 'git://new-path')
         await flushPromises()
-        wrapper.getComponent('[data-test="install-button"]').vm.$emit('click')
+        wrapper.getComponent<typeof IplButton>('[data-test="install-button"]').vm.$emit('click')
         await flushPromises()
 
         expect(logStore.commit).toHaveBeenCalledWith('reset', 'install-bundle')
