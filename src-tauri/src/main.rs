@@ -5,7 +5,7 @@ windows_subsystem = "windows"
 
 use std::cmp::Ordering;
 use git2::{Direction, Remote, Repository};
-use tauri::{Event, Manager, Menu, MenuItem, Submenu};
+use tauri::{Event, Manager, Menu, MenuItem, RunEvent, Submenu, WindowEvent};
 use std::{fmt, fs};
 use std::path::Path;
 use std::process::{Child, ChildStderr, ChildStdout, Command, Stdio};
@@ -248,7 +248,7 @@ fn main() {
         .expect("error while building tauri application");
 
     app.run(|handle, e| match e {
-        Event::ExitRequested { window_label: _, api, .. } => {
+        RunEvent::ExitRequested { api, .. } => {
             let managed_nodecg = handle.state::<ManagedNodecg>();
             match managed_nodecg.stop() {
                 Ok(_) => {},

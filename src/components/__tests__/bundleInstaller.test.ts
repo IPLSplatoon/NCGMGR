@@ -7,8 +7,7 @@ import { createConfigStore, createLogStore, createNodecgStore } from '@/__mocks_
 import { logStoreKey } from '@/store/log'
 import { nodecgStoreKey } from '@/store/nodecg'
 import { configStoreKey } from '@/store/config'
-import IplButton from '@/components/ipl/iplButton.vue'
-import IplInput from '@/components/ipl/iplInput.vue'
+import { IplButton, IplInput } from '@iplsplatoon/vue-components'
 
 jest.mock('@/util/nodecg')
 

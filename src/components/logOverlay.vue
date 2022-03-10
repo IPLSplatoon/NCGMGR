@@ -11,7 +11,7 @@
 <script lang="ts">
 import { computed, defineComponent } from 'vue'
 import IplOverlay from '@/components/ipl/iplOverlay.vue'
-import IplButton from '@/components/ipl/iplButton.vue'
+import { IplButton } from '@iplsplatoon/vue-components'
 import { useLogStore } from '@/store/log'
 import LogDisplay from '@/components/logDisplay.vue'
 

@@ -2,7 +2,7 @@ import LogOverlay from '@/components/logOverlay.vue'
 import { logStoreKey } from '@/store/log'
 import { config, mount } from '@vue/test-utils'
 import { createLogStore } from '@/__mocks__/store'
-import IplButton from '@/components/ipl/iplButton.vue'
+import { IplButton } from '@iplsplatoon/vue-components'
 
 describe('LogOverlay', () => {
     config.global.stubs = {

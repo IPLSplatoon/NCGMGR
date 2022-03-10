@@ -24,7 +24,7 @@
       "resources": [],
       "externalBin": [],
       "copyright": "",
-      "category": "DeveloperTool",
+      "category": "Utility",
       "shortDescription": "",
       "longDescription": "",
       "deb": {
@@ -45,7 +45,12 @@
       "active": false
     },
     "allowlist": {
-      "all": true
+      "all": true,
+      "fs": {
+        "scope": [
+          "$HOME/**/*"
+        ]
+      }
     },
     "windows": [
       {

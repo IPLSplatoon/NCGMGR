@@ -4,7 +4,7 @@ import { createConfigStore, createNodecgStore } from '@/__mocks__/store'
 import { config, flushPromises, mount } from '@vue/test-utils'
 import { nodecgStoreKey } from '@/store/nodecg'
 import { configStoreKey } from '@/store/config'
-import IplButton from '@/components/ipl/iplButton.vue'
+import { IplButton } from '@iplsplatoon/vue-components'
 
 describe('BundleManager', () => {
     config.global.stubs = {
