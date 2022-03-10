@@ -5,7 +5,7 @@ import { createConfigStore, createLogStore, createNodecgStore } from '@/__mocks_
 import { logStoreKey } from '@/store/log'
 import InstallManager from '../installManager.vue'
 import { InstallStatus, nodecgStoreKey, RunStatus } from '@/store/nodecg'
-import IplButton from '@/components/ipl/iplButton.vue'
+import { IplButton } from '@iplsplatoon/vue-components'
 
 describe('Installer', () => {
     config.global.stubs = {

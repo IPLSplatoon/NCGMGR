@@ -21,9 +21,7 @@
 
 <script lang="ts">
 import { defineComponent, ref } from 'vue'
-import IplSpace from '@/components/ipl/iplSpace.vue'
-import IplInput from '@/components/ipl/iplInput.vue'
-import IplButton from '@/components/ipl/iplButton.vue'
+import { IplButton, IplInput, IplSpace } from '@iplsplatoon/vue-components'
 import { validator } from '@/util/validation/validator'
 import { notBlank } from '@/util/validation/stringValidators'
 import { invoke } from '@tauri-apps/api/tauri'

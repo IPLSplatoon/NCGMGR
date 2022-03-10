@@ -24,26 +24,7 @@ $input-color: #737373;
 
 :root {
     --text-color: white;
-    --text-color-disabled: #A9AAA9;
     --background-primary: #262F40;
     --background-secondary: #2F3A4F;
     --background-tertiary: #181e29;
-
-    --text-button-color: rgba(255, 255, 255, 0.6);
-    --text-button-color-hover: rgba(255, 255, 255, 0.8);
-    --text-button-color-active: rgba(255, 255, 255, 1);
-    --text-button-color-disabled: rgba(115, 115, 115, 0.6);
-
-    --input-color-active: white;
-}
-
-@media (prefers-color-scheme: light) {
-    :root {
-        --text-color: #222;
-        --background-primary: white;
-        --background-secondary: #ECECEC;
-        --background-tertiary: #CECECE;
-
-        --input-color-active: #222;
-    }
 }

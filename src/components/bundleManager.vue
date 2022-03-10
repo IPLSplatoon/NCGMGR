@@ -83,9 +83,8 @@
 
 <script lang="ts">
 import { computed, defineComponent, reactive, ref } from 'vue'
-import IplSpace from '@/components/ipl/iplSpace.vue'
+import { IplButton, IplSpace } from '@iplsplatoon/vue-components'
 import { useNodecgStore } from '@/store/nodecg'
-import IplButton from '@/components/ipl/iplButton.vue'
 import { library } from '@fortawesome/fontawesome-svg-core'
 import { faSync } from '@fortawesome/free-solid-svg-icons/faSync'
 import { faPlusCircle } from '@fortawesome/free-solid-svg-icons/faPlusCircle'

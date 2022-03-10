@@ -1,7 +1,7 @@
 {
   "package": {
     "productName": "NCGMGR",
-    "version": "0.1.0"
+    "version": "0.2.0"
   },
   "build": {
     "distDir": "Set automatically by Vue CLI plugin",
@@ -24,7 +24,7 @@
       "resources": [],
       "externalBin": [],
       "copyright": "",
-      "category": "DeveloperTool",
+      "category": "Utility",
       "shortDescription": "",
       "longDescription": "",
       "deb": {
@@ -45,7 +45,12 @@
       "active": false
     },
     "allowlist": {
-      "all": true
+      "all": true,
+      "fs": {
+        "scope": [
+          "$HOME/**/*"
+        ]
+      }
     },
     "windows": [
       {
