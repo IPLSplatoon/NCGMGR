@@ -5,7 +5,6 @@
             name="bundleName"
             label="Bundle Repository Path"
             data-test="bundle-path-input"
-            :validator="bundlePathValidator"
         />
         <ipl-button
             class="m-t-8"
@@ -21,9 +20,7 @@
 
 <script lang="ts">
 import { defineComponent, ref } from 'vue'
-import { IplButton, IplInput, IplSpace } from '@iplsplatoon/vue-components'
-import { validator } from '@/util/validation/validator'
-import { notBlank } from '@/util/validation/stringValidators'
+import { IplButton, IplInput, IplSpace, provideValidators, notBlank, validator } from '@iplsplatoon/vue-components'
 import { invoke } from '@tauri-apps/api/tauri'
 import { useLogStore } from '@/store/log'
 import { useNodecgStore } from '@/store/nodecg'
@@ -57,6 +54,10 @@ export default defineComponent({
                 message: 'Must be a valid git repository URL or GitHub username/repo pair.',
                 isValid: parsedPath.isValid
             }
+        })
+
+        provideValidators({
+            bundleName: bundlePathValidator
         })
 
         return {
