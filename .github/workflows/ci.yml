@@ -20,11 +20,16 @@ jobs:
       - name: Set up Node.js
         uses: actions/setup-node@v2
         with:
-          node-version: '14'
+          node-version: '16'
+          cache: 'yarn'
+
+      - name: Set yarn version
+        working-directory: ./NCGMGR
+        run: yarn set version berry
 
       - name: Install dependencies
         working-directory: ./NCGMGR
-        run: yarn
+        run: yarn install
 
       - name: Run ESLint on source
         working-directory: ./NCGMGR
@@ -57,7 +62,12 @@ jobs:
       - name: Set up Node.js
         uses: actions/setup-node@v1
         with:
-          node-version: 12
+          node-version: '16'
+          cache: 'yarn'
+
+      - name: Set yarn version
+        working-directory: ./NCGMGR
+        run: yarn set version berry
 
       - name: install Rust stable
         uses: actions-rs/toolchain@v1
@@ -65,7 +75,7 @@ jobs:
           toolchain: stable
 
       - name: install app dependencies and build it
-        run: yarn && yarn tauri:build
+        run: yarn install && yarn tauri:build
 
       - uses: tauri-apps/tauri-action@v0
         env:
