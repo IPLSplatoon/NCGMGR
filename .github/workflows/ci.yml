@@ -22,9 +22,6 @@ jobs:
           node-version: '16'
           cache: 'yarn'
 
-      - name: Set yarn version
-        run: yarn set version berry
-
       - name: Install dependencies
         run: yarn install
 
