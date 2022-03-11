@@ -2,13 +2,11 @@ name: CI
 
 on:
   push:
-  pull_request:
-    branches: [ master ]
-    types: [ opened, closed ]
   workflow_dispatch:
 
 jobs:
   test:
+    timeout-minutes: 30
     runs-on: ubuntu-latest
     steps:
       - name: Checkout this repository
@@ -45,6 +43,7 @@ jobs:
 
   build-publish:
     if: github.ref == 'refs/heads/master'
+    timeout-minutes: 30
     needs: test
     strategy:
       fail-fast: false
