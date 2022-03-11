@@ -15,7 +15,6 @@ jobs:
           token: ${{ secrets['GITHUB_TOKEN'] }}
           ref: ${{ github.ref }}
           fetch-depth: 0
-          path: ./NCGMGR
 
       - name: Set up Node.js
         uses: actions/setup-node@v2
@@ -24,19 +23,15 @@ jobs:
           cache: 'yarn'
 
       - name: Set yarn version
-        working-directory: ./NCGMGR
         run: yarn set version berry
 
       - name: Install dependencies
-        working-directory: ./NCGMGR
         run: yarn install
 
       - name: Run ESLint on source
-        working-directory: ./NCGMGR
         run: yarn lint
 
       - name: Run tests
-        working-directory: ./NCGMGR
         run: yarn test:ci
 
       - name: Create test report
@@ -66,7 +61,6 @@ jobs:
           cache: 'yarn'
 
       - name: Set yarn version
-        working-directory: ./NCGMGR
         run: yarn set version berry
 
       - name: install Rust stable
