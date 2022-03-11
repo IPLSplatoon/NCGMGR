@@ -7,5 +7,6 @@ module.exports = {
     moduleNameMapper: {
         '@/(.*)$': '<rootDir>/src/$1'
     },
-    resetMocks: true
+    resetMocks: true,
+    setupFilesAfterEnv: ['./src/__mocks__/tauri.ts']
 }

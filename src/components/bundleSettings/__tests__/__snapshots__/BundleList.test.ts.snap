@@ -1,0 +1,5 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`BundleSettings matches snapshot when bundles are loading 1`] = `<div class="text-center"> Loading... </div>`;
+
+exports[`BundleSettings matches snapshot when no bundles are present 1`] = `<div class="text-center"> No bundles installed. </div>`;

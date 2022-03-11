@@ -11,6 +11,10 @@
         &.center-vertical {
             align-items: center;
         }
+
+        &.end-horizontal {
+            justify-content: flex-end;
+        }
     }
 
     &.vertical {

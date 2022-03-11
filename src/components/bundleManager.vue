@@ -24,119 +24,37 @@
                 />
             </div>
             <bundle-installer v-show="installingBundle" class="m-b-8" />
-            <div v-if="loading" class="text-center">
-                Loading...
-            </div>
-            <div v-else-if="bundles.length < 1" class="text-center">
-                No bundles installed.
-            </div>
-            <template v-else>
-                <table class="max-width">
-                    <thead>
-                        <tr>
-                            <th>Name</th>
-                            <th>Version</th>
-                            <th />
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr
-                            v-for="bundle in bundles"
-                            :key="`bundle_${bundle.name}`"
-                            :data-test="`bundle_${bundle.name}`"
-                        >
-                            <td>{{ bundle.name }}</td>
-                            <td>{{ bundle.version }}</td>
-                            <td class="layout horizontal w-max-content">
-                                <ipl-button
-                                    color="red"
-                                    icon="trash-alt"
-                                    small
-                                    tooltip="Uninstall"
-                                    class="button"
-                                    data-test="uninstall-button"
-                                    @click="initiateUninstall(bundle.name)"
-                                />
-                            </td>
-                        </tr>
-                    </tbody>
-                </table>
-            </template>
+            <bundle-list class="max-width" />
         </ipl-space>
-        <ipl-overlay v-model:visible="uninstallOverlayProps.visible" data-test="uninstall-overlay">
-            <div class="text-center">
-                Are you sure you want to uninstall <span class="bold">{{ uninstallOverlayProps.bundleName }}</span>?
-            </div>
-            <div class="layout horizontal m-t-8">
-                <ipl-button
-                    label="Uninstall"
-                    color="red"
-                    async
-                    data-test="confirm-uninstall-button"
-                    @click="doUninstall"
-                />
-                <ipl-button label="Cancel" class="m-l-8" @click="cancelUninstall" data-test="cancel-uninstall-button" />
-            </div>
-        </ipl-overlay>
     </div>
 </template>
 
 <script lang="ts">
-import { computed, defineComponent, reactive, ref } from 'vue'
+import { defineComponent, ref } from 'vue'
 import { IplButton, IplSpace } from '@iplsplatoon/vue-components'
 import { useNodecgStore } from '@/store/nodecg'
 import { library } from '@fortawesome/fontawesome-svg-core'
 import { faSync } from '@fortawesome/free-solid-svg-icons/faSync'
 import { faPlusCircle } from '@fortawesome/free-solid-svg-icons/faPlusCircle'
 import { faTrashAlt } from '@fortawesome/free-solid-svg-icons/faTrashAlt'
-import IplOverlay from '@/components/ipl/iplOverlay.vue'
-import { invoke } from '@tauri-apps/api/tauri'
-import { useConfigStore } from '@/store/config'
 import BundleInstaller from '@/components/bundleInstaller.vue'
+import BundleList from '@/components/bundleSettings/BundleList.vue'
 
 library.add(faSync, faPlusCircle, faTrashAlt)
 
 export default defineComponent({
     name: 'BundleManager',
 
-    components: { BundleInstaller, IplOverlay, IplButton, IplSpace },
+    components: { BundleList, BundleInstaller, IplButton, IplSpace },
 
     setup () {
         const nodecgStore = useNodecgStore()
-        const configStore = useConfigStore()
-
-        const uninstallOverlayProps = reactive({
-            visible: false,
-            bundleName: ''
-        })
 
         const installingBundle = ref(false)
 
         return {
-            loading: computed(() => nodecgStore.status.bundlesLoading),
-            bundles: computed(() => nodecgStore.bundles),
             async refreshBundles () {
                 return nodecgStore.getBundleList()
-            },
-
-            uninstallOverlayProps,
-            initiateUninstall (bundleName: string) {
-                uninstallOverlayProps.visible = true
-                uninstallOverlayProps.bundleName = bundleName
-            },
-            cancelUninstall: () => {
-                uninstallOverlayProps.visible = false
-                uninstallOverlayProps.bundleName = ''
-            },
-            doUninstall: () => {
-                return invoke('uninstall_bundle', {
-                    bundleName: uninstallOverlayProps.bundleName,
-                    nodecgPath: configStore.installPath
-                }).then(() => {
-                    uninstallOverlayProps.visible = false
-                }).finally(() => {
-                    nodecgStore.getBundleList()
-                })
             },
 
             installingBundle
