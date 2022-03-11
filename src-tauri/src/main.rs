@@ -5,7 +5,7 @@ windows_subsystem = "windows"
 
 use std::cmp::Ordering;
 use git2::{Direction, Remote, Repository};
-use tauri::{Event, Manager, Menu, MenuItem, RunEvent, Submenu, WindowEvent};
+use tauri::{Manager, Menu, MenuItem, RunEvent, Submenu};
 use std::{fmt, fs};
 use std::path::Path;
 use std::process::{Child, ChildStderr, ChildStdout, Command, Stdio};
