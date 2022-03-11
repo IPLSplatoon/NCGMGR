@@ -29,22 +29,22 @@ export default defineComponent({
 
         watch(() => props.logKey, (newValue, oldValue) => {
             if (oldValue) {
-                logStore.dispatch('unlisten', oldValue)
+                logStore.unlisten(oldValue)
             }
-            logStore.dispatch('listen', newValue)
+            logStore.listen(newValue)
         })
 
         onMounted(() => {
-            logStore.dispatch('listen', props.logKey)
+            logStore.listen(props.logKey)
         })
 
         onUnmounted(() => {
-            logStore.dispatch('unlisten', props.logKey)
+            logStore.unlisten(props.logKey)
         })
 
         return {
             log: computed(() => {
-                const log = logStore.state.lines[props.logKey] ?? []
+                const log = logStore.lines[props.logKey] ?? []
                 return log.map(line => ({ ...line, message: Anser.ansiToHtml(line.message) }))
             })
         }

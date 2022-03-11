@@ -113,10 +113,10 @@ export default defineComponent({
         const installingBundle = ref(false)
 
         return {
-            loading: computed(() => nodecgStore.state.status.bundlesLoading),
-            bundles: computed(() => nodecgStore.state.bundles),
+            loading: computed(() => nodecgStore.status.bundlesLoading),
+            bundles: computed(() => nodecgStore.bundles),
             async refreshBundles () {
-                return nodecgStore.dispatch('getBundleList')
+                return nodecgStore.getBundleList()
             },
 
             uninstallOverlayProps,
@@ -131,11 +131,11 @@ export default defineComponent({
             doUninstall: () => {
                 return invoke('uninstall_bundle', {
                     bundleName: uninstallOverlayProps.bundleName,
-                    nodecgPath: configStore.state.installPath
+                    nodecgPath: configStore.installPath
                 }).then(() => {
                     uninstallOverlayProps.visible = false
                 }).finally(() => {
-                    nodecgStore.dispatch('getBundleList')
+                    nodecgStore.getBundleList()
                 })
             },
 

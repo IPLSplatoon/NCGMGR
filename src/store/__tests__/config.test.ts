@@ -1,33 +1,28 @@
-import { configStore, LOCAL_STORAGE_CONFIG_KEY } from '@/store/config'
+import { LOCAL_STORAGE_CONFIG_KEY, useConfigStore } from '@/store/config'
+import { createPinia, setActivePinia } from 'pinia'
 
 describe('configStore', () => {
     beforeEach(() => {
-        configStore.replaceState({ installPath: '' })
-    })
-
-    describe('setInstallPath', () => {
-        it('updates install path', () => {
-            configStore.commit('setInstallPath', '/path/')
-
-            expect(configStore.state.installPath).toEqual('/path/')
-        })
+        setActivePinia(createPinia())
     })
 
     describe('load', () => {
         it('loads data from local storage', () => {
+            const store = useConfigStore()
             localStorage.setItem(LOCAL_STORAGE_CONFIG_KEY, JSON.stringify({ installPath: '/path/to/nodecg' }))
 
-            configStore.dispatch('load')
+            store.load()
 
-            expect(configStore.state.installPath).toEqual('/path/to/nodecg')
+            expect(store.installPath).toEqual('/path/to/nodecg')
         })
     })
 
     describe('persist', () => {
         it('saves data to local storage', () => {
-            configStore.state.installPath = '/path/to/nodecg'
+            const store = useConfigStore()
+            store.installPath = '/path/to/nodecg'
 
-            configStore.dispatch('persist')
+            store.persist()
 
             expect(localStorage.getItem(LOCAL_STORAGE_CONFIG_KEY)).toEqual('{"installPath":"/path/to/nodecg"}')
         })

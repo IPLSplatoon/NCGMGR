@@ -64,12 +64,12 @@ export default defineComponent({
             bundlePath,
             bundlePathValidator,
             doInstall: async () => {
-                logStore.commit('reset', 'install-bundle')
+                logStore.reset('install-bundle')
                 showInstallLog.value = true
-                const invocation = invoke('install_bundle', { bundleName, bundleUrl, nodecgPath: configStore.state.installPath })
-                logStore.dispatch('logPromiseResult', { promise: invocation, key: 'install-bundle' })
+                const invocation = invoke('install_bundle', { bundleName, bundleUrl, nodecgPath: configStore.installPath })
+                logStore.logPromiseResult({ promise: invocation, key: 'install-bundle' })
                 await invocation
-                nodecgStore.dispatch('getBundleList')
+                nodecgStore.getBundleList()
             }
         }
     }

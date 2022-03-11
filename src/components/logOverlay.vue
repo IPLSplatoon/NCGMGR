@@ -41,7 +41,7 @@ export default defineComponent({
         const logStore = useLogStore()
 
         return {
-            completed: computed(() => logStore.state.completed[props.logKey]),
+            completed: computed(() => logStore.completed[props.logKey]),
             modelVisible: computed({
                 get () {
                     return props.visible

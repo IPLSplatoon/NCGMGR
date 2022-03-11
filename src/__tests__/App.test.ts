@@ -1,15 +1,21 @@
 import App from '@/App.vue'
-import { createNodecgStore } from '@/__mocks__/store'
 import { shallowMount } from '@vue/test-utils'
-import { InstallStatus, nodecgStoreKey } from '@/store/nodecg'
+import { InstallStatus, useNodecgStore } from '@/store/nodecg'
+import { createTestingPinia, TestingPinia } from '@pinia/testing'
 
 describe('App', () => {
+    let pinia: TestingPinia
+
+    beforeEach(() => {
+        pinia = createTestingPinia()
+    })
+
     it('shows bundle manager if nodecg is installed', () => {
-        const nodecgStore = createNodecgStore()
-        nodecgStore.state.status.installStatus = InstallStatus.INSTALLED
+        const nodecgStore = useNodecgStore()
+        nodecgStore.status.installStatus = InstallStatus.INSTALLED
         const wrapper = shallowMount(App, {
             global: {
-                plugins: [[nodecgStore, nodecgStoreKey]]
+                plugins: [pinia]
             }
         })
 
@@ -19,11 +25,11 @@ describe('App', () => {
     })
 
     it('hides bundle manager if nodecg is not installed but can be', () => {
-        const nodecgStore = createNodecgStore()
-        nodecgStore.state.status.installStatus = InstallStatus.READY_TO_INSTALL
+        const nodecgStore = useNodecgStore()
+        nodecgStore.status.installStatus = InstallStatus.READY_TO_INSTALL
         const wrapper = shallowMount(App, {
             global: {
-                plugins: [[nodecgStore, nodecgStoreKey]]
+                plugins: [pinia]
             }
         })
 
@@ -32,11 +38,11 @@ describe('App', () => {
     })
 
     it('hides bundle manager if nodecg is not installed and cannot be installed', () => {
-        const nodecgStore = createNodecgStore()
-        nodecgStore.state.status.installStatus = InstallStatus.UNABLE_TO_INSTALL
+        const nodecgStore = useNodecgStore()
+        nodecgStore.status.installStatus = InstallStatus.UNABLE_TO_INSTALL
         const wrapper = shallowMount(App, {
             global: {
-                plugins: [[nodecgStore, nodecgStoreKey]]
+                plugins: [pinia]
             }
         })
 
@@ -45,11 +51,11 @@ describe('App', () => {
     })
 
     it('hides bundle manager if nodecg status is unknown', () => {
-        const nodecgStore = createNodecgStore()
-        nodecgStore.state.status.installStatus = InstallStatus.UNKNOWN
+        const nodecgStore = useNodecgStore()
+        nodecgStore.status.installStatus = InstallStatus.UNKNOWN
         const wrapper = shallowMount(App, {
             global: {
-                plugins: [[nodecgStore, nodecgStoreKey]]
+                plugins: [pinia]
             }
         })
 

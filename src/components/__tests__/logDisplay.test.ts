@@ -1,12 +1,21 @@
 import LogDisplay from '@/components/logDisplay.vue'
-import { createLogStore } from '@/__mocks__/store'
-import { mount } from '@vue/test-utils'
-import { logStoreKey } from '@/store/log'
+import { config, mount } from '@vue/test-utils'
+import { useLogStore } from '@/store/log'
+import { createTestingPinia, TestingPinia } from '@pinia/testing'
 
 describe('LogDisplay', () => {
+    let pinia: TestingPinia
+
+    beforeEach(() => {
+        pinia = createTestingPinia()
+        config.global.plugins = [pinia]
+    })
+
     it('matches snapshot', () => {
-        const store = createLogStore()
-        store.state.lines = {
+        const store = useLogStore()
+        store.listen = jest.fn()
+        store.unlisten = jest.fn()
+        store.lines = {
             log1: [
                 { message: '\x1b[31mLINE A' },
                 { message: 'LINE ERROR!!!', type: 'error' }
@@ -14,11 +23,6 @@ describe('LogDisplay', () => {
             log2: []
         }
         const wrapper = mount(LogDisplay, {
-            global: {
-                plugins: [
-                    [store, logStoreKey]
-                ]
-            },
             props: {
                 logKey: 'log1'
             }
@@ -28,33 +32,27 @@ describe('LogDisplay', () => {
     })
 
     it('listens for log events', () => {
-        const store = createLogStore()
-        jest.spyOn(store, 'dispatch')
+        const store = useLogStore()
+        store.listen = jest.fn()
         mount(LogDisplay, {
-            global: {
-                plugins: [[store, logStoreKey]]
-            },
             props: { logKey: 'cool-log' }
         })
 
-        expect(store.dispatch).toHaveBeenCalledWith('listen', 'cool-log')
+        expect(store.listen).toHaveBeenCalledWith('cool-log')
     })
 
     it('listens for log events when log key is changed', async () => {
-        const store = createLogStore()
-        jest.spyOn(store, 'dispatch')
+        const store = useLogStore()
+        store.listen = jest.fn()
+        store.unlisten = jest.fn()
         const wrapper = mount(LogDisplay, {
-            global: {
-                plugins: [[store, logStoreKey]]
-            },
             props: { logKey: 'cool-log' }
         })
-        expect(store.dispatch).toHaveBeenCalledWith('listen', 'cool-log')
+        expect(store.listen).toHaveBeenCalledWith('cool-log')
 
         await wrapper.setProps({ logKey: 'cooler-log' })
 
-        expect(store.dispatch).toHaveBeenCalledWith('unlisten', 'cool-log')
-        expect(store.dispatch).toHaveBeenCalledWith('listen', 'cooler-log')
-        expect(store.dispatch).toHaveBeenCalledTimes(3)
+        expect(store.unlisten).toHaveBeenCalledWith('cool-log')
+        expect(store.listen).toHaveBeenCalledWith('cooler-log')
     })
 })

@@ -1,13 +1,9 @@
 import { createApp } from 'vue'
 import App from './App.vue'
-import { configStore, configStoreKey } from './store/config'
-import { logStore, logStoreKey } from '@/store/log'
-import { nodecgStore, nodecgStoreKey } from '@/store/nodecg'
+import { createPinia } from 'pinia'
 
-configStore.dispatch('load')
+const pinia = createPinia()
 
 createApp(App)
-    .use(configStore, configStoreKey)
-    .use(logStore, logStoreKey)
-    .use(nodecgStore, nodecgStoreKey)
+    .use(pinia)
     .mount('#app')

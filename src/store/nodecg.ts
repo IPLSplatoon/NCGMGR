@@ -1,7 +1,6 @@
-import { createStore, Store, useStore } from 'vuex'
 import { Bundle, getBundles, getNodecgStatus } from '@/service/nodecg'
-import { configStore } from '@/store/config'
-import { InjectionKey } from 'vue'
+import { useConfigStore } from '@/store/config'
+import { defineStore } from 'pinia'
 
 export enum InstallStatus {
     UNKNOWN,
@@ -26,8 +25,8 @@ export interface NodecgStore {
     bundles: Bundle[]
 }
 
-export const nodecgStore: Store<NodecgStore> = createStore<NodecgStore>({
-    state: {
+export const useNodecgStore = defineStore('nodecg', {
+    state: () => ({
         status: {
             installStatus: InstallStatus.UNKNOWN,
             runStatus: RunStatus.NOT_STARTED,
@@ -35,42 +34,33 @@ export const nodecgStore: Store<NodecgStore> = createStore<NodecgStore>({
             bundlesLoading: false
         },
         bundles: []
-    },
-    mutations: {
-        setRunStatus (state, runStatus: RunStatus) {
-            state.status.runStatus = runStatus
-        }
-    },
+    } as NodecgStore),
     actions: {
-        async checkNodecgStatus (store) {
-            store.state.status.installStatus = InstallStatus.UNKNOWN
-            store.state.status.message = 'Checking status...'
+        async checkNodecgStatus () {
+            const configStore = useConfigStore()
+            this.status.installStatus = InstallStatus.UNKNOWN
+            this.status.message = 'Checking status...'
 
             try {
-                const { status, message } = await getNodecgStatus(configStore.state.installPath)
-                store.state.status.message = message
-                store.state.status.installStatus = status
+                const { status, message } = await getNodecgStatus(configStore.installPath)
+                this.status.message = message
+                this.status.installStatus = status
                 if (status === InstallStatus.INSTALLED) {
-                    store.dispatch('getBundleList')
+                    this.getBundleList()
                 } else {
-                    store.state.bundles = []
+                    this.bundles = []
                 }
             } catch (e) {
-                store.state.status.message = e.toString()
-                store.state.status.installStatus = InstallStatus.UNABLE_TO_INSTALL
-                store.state.bundles = []
+                this.status.message = e.toString()
+                this.status.installStatus = InstallStatus.UNABLE_TO_INSTALL
+                this.bundles = []
             }
         },
-        async getBundleList (store) {
-            store.state.status.bundlesLoading = true
-            store.state.bundles = await getBundles(configStore.state.installPath)
-            store.state.status.bundlesLoading = false
+        async getBundleList () {
+            const configStore = useConfigStore()
+            this.status.bundlesLoading = true
+            this.bundles = await getBundles(configStore.installPath)
+            this.status.bundlesLoading = false
         }
     }
 })
-
-export const nodecgStoreKey: InjectionKey<Store<NodecgStore>> = Symbol()
-
-export function useNodecgStore (): Store<NodecgStore> {
-    return useStore(nodecgStoreKey)
-}
