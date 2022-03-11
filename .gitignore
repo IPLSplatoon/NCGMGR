@@ -3,6 +3,7 @@ node_modules
 /dist
 
 .yarn/*
+!.yarn/releases
 
 # local env files
 .env.local

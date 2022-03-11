@@ -60,9 +60,6 @@ jobs:
           node-version: '16'
           cache: 'yarn'
 
-      - name: Set yarn version
-        run: yarn set version berry
-
       - name: install Rust stable
         uses: actions-rs/toolchain@v1
         with:
