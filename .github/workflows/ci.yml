@@ -36,7 +36,7 @@ jobs:
         uses: tanmen/jest-reporter@v1
         with:
           github-token: ${{ secrets['GITHUB_TOKEN'] }}
-          result-file: ./NCGMGR/result.json
+          result-file: ./result.json
 
   build-publish:
     if: github.ref == 'refs/heads/master'
