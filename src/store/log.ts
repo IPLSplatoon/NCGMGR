@@ -41,6 +41,7 @@ export const useLogStore = defineStore('log', {
         unlisten (key: string) {
             if (unlistenFns[key]) {
                 unlistenFns[key]()
+                delete unlistenFns[key]
             }
         },
         logPromiseResult ({ promise, key, noLogOnSuccess = false }: { promise: Promise<unknown>, key: string, noLogOnSuccess?: boolean }) {

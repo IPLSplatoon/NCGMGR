@@ -2,7 +2,7 @@
 
 exports[`LogOverlay matches snapshot 1`] = `
 <div class="ipl-overlay__wrapper layout horizontal center-horizontal center-vertical log-overlay">
-  <div class="ipl-overlay__content">
+  <div class="ipl-overlay__content max-width">
     <div class="layout vertical center-horizontal">
       <h2 class="m-b-8">Log Overlay</h2>
       <div class="log-display m-b-8"></div>

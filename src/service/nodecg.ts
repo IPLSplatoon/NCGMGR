@@ -2,6 +2,7 @@ import { readDir, readTextFile } from '@tauri-apps/api/fs'
 import { PackageSchema } from '@/types/package'
 import isEmpty from 'lodash/isEmpty'
 import { InstallStatus } from '@/store/nodecg'
+import { invoke } from '@tauri-apps/api/tauri'
 
 export async function getNodecgStatus (directory: string): Promise<{ status: InstallStatus, message: string }> {
     if (isEmpty(directory?.trim())) {
@@ -51,14 +52,14 @@ export async function getBundles (directory: string): Promise<Bundle[]> {
         throw new Error('No bundle directory provided.')
     }
 
-    const dir = await readDir(directory + '/bundles', { recursive: true })
+    const bundlesDir = await readDir(directory + '/bundles', { recursive: true })
     return Promise.all(
-        dir
+        bundlesDir
             .filter(entry => entry.children?.some(child => child.name === 'package.json'))
-            .map(async (bundle) => {
-                const packageFile = bundle.children?.find(child => child.name === 'package.json')?.path
+            .map(async (dir) => {
+                const packageFile = dir.children?.find(child => child.name === 'package.json')?.path
                 if (!packageFile) {
-                    throw new Error('Missing package.json')
+                    throw new Error(`Missing package.json in directory ${dir.name}`)
                 }
 
                 const packageJson = JSON.parse(await readTextFile(packageFile)) as PackageSchema
@@ -68,4 +69,8 @@ export async function getBundles (directory: string): Promise<Bundle[]> {
                     version: packageJson.version
                 }
             }))
+}
+
+export async function getBundleVersions (bundleName: string, nodecgPath: string): Promise<string[]> {
+    return invoke('fetch_bundle_versions', { bundleName, nodecgPath })
 }

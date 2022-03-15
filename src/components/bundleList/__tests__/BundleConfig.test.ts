@@ -1,0 +1,182 @@
+import { createTestingPinia, TestingPinia } from '@pinia/testing'
+import { config, flushPromises, mount } from '@vue/test-utils'
+import { getBundleVersions } from '@/service/nodecg'
+import BundleConfig from '../BundleConfig.vue'
+import Mock = jest.Mock
+import type { IplSelect, IplButton } from '@iplsplatoon/vue-components'
+import { useLogStore } from '@/store/log'
+import { mockTauri } from '@/__mocks__/tauri'
+import { useConfigStore } from '@/store/config'
+import LogOverlay from '@/components/logOverlay.vue'
+
+jest.mock('@/service/nodecg')
+
+describe('BundleConfig', () => {
+    let pinia: TestingPinia
+    config.global.stubs = {
+        IplButton: true,
+        IplSelect: true,
+        FontAwesomeIcon: true,
+        LogOverlay: true
+    }
+
+    beforeEach(() => {
+        pinia = createTestingPinia()
+        config.global.plugins = [pinia];
+
+        (getBundleVersions as Mock).mockResolvedValue(['1.0.0', '0.0.1'])
+    })
+
+    it('matches snapshot', () => {
+        const wrapper = mount(BundleConfig, {
+            props: {
+                bundle: {
+                    name: 'bundle-name',
+                    version: '0.0.1'
+                }
+            }
+        })
+
+        expect(wrapper.html()).toMatchSnapshot()
+    })
+
+    it('matches snapshot after bundle versions are loaded', async () => {
+        const wrapper = mount(BundleConfig, {
+            props: {
+                bundle: {
+                    name: 'bundle-name',
+                    version: '0.0.1'
+                }
+            }
+        })
+        await flushPromises()
+
+        expect(wrapper.html()).toMatchSnapshot()
+    })
+
+    it('matches snapshot when no bundle versions are found', async () => {
+        (getBundleVersions as Mock).mockResolvedValue([])
+        const wrapper = mount(BundleConfig, {
+            props: {
+                bundle: {
+                    name: 'bundle-name',
+                    version: '0.0.1'
+                }
+            }
+        })
+        await flushPromises()
+
+        expect(wrapper.html()).toMatchSnapshot()
+    })
+
+    it('matches snapshot when getting bundle versions fails', async () => {
+        (getBundleVersions as Mock).mockRejectedValue(new Error('Error!'))
+        const wrapper = mount(BundleConfig, {
+            props: {
+                bundle: {
+                    name: 'bundle-name',
+                    version: '0.0.1'
+                }
+            }
+        })
+        await flushPromises()
+
+        expect(wrapper.html()).toMatchSnapshot()
+    })
+
+    it('adds expected version options when loading', () => {
+        const wrapper = mount(BundleConfig, {
+            props: {
+                bundle: {
+                    name: 'bundle-name',
+                    version: '0.0.1'
+                }
+            }
+        })
+
+        expect(wrapper.getComponent<typeof IplSelect>('[data-test="version-selector"]').vm.$props.options)
+            .toEqual([{
+                name: 'Loading...',
+                value: ''
+            }])
+    })
+
+    it('adds expected version options when no versions are present', async () => {
+        (getBundleVersions as Mock).mockResolvedValue([])
+        const wrapper = mount(BundleConfig, {
+            props: {
+                bundle: {
+                    name: 'bundle-name',
+                    version: '0.0.1'
+                }
+            }
+        })
+        await flushPromises()
+
+        expect(wrapper.getComponent<typeof IplSelect>('[data-test="version-selector"]').vm.$props.options)
+            .toEqual([{
+                name: 'No versions found',
+                value: ''
+            }])
+    })
+
+    it('adds expected version options when version list is present', async () => {
+        const wrapper = mount(BundleConfig, {
+            props: {
+                bundle: {
+                    name: 'bundle-name',
+                    version: '0.0.1'
+                }
+            }
+        })
+        await flushPromises()
+
+        expect(wrapper.getComponent<typeof IplSelect>('[data-test="version-selector"]').vm.$props.options)
+            .toEqual([
+                {
+                    name: '1.0.0',
+                    value: '1.0.0'
+                },
+                {
+                    name: '0.0.1',
+                    value: '0.0.1'
+                }
+            ])
+    })
+
+    it('handles setting version', async () => {
+        mockTauri.invoke.mockResolvedValue({})
+        useConfigStore().installPath = 'nodecg/path'
+        const logStore = useLogStore()
+        logStore.reset = jest.fn()
+        logStore.listen = jest.fn()
+        logStore.logPromiseResult = jest.fn()
+        const wrapper = mount(BundleConfig, {
+            props: {
+                bundle: {
+                    name: 'bundle-name',
+                    version: '0.0.1'
+                }
+            }
+        })
+        await flushPromises()
+
+        wrapper.getComponent<typeof IplSelect>('[data-test="version-selector"]').vm.$emit('update:modelValue', '2.0.1')
+        wrapper.getComponent<typeof IplButton>('[data-test="set-version-button"]').vm.$emit('click')
+        await flushPromises()
+
+        expect(logStore.reset).toHaveBeenCalledWith('change-bundle-version')
+        expect(logStore.listen).toHaveBeenCalledWith('change-bundle-version')
+        expect(mockTauri.invoke).toHaveBeenCalledWith('set_bundle_version', {
+            bundleName: 'bundle-name',
+            version: '2.0.1',
+            nodecgPath: 'nodecg/path'
+        })
+        expect(logStore.logPromiseResult).toHaveBeenCalledWith({
+            promise: expect.anything(),
+            key: 'change-bundle-version'
+        })
+        expect(wrapper.getComponent<typeof LogOverlay>('[data-test="bundle-log-overlay"]').vm.$props.visible)
+            .toEqual(true)
+    })
+})

@@ -59,7 +59,7 @@ export default defineComponent({
 
 .log-display {
     font-family: monospace;
-    width: calc(100vw - 60px);
+    width: calc(100% - 8px);
     max-height: 350px;
     text-align: left;
     border: 1px solid $input-color;

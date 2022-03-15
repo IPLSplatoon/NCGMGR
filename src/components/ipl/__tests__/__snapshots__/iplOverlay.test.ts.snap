@@ -13,3 +13,11 @@ exports[`IplOverlay matches snapshot when visible 1`] = `
   </div>
 </transition-stub>
 `;
+
+exports[`IplOverlay matches snapshot when visible and max width 1`] = `
+<transition-stub>
+  <div class="ipl-overlay__wrapper layout horizontal center-horizontal center-vertical">
+    <div class="ipl-overlay__content max-width"></div>
+  </div>
+</transition-stub>
+`;

@@ -19,7 +19,7 @@ export function normalizeBundlePath (path: string): { isValid: boolean, bundleNa
         return {
             isValid: true,
             bundleName: temp?.substr(0, temp.length - 4),
-            bundleUrl: gitUrl
+            bundleUrl: gitUrl?.replace('git://', 'https://')
         }
     } catch (e) {
         return { isValid: false }

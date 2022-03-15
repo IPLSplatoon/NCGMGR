@@ -1,6 +1,6 @@
 import { useNodecgStore } from '@/store/nodecg'
 import { config, flushPromises, mount } from '@vue/test-utils'
-import BundleSettings from '@/components/bundleSettings/BundleList.vue'
+import BundleSettings from '@/components/bundleList/BundleList.vue'
 import { createTestingPinia, TestingPinia } from '@pinia/testing'
 import { useConfigStore } from '@/store/config'
 import { mockTauri } from '@/__mocks__/tauri'

@@ -1,5 +1,5 @@
-import { mockTauriFs } from '@/__mocks__/tauri'
-import { getNodecgStatus } from '@/service/nodecg'
+import { mockTauri, mockTauriFs } from '@/__mocks__/tauri'
+import { getBundles, getBundleVersions, getNodecgStatus } from '@/service/nodecg'
 import { InstallStatus } from '@/store/nodecg'
 
 describe('getNodecgStatus', () => {
@@ -66,5 +66,45 @@ describe('getNodecgStatus', () => {
         })
         expect(mockTauriFs.readDir).not.toHaveBeenCalled()
         expect(mockTauriFs.readTextFile).not.toHaveBeenCalled()
+    })
+})
+
+describe('getBundles', () => {
+    it('throws error when no bundle directory is given', async () => {
+        await expect(getBundles('   ')).rejects.toThrow('No bundle directory provided.')
+    })
+
+    it('reads bundles directory and parses package.json files', async () => {
+        mockTauriFs.readTextFile
+            .mockResolvedValueOnce(JSON.stringify({ name: 'bundle-one', version: '1.0.0' }))
+            .mockResolvedValueOnce(JSON.stringify({ name: 'bundle-two', version: '1.0.1' }))
+        mockTauriFs.readDir.mockResolvedValue([
+            { children: null },
+            { children: [{ name: 'file.txt' }] },
+            { children: [{ name: 'package.json', path: 'package-json-path-1' }] },
+            { children: [{ name: 'other-file' }, { name: 'package.json', path: 'package-json-path-2' }] }
+        ])
+
+        const result = await getBundles('nodecg/dir')
+
+        expect(mockTauriFs.readDir).toHaveBeenCalledWith('nodecg/dir/bundles', { recursive: true })
+        expect(mockTauriFs.readTextFile).toHaveBeenCalledWith('package-json-path-1')
+        expect(mockTauriFs.readTextFile).toHaveBeenCalledWith('package-json-path-2')
+        expect(result).toEqual([
+            { name: 'bundle-one', version: '1.0.0' },
+            { name: 'bundle-two', version: '1.0.1' }
+        ])
+    })
+})
+
+describe('getBundleVersions', () => {
+    it('invokes tauri method', async () => {
+        mockTauri.invoke.mockResolvedValue(['1.0.0', '2.0.0'])
+
+        const result = await getBundleVersions('bundle-name', 'nodecg/path')
+
+        expect(mockTauri.invoke).toHaveBeenCalledWith(
+            'fetch_bundle_versions', { bundleName: 'bundle-name', nodecgPath: 'nodecg/path' })
+        expect(result).toEqual(['1.0.0', '2.0.0'])
     })
 })

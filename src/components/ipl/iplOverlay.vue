@@ -1,7 +1,11 @@
 <template>
     <transition name="overlay">
-        <div v-if="visible" @click.self="close" class="ipl-overlay__wrapper layout horizontal center-horizontal center-vertical">
-            <div class="ipl-overlay__content">
+        <div
+            v-if="visible"
+            @click.self="close"
+            class="ipl-overlay__wrapper layout horizontal center-horizontal center-vertical"
+        >
+            <div class="ipl-overlay__content" :class="{ 'max-width': maxWidth }">
                 <slot />
             </div>
         </div>
@@ -20,13 +24,23 @@ export default defineComponent({
         visible: {
             type: Boolean,
             required: true
+        },
+        noBackgroundClose: {
+            type: Boolean,
+            default: false
+        },
+        maxWidth: {
+            type: Boolean,
+            default: false
         }
     },
 
     setup (props, { emit }) {
         return {
             close () {
-                emit('update:visible', false)
+                if (!props.noBackgroundClose) {
+                    emit('update:visible', false)
+                }
             }
         }
     }

@@ -1,5 +1,5 @@
 <template>
-    <ipl-overlay v-model:visible="modelVisible" class="log-overlay">
+    <ipl-overlay v-model:visible="modelVisible" class="log-overlay" :no-background-close="noBackgroundClose" max-width>
         <div class="layout vertical center-horizontal">
             <h2 class="m-b-8">{{title}}</h2>
             <log-display :log-key="logKey" class="m-b-8" />
@@ -34,6 +34,10 @@ export default defineComponent({
         logKey: {
             type: String,
             required: true
+        },
+        noBackgroundClose: {
+            type: Boolean,
+            default: false
         }
     },
 

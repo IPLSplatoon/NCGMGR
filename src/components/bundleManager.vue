@@ -14,12 +14,11 @@
                 />
                 <ipl-button
                     icon="plus-circle"
-                    color="green"
+                    :color="installingBundle ? themeColors.backgroundTertiary : 'green'"
                     small
                     tooltip="Install new bundle"
                     class="button m-l-6"
                     data-test="install-new-bundle-button"
-                    :class="{ active: installingBundle }"
                     @click="installingBundle = !installingBundle"
                 />
             </div>
@@ -36,11 +35,11 @@ import { useNodecgStore } from '@/store/nodecg'
 import { library } from '@fortawesome/fontawesome-svg-core'
 import { faSync } from '@fortawesome/free-solid-svg-icons/faSync'
 import { faPlusCircle } from '@fortawesome/free-solid-svg-icons/faPlusCircle'
-import { faTrashAlt } from '@fortawesome/free-solid-svg-icons/faTrashAlt'
 import BundleInstaller from '@/components/bundleInstaller.vue'
-import BundleList from '@/components/bundleSettings/BundleList.vue'
+import BundleList from '@/components/bundleList/BundleList.vue'
+import { themeColors } from '@/styles/colors'
 
-library.add(faSync, faPlusCircle, faTrashAlt)
+library.add(faSync, faPlusCircle)
 
 export default defineComponent({
     name: 'BundleManager',
@@ -57,7 +56,9 @@ export default defineComponent({
                 return nodecgStore.getBundleList()
             },
 
-            installingBundle
+            installingBundle,
+
+            themeColors
         }
     }
 })
@@ -70,10 +71,5 @@ export default defineComponent({
 
 .header {
     padding-bottom: 6px;
-}
-
-.button.active {
-    background-color: var(--background-tertiary) !important;
-    color: var(--text-color) !important;
 }
 </style>

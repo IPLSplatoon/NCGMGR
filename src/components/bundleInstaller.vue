@@ -14,7 +14,13 @@
             data-test="install-button"
             @click="doInstall"
         />
-        <log-overlay title="Installing..." v-model:visible="showInstallLog" data-test="bundle-log-overlay" log-key="install-bundle" />
+        <log-overlay
+            v-model:visible="showInstallLog"
+            title="Installing..."
+            data-test="bundle-log-overlay"
+            log-key="install-bundle"
+            no-background-close
+        />
     </ipl-space>
 </template>
 
@@ -27,6 +33,11 @@ import { useNodecgStore } from '@/store/nodecg'
 import { useConfigStore } from '@/store/config'
 import LogOverlay from '@/components/logOverlay.vue'
 import { normalizeBundlePath } from '@/util/nodecg'
+import { library } from '@fortawesome/fontawesome-svg-core'
+import { faTrashAlt } from '@fortawesome/free-solid-svg-icons/faTrashAlt'
+import { faCog } from '@fortawesome/free-solid-svg-icons/faCog'
+
+library.add(faTrashAlt, faCog)
 
 export default defineComponent({
     name: 'BundleInstaller',
@@ -66,6 +77,7 @@ export default defineComponent({
             bundlePathValidator,
             doInstall: async () => {
                 logStore.reset('install-bundle')
+                await logStore.listen('install-bundle')
                 showInstallLog.value = true
                 const invocation = invoke('install_bundle', { bundleName, bundleUrl, nodecgPath: configStore.installPath })
                 logStore.logPromiseResult({ promise: invocation, key: 'install-bundle' })

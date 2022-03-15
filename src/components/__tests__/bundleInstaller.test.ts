@@ -58,6 +58,7 @@ describe('BundleInstaller', () => {
         const logStore = useLogStore()
         logStore.reset = jest.fn()
         logStore.logPromiseResult = jest.fn()
+        logStore.listen = jest.fn()
         const configStore = useConfigStore()
         configStore.installPath = '/install/path'
         const nodecgStore = useNodecgStore()
@@ -75,6 +76,7 @@ describe('BundleInstaller', () => {
         await flushPromises()
 
         expect(logStore.reset).toHaveBeenCalledWith('install-bundle')
+        expect(logStore.listen).toHaveBeenCalledWith('install-bundle')
         expect(mockTauri.invoke).toHaveBeenCalledWith('install_bundle', { bundleName: 'Cool Bundle', bundleUrl: 'git://bundle', nodecgPath: '/install/path' })
         expect(logStore.logPromiseResult).toHaveBeenCalledWith(expect.anything())
         expect(nodecgStore.getBundleList).toHaveBeenCalled()

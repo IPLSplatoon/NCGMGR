@@ -3,18 +3,18 @@ all(not(debug_assertions), target_os = "windows"),
 windows_subsystem = "windows"
 )]
 
-use std::cmp::Ordering;
-use git2::{Direction, Remote, Repository};
+use git2::{AutotagOption, FetchOptions, Remote, Repository};
 use tauri::{Manager, Menu, MenuItem, RunEvent, Submenu};
-use std::{fmt, fs};
+use std::{fs};
 use std::path::Path;
 use std::process::{Child, ChildStderr, ChildStdout, Command, Stdio};
 use std::sync::Mutex;
-use itertools::Itertools;
 use unwrap_or::unwrap_ok_or;
+use crate::log::{err_to_string, format_error};
 
 mod npm;
 mod log;
+mod git;
 
 const NODECG_GIT_PATH: &str = "https://github.com/nodecg/nodecg.git";
 const NODECG_TAG: &str = "v1.8.1";
@@ -69,14 +69,6 @@ impl ManagedNodecg {
 
         Ok(())
     }
-}
-
-fn err_to_string<T: fmt::Display>(msg: &str, err: T) -> String {
-    format!("{}: {}", msg, err.to_string())
-}
-
-fn format_error<F, T: fmt::Display>(msg: &str, err: T) -> Result<F, String> {
-    Err(err_to_string(msg, err))
 }
 
 fn clone_nodecg(path: &str) -> Result<String, String> {
@@ -150,28 +142,11 @@ fn install_bundle(handle: tauri::AppHandle, bundle_name: String, bundle_url: Str
     }
 
     log::emit(&handle, log_key, "Fetching version list...");
-    let mut remote = match Remote::create_detached(&bundle_url) {
+    let remote = match Remote::create_detached(&bundle_url) {
         Ok(remote) => remote,
         Err(e) => return format_error("Could not create remote", e)
     };
-    let connection = match remote.connect_auth(Direction::Fetch, None, None) {
-        Ok(connection) => connection,
-        Err(e) => return format_error("Could not connect to remote", e)
-    };
-    let versions = unwrap_ok_or!(connection.list(), e, { return format_error("Could not get version list", e) })
-        .iter()
-        .filter(|item| { item.name().starts_with("refs/tags/") })
-        .map(|item| item.name().split("refs/tags/").last().unwrap())
-        .sorted_by(|item1, item2| {
-            let version1 = semver_parser::version::parse(item1);
-            let version2 = semver_parser::version::parse(item2);
-
-            if version1.is_err() || version2.is_err() {
-                Ordering::Less
-            } else {
-                version2.unwrap().cmp(&version1.unwrap())
-            }
-        }).collect_vec();
+    let versions = unwrap_ok_or!(git::fetch_versions(remote), e, { return Err(e) });
 
     log::emit(&handle, log_key, "Cloning repository...");
     let bundle_path = format!("{}/bundles/{}", nodecg_path, bundle_name);
@@ -181,14 +156,7 @@ fn install_bundle(handle: tauri::AppHandle, bundle_name: String, bundle_url: Str
                 let latest_version = versions.first().unwrap();
                 log::emit(&handle, log_key, &format!("Checking out version {}...", latest_version));
 
-                let (object, reference) = unwrap_ok_or!(repo.revparse_ext(latest_version), e, { return format_error("Could not parse ref", e) });
-
-                unwrap_ok_or!(repo.checkout_tree(&object, None), e, { return format_error("Checkout failed", e) });
-
-                unwrap_ok_or!(match reference {
-                    Some(gref) => repo.set_head(gref.name().unwrap()),
-                    None => repo.set_head_detached(object.id())
-                }, e, { return format_error("Failed to set HEAD", e) })
+                unwrap_ok_or!(git::checkout_version(&repo, latest_version.to_string()), e, { return format_error("Failed to check out latest version", e) })
             }
         },
         Err(e) => return format_error(&format!("Failed to clone bundle '{}'", bundle_name), e)
@@ -224,6 +192,51 @@ fn stop_nodecg(handle: tauri::AppHandle, nodecg: tauri::State<ManagedNodecg>) ->
     }
 }
 
+#[tauri::command(async)]
+fn fetch_bundle_versions(bundle_name: String, nodecg_path: String) -> Result<Vec<String>, String> {
+    let bundle_dir = format!("{}/bundles/{}", nodecg_path, bundle_name);
+    let path = Path::new(&bundle_dir);
+
+    if !path.exists() {
+        return Err(format!("Bundle '{}' is not installed.", bundle_name))
+    }
+
+    match Repository::open(path) {
+        Ok(repo) => {
+            let remote = unwrap_ok_or!(git::get_remote(&repo), e, { return format_error("Failed to get remote info", e) });
+
+            git::fetch_versions(remote)
+        },
+        Err(e) => return format_error(&format!("Failed to open git repository for bundle '{}'", bundle_name), e)
+    }
+}
+
+#[tauri::command(async)]
+fn set_bundle_version(handle: tauri::AppHandle, bundle_name: String, version: String, nodecg_path: String) -> Result<String, String> {
+    let log_key = "change-bundle-version";
+    let bundle_dir = format!("{}/bundles/{}", nodecg_path, bundle_name);
+    let path = Path::new(&bundle_dir);
+
+    if !path.exists() {
+        return Err(format!("Bundle '{}' is not installed.", bundle_name))
+    }
+
+    log::emit(&handle, log_key, &format!("Installing {} {}...", bundle_name, version));
+    match Repository::open(path) {
+        Ok(repo) => {
+            let mut remote = unwrap_ok_or!(git::get_remote(&repo), e, { return format_error("Failed to get remote repository", e) });
+            unwrap_ok_or!(remote.fetch(&[""], Some(FetchOptions::new().download_tags(AutotagOption::All)), None), e, return format_error("Failed to fetch version data", e));
+
+            unwrap_ok_or!(git::checkout_version(&repo, version.clone()), e, { return format_error(&format!("Failed to checkout version {}", version), e) });
+        },
+        Err(e) => return format_error(&format!("Failed to open git repository for bundle '{}'", bundle_name), e)
+    }
+
+    npm::install_npm_dependencies(&bundle_dir).and_then(|child| {
+        log_npm_install(&handle, child, log_key)
+    })
+}
+
 fn main() {
     let menu_app = Menu::new()
         .add_native_item(MenuItem::About("NCGMGR".to_string()));
@@ -241,7 +254,15 @@ fn main() {
         .add_submenu(Submenu::new("Edit", menu_edit));
 
     let app = tauri::Builder::default()
-        .invoke_handler(tauri::generate_handler![install_nodecg, uninstall_bundle, install_bundle, start_nodecg, stop_nodecg])
+        .invoke_handler(tauri::generate_handler![
+            install_nodecg,
+            uninstall_bundle,
+            install_bundle,
+            start_nodecg,
+            stop_nodecg,
+            fetch_bundle_versions,
+            set_bundle_version
+        ])
         .menu(menu)
         .manage(ManagedNodecg::new())
         .build(tauri::generate_context!())

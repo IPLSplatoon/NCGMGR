@@ -31,5 +31,11 @@ describe('util/nodecg', () => {
 
             expect(normalizeBundlePath('/path')).toEqual({ isValid: true, bundleName: 'bundle-name', bundleUrl: 'ssh://bundle-name.git' })
         })
+
+        it('replaces deprecated git:// url scheme', () => {
+            (npa as unknown as Mock).mockReturnValue({ hosted: { git: () => 'git://bundle-name.git' } })
+
+            expect(normalizeBundlePath('/path')).toEqual({ isValid: true, bundleName: 'bundle-name', bundleUrl: 'https://bundle-name.git' })
+        })
     })
 })

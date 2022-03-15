@@ -9,7 +9,7 @@
         <div class="bundle-settings__header">
             <div class="bold">Name</div>
             <div class="bold">Version</div>
-            <div />
+            <div class="max-width" />
         </div>
         <div class="layout vertical">
             <div
@@ -22,15 +22,23 @@
                 <div>{{ bundle.version }}</div>
                 <div class="layout horizontal end-horizontal">
                     <ipl-button
+                        small
+                        icon="cog"
+                        :color="visibleBundleConfigs[bundle.name] ? themeColors.backgroundTertiary : 'blue'"
+                        data-test="configure-button"
+                        @click="toggleConfiguration(bundle.name)"
+                    />
+                    <ipl-button
                         color="red"
                         icon="trash-alt"
                         small
                         tooltip="Uninstall"
-                        class="uninstall-button"
+                        class="uninstall-button m-l-8"
                         data-test="uninstall-button"
                         @click="initiateUninstall(bundle.name)"
                     />
                 </div>
+                <bundle-config v-if="visibleBundleConfigs[bundle.name]" :bundle="bundle" style="grid-area: settings" />
             </div>
         </div>
         <ipl-overlay v-model:visible="uninstallOverlayProps.visible" data-test="uninstall-overlay">
@@ -59,11 +67,13 @@ import { computed, reactive } from 'vue'
 import { invoke } from '@tauri-apps/api/tauri'
 import { useConfigStore } from '@/store/config'
 import { useNodecgStore } from '@/store/nodecg'
+import { themeColors } from '@/styles/colors'
+import BundleConfig from '@/components/bundleList/BundleConfig.vue'
 
 export default defineComponent({
     name: 'BundleList',
 
-    components: { IplButton, IplOverlay },
+    components: { BundleConfig, IplButton, IplOverlay },
 
     setup () {
         const configStore = useConfigStore()
@@ -73,6 +83,7 @@ export default defineComponent({
             visible: false,
             bundleName: ''
         })
+        const visibleBundleConfigs = reactive<Record<string, boolean>>({})
 
         return {
             loading: computed(() => nodecgStore.status.bundlesLoading),
@@ -96,7 +107,12 @@ export default defineComponent({
                 }).finally(() => {
                     nodecgStore.getBundleList()
                 })
-            }
+            },
+            visibleBundleConfigs,
+            toggleConfiguration: (name: string) => {
+                visibleBundleConfigs[name] = !visibleBundleConfigs[name] ?? true
+            },
+            themeColors
         }
     }
 })
@@ -109,16 +125,18 @@ export default defineComponent({
 .bundle-settings__header {
     display: grid;
     align-items: center;
-    grid-template-columns: 4fr 1fr 0.25fr;
-    gap: 12px;
+    grid-template-columns: 4fr 1fr 0.75fr;
+    gap: 4px;
     margin: 4px 0;
 }
 
 .bundle-settings__item {
     display: grid;
     align-items: center;
-    gap: 4px;
-    grid-template-columns: 4fr 1fr 0.25fr;
+    gap: 0 4px;
+    grid-template-columns: 4fr 1fr 0.75fr;
+    grid-template-areas: 'name version buttons'
+                         'settings settings settings';
     padding: 4px 0;
     border-top: 1px solid $input-color;
 
