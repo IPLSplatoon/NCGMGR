@@ -74,3 +74,8 @@ export async function getBundles (directory: string): Promise<Bundle[]> {
 export async function getBundleVersions (bundleName: string, nodecgPath: string): Promise<string[]> {
     return invoke('fetch_bundle_versions', { bundleName, nodecgPath })
 }
+
+export async function configFileExists (bundleName: string, nodecgPath: string): Promise<boolean> {
+    const configDir = await readDir(`${nodecgPath}/cfg`)
+    return configDir.some(item => item.name === `${bundleName}.json`)
+}

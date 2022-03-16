@@ -9,9 +9,9 @@ exports[`BundleConfig matches snapshot 1`] = `
     <log-overlay-stub title="Installing..." logkey="change-bundle-version" visible="false" nobackgroundclose="true" data-test="bundle-log-overlay"></log-overlay-stub>
   </div>
   <div class="ipl-space color-dark max-width m-l-8 h-max-content" data-v-11cc5f1c="">
-    <ipl-button-stub label="Open folder" color="blue" disabled="true" async="false" progressmessage="Working..." successmessage="Done!" requiresconfirmation="false" shortconfirmationmessage="false" small="false" disableonsuccess="false" href=""></ipl-button-stub>
-    <ipl-button-stub label="Open in terminal" color="blue" disabled="true" async="false" progressmessage="Working..." successmessage="Done!" requiresconfirmation="false" shortconfirmationmessage="false" small="false" disableonsuccess="false" href="" class="m-t-8"></ipl-button-stub>
-    <ipl-button-stub label="Open config file" color="blue" disabled="true" async="false" progressmessage="Working..." successmessage="Done!" requiresconfirmation="false" shortconfirmationmessage="false" small="false" disableonsuccess="false" href="" class="m-t-8"></ipl-button-stub>
+    <ipl-button-stub label="Open folder" color="blue" disabled="false" async="false" progressmessage="Working..." successmessage="Done!" requiresconfirmation="false" shortconfirmationmessage="false" small="false" disableonsuccess="false" href="" data-test="open-folder-button"></ipl-button-stub>
+    <ipl-button-stub label="Open in terminal" color="blue" disabled="true" async="false" progressmessage="Working..." successmessage="Done!" requiresconfirmation="false" shortconfirmationmessage="false" small="false" disableonsuccess="false" href="" class="m-t-8" data-test="open-in-terminal-button"></ipl-button-stub>
+    <ipl-button-stub label="Open config file" color="blue" disabled="true" async="false" progressmessage="Working..." successmessage="Done!" requiresconfirmation="false" shortconfirmationmessage="false" small="false" disableonsuccess="false" href="" class="m-t-8" data-test="open-config-file-button"></ipl-button-stub>
   </div>
 </div>
 `;
@@ -25,9 +25,9 @@ exports[`BundleConfig matches snapshot after bundle versions are loaded 1`] = `
     <log-overlay-stub title="Installing..." logkey="change-bundle-version" visible="false" nobackgroundclose="true" data-test="bundle-log-overlay"></log-overlay-stub>
   </div>
   <div class="ipl-space color-dark max-width m-l-8 h-max-content" data-v-11cc5f1c="">
-    <ipl-button-stub label="Open folder" color="blue" disabled="true" async="false" progressmessage="Working..." successmessage="Done!" requiresconfirmation="false" shortconfirmationmessage="false" small="false" disableonsuccess="false" href=""></ipl-button-stub>
-    <ipl-button-stub label="Open in terminal" color="blue" disabled="true" async="false" progressmessage="Working..." successmessage="Done!" requiresconfirmation="false" shortconfirmationmessage="false" small="false" disableonsuccess="false" href="" class="m-t-8"></ipl-button-stub>
-    <ipl-button-stub label="Open config file" color="blue" disabled="true" async="false" progressmessage="Working..." successmessage="Done!" requiresconfirmation="false" shortconfirmationmessage="false" small="false" disableonsuccess="false" href="" class="m-t-8"></ipl-button-stub>
+    <ipl-button-stub label="Open folder" color="blue" disabled="false" async="false" progressmessage="Working..." successmessage="Done!" requiresconfirmation="false" shortconfirmationmessage="false" small="false" disableonsuccess="false" href="" data-test="open-folder-button"></ipl-button-stub>
+    <ipl-button-stub label="Open in terminal" color="blue" disabled="true" async="false" progressmessage="Working..." successmessage="Done!" requiresconfirmation="false" shortconfirmationmessage="false" small="false" disableonsuccess="false" href="" class="m-t-8" data-test="open-in-terminal-button"></ipl-button-stub>
+    <ipl-button-stub label="Open config file" color="blue" disabled="false" async="false" progressmessage="Working..." successmessage="Done!" requiresconfirmation="false" shortconfirmationmessage="false" small="false" disableonsuccess="false" href="" class="m-t-8" data-test="open-config-file-button"></ipl-button-stub>
   </div>
 </div>
 `;
@@ -46,9 +46,9 @@ exports[`BundleConfig matches snapshot when getting bundle versions fails 1`] = 
     <log-overlay-stub title="Installing..." logkey="change-bundle-version" visible="false" nobackgroundclose="true" data-test="bundle-log-overlay"></log-overlay-stub>
   </div>
   <div class="ipl-space color-dark max-width m-l-8 h-max-content" data-v-11cc5f1c="">
-    <ipl-button-stub label="Open folder" color="blue" disabled="true" async="false" progressmessage="Working..." successmessage="Done!" requiresconfirmation="false" shortconfirmationmessage="false" small="false" disableonsuccess="false" href=""></ipl-button-stub>
-    <ipl-button-stub label="Open in terminal" color="blue" disabled="true" async="false" progressmessage="Working..." successmessage="Done!" requiresconfirmation="false" shortconfirmationmessage="false" small="false" disableonsuccess="false" href="" class="m-t-8"></ipl-button-stub>
-    <ipl-button-stub label="Open config file" color="blue" disabled="true" async="false" progressmessage="Working..." successmessage="Done!" requiresconfirmation="false" shortconfirmationmessage="false" small="false" disableonsuccess="false" href="" class="m-t-8"></ipl-button-stub>
+    <ipl-button-stub label="Open folder" color="blue" disabled="false" async="false" progressmessage="Working..." successmessage="Done!" requiresconfirmation="false" shortconfirmationmessage="false" small="false" disableonsuccess="false" href="" data-test="open-folder-button"></ipl-button-stub>
+    <ipl-button-stub label="Open in terminal" color="blue" disabled="true" async="false" progressmessage="Working..." successmessage="Done!" requiresconfirmation="false" shortconfirmationmessage="false" small="false" disableonsuccess="false" href="" class="m-t-8" data-test="open-in-terminal-button"></ipl-button-stub>
+    <ipl-button-stub label="Open config file" color="blue" disabled="false" async="false" progressmessage="Working..." successmessage="Done!" requiresconfirmation="false" shortconfirmationmessage="false" small="false" disableonsuccess="false" href="" class="m-t-8" data-test="open-config-file-button"></ipl-button-stub>
   </div>
 </div>
 `;
@@ -62,9 +62,9 @@ exports[`BundleConfig matches snapshot when no bundle versions are found 1`] = `
     <log-overlay-stub title="Installing..." logkey="change-bundle-version" visible="false" nobackgroundclose="true" data-test="bundle-log-overlay"></log-overlay-stub>
   </div>
   <div class="ipl-space color-dark max-width m-l-8 h-max-content" data-v-11cc5f1c="">
-    <ipl-button-stub label="Open folder" color="blue" disabled="true" async="false" progressmessage="Working..." successmessage="Done!" requiresconfirmation="false" shortconfirmationmessage="false" small="false" disableonsuccess="false" href=""></ipl-button-stub>
-    <ipl-button-stub label="Open in terminal" color="blue" disabled="true" async="false" progressmessage="Working..." successmessage="Done!" requiresconfirmation="false" shortconfirmationmessage="false" small="false" disableonsuccess="false" href="" class="m-t-8"></ipl-button-stub>
-    <ipl-button-stub label="Open config file" color="blue" disabled="true" async="false" progressmessage="Working..." successmessage="Done!" requiresconfirmation="false" shortconfirmationmessage="false" small="false" disableonsuccess="false" href="" class="m-t-8"></ipl-button-stub>
+    <ipl-button-stub label="Open folder" color="blue" disabled="false" async="false" progressmessage="Working..." successmessage="Done!" requiresconfirmation="false" shortconfirmationmessage="false" small="false" disableonsuccess="false" href="" data-test="open-folder-button"></ipl-button-stub>
+    <ipl-button-stub label="Open in terminal" color="blue" disabled="true" async="false" progressmessage="Working..." successmessage="Done!" requiresconfirmation="false" shortconfirmationmessage="false" small="false" disableonsuccess="false" href="" class="m-t-8" data-test="open-in-terminal-button"></ipl-button-stub>
+    <ipl-button-stub label="Open config file" color="blue" disabled="false" async="false" progressmessage="Working..." successmessage="Done!" requiresconfirmation="false" shortconfirmationmessage="false" small="false" disableonsuccess="false" href="" class="m-t-8" data-test="open-config-file-button"></ipl-button-stub>
   </div>
 </div>
 `;

@@ -1,11 +1,11 @@
 import { createTestingPinia, TestingPinia } from '@pinia/testing'
 import { config, flushPromises, mount } from '@vue/test-utils'
-import { getBundleVersions } from '@/service/nodecg'
+import { getBundleVersions, configFileExists } from '@/service/nodecg'
 import BundleConfig from '../BundleConfig.vue'
 import Mock = jest.Mock
 import type { IplSelect, IplButton } from '@iplsplatoon/vue-components'
 import { useLogStore } from '@/store/log'
-import { mockTauri } from '@/__mocks__/tauri'
+import { mockTauri, mockTauriOs, mockTauriShell } from '@/__mocks__/tauri'
 import { useConfigStore } from '@/store/config'
 import LogOverlay from '@/components/logOverlay.vue'
 
@@ -24,7 +24,9 @@ describe('BundleConfig', () => {
         pinia = createTestingPinia()
         config.global.plugins = [pinia];
 
-        (getBundleVersions as Mock).mockResolvedValue(['1.0.0', '0.0.1'])
+        (getBundleVersions as Mock).mockResolvedValue(['1.0.0', '0.0.1']);
+        (configFileExists as Mock).mockResolvedValue(true)
+        mockTauriOs.type.mockResolvedValue('')
     })
 
     it('matches snapshot', () => {
@@ -178,5 +180,136 @@ describe('BundleConfig', () => {
         })
         expect(wrapper.getComponent<typeof LogOverlay>('[data-test="bundle-log-overlay"]').vm.$props.visible)
             .toEqual(true)
+    })
+
+    it('handles opening bundle folder', () => {
+        useConfigStore().installPath = 'nodecg/path'
+        const wrapper = mount(BundleConfig, {
+            props: {
+                bundle: {
+                    name: 'bundle-name',
+                    version: '0.0.1'
+                }
+            }
+        })
+
+        wrapper.getComponent<typeof IplButton>('[data-test="open-folder-button"]').vm.$emit('click')
+
+        expect(mockTauriShell.open).toHaveBeenCalledWith('nodecg/path/bundles/bundle-name')
+    })
+
+    it('disables opening bundle in terminal if system is linux', async () => {
+        mockTauriOs.type.mockResolvedValue('Linux')
+        const wrapper = mount(BundleConfig, {
+            props: {
+                bundle: {
+                    name: 'bundle-name',
+                    version: '0.0.1'
+                }
+            }
+        })
+        await flushPromises()
+
+        expect(wrapper.getComponent<typeof IplButton>('[data-test="open-in-terminal-button"]').vm.$props.disabled).toEqual(true)
+    })
+
+    it.each(['Windows_NT', 'Darwin'])('enables opening bundle in terminal if system is %s', async (type) => {
+        mockTauriOs.type.mockResolvedValue(type)
+        const wrapper = mount(BundleConfig, {
+            props: {
+                bundle: {
+                    name: 'bundle-name',
+                    version: '0.0.1'
+                }
+            }
+        })
+        await flushPromises()
+
+        expect(wrapper.getComponent<typeof IplButton>('[data-test="open-in-terminal-button"]').vm.$props.disabled).toEqual(false)
+    })
+
+    it('handles opening bundle in terminal', () => {
+        useConfigStore().installPath = '/nodecg/install/path'
+        const wrapper = mount(BundleConfig, {
+            props: {
+                bundle: {
+                    name: 'cool-bundle',
+                    version: '0.0.1'
+                }
+            }
+        })
+
+        wrapper.getComponent<typeof IplButton>('[data-test="open-in-terminal-button"]').vm.$emit('click')
+
+        expect(mockTauri.invoke).toHaveBeenCalledWith(
+            'open_path_in_terminal',
+            { path: '/nodecg/install/path/bundles/cool-bundle' })
+    })
+
+    it('disables opening config file if config file is missing', async () => {
+        (configFileExists as Mock).mockResolvedValue(false)
+        useConfigStore().installPath = '/nodecg/install/path'
+        const wrapper = mount(BundleConfig, {
+            props: {
+                bundle: {
+                    name: 'cool-bundle',
+                    version: '0.0.1'
+                }
+            }
+        })
+        await flushPromises()
+
+        expect(configFileExists).toHaveBeenCalledWith('cool-bundle', '/nodecg/install/path')
+        expect(wrapper.getComponent<typeof IplButton>('[data-test="open-config-file-button"]').vm.$props.disabled).toEqual(true)
+    })
+
+    it('disables opening config file if checking for config file presence fails', async () => {
+        (configFileExists as Mock).mockRejectedValue(new Error('Error!'))
+        useConfigStore().installPath = '/nodecg/install/path'
+        const wrapper = mount(BundleConfig, {
+            props: {
+                bundle: {
+                    name: 'cool-bundle',
+                    version: '0.0.1'
+                }
+            }
+        })
+        await flushPromises()
+
+        expect(configFileExists).toHaveBeenCalledWith('cool-bundle', '/nodecg/install/path')
+        expect(wrapper.getComponent<typeof IplButton>('[data-test="open-config-file-button"]').vm.$props.disabled).toEqual(true)
+    })
+
+    it('enables opening config file if config file exists', async () => {
+        (configFileExists as Mock).mockResolvedValue(true)
+        useConfigStore().installPath = '/nodecg/install'
+        const wrapper = mount(BundleConfig, {
+            props: {
+                bundle: {
+                    name: 'rad-bundle',
+                    version: '0.0.1'
+                }
+            }
+        })
+        await flushPromises()
+
+        expect(configFileExists).toHaveBeenCalledWith('rad-bundle', '/nodecg/install')
+        expect(wrapper.getComponent<typeof IplButton>('[data-test="open-config-file-button"]').vm.$props.disabled).toEqual(false)
+    })
+
+    it('handles opening config file', () => {
+        useConfigStore().installPath = '/nodecg/install'
+        const wrapper = mount(BundleConfig, {
+            props: {
+                bundle: {
+                    name: 'rad-bundle',
+                    version: '0.0.1'
+                }
+            }
+        })
+
+        wrapper.getComponent<typeof IplButton>('[data-test="open-config-file-button"]').vm.$emit('click')
+
+        expect(mockTauriShell.open).toHaveBeenCalledWith('/nodecg/install/cfg/rad-bundle.json')
     })
 })

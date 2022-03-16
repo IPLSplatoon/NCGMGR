@@ -22,3 +22,15 @@ export const mockTauriFs = {
 }
 
 jest.mock('@tauri-apps/api/fs', () => mockTauriFs)
+
+export const mockTauriOs = {
+    type: jest.fn()
+}
+
+jest.mock('@tauri-apps/api/os', () => mockTauriOs)
+
+export const mockTauriShell = {
+    open: jest.fn()
+}
+
+jest.mock('@tauri-apps/api/shell', () => mockTauriShell)

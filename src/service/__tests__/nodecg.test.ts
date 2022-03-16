@@ -1,5 +1,5 @@
 import { mockTauri, mockTauriFs } from '@/__mocks__/tauri'
-import { getBundles, getBundleVersions, getNodecgStatus } from '@/service/nodecg'
+import { configFileExists, getBundles, getBundleVersions, getNodecgStatus } from '@/service/nodecg'
 import { InstallStatus } from '@/store/nodecg'
 
 describe('getNodecgStatus', () => {
@@ -106,5 +106,25 @@ describe('getBundleVersions', () => {
         expect(mockTauri.invoke).toHaveBeenCalledWith(
             'fetch_bundle_versions', { bundleName: 'bundle-name', nodecgPath: 'nodecg/path' })
         expect(result).toEqual(['1.0.0', '2.0.0'])
+    })
+})
+
+describe('configFileExists', () => {
+    it('returns true when config file is found', async () => {
+        mockTauriFs.readDir.mockResolvedValue([{ name: 'bundle-one.json' }, { name: 'bundle-two.json' }])
+
+        const result = await configFileExists('bundle-two', '/nodecg/path')
+
+        expect(mockTauriFs.readDir).toHaveBeenCalledWith('/nodecg/path/cfg')
+        expect(result).toEqual(true)
+    })
+
+    it('returns false when config file is missing', async () => {
+        mockTauriFs.readDir.mockResolvedValue([{ name: 'bundle-one.json' }, { name: 'bundle-two.json' }])
+
+        const result = await configFileExists('bundle-three', '/path')
+
+        expect(mockTauriFs.readDir).toHaveBeenCalledWith('/path/cfg')
+        expect(result).toEqual(false)
     })
 })

@@ -237,6 +237,33 @@ fn set_bundle_version(handle: tauri::AppHandle, bundle_name: String, version: St
     })
 }
 
+#[tauri::command(async)]
+fn open_path_in_terminal(path: String) -> Result<(), String> {
+    if cfg!(target_os = "windows") {
+        return match Command::new("start")
+            .arg("cmd")
+            .arg("/k")
+            .arg(format!("cd /d {}", path))
+            .spawn() {
+            Ok(_) => { Ok(()) },
+            Err(e) => { format_error("Failed to open path", e) }
+        }
+    } else if cfg!(target_os = "macos") {
+        return match Command::new("open")
+            .arg("-a")
+            .arg("Terminal")
+            .arg(path)
+            .spawn() {
+            Ok(_) => { Ok(()) },
+            Err(e) => { format_error("Failed to open path", e) }
+        }
+    } else {
+        // After some deliberation, I was not able to find a way to open a path in the user's
+        // default terminal emulator when running Linux.
+        Err("Cannot open path in terminal outside MacOS or Windows.".to_string())
+    }
+}
+
 fn main() {
     let menu_app = Menu::new()
         .add_native_item(MenuItem::About("NCGMGR".to_string()));
@@ -261,7 +288,8 @@ fn main() {
             start_nodecg,
             stop_nodecg,
             fetch_bundle_versions,
-            set_bundle_version
+            set_bundle_version,
+            open_path_in_terminal
         ])
         .menu(menu)
         .manage(ManagedNodecg::new())
