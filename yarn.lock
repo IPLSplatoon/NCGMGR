@@ -1992,6 +1992,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@types/hosted-git-info@npm:2.7.0":
+  version: 2.7.0
+  resolution: "@types/hosted-git-info@npm:2.7.0"
+  checksum: 155fdb80bdb5fb7c0ae767bcdbdc9477a27c92d7e6b59ddcb24d72174e7d94d3e1e4845e875374de223d4336683e590e152009475a987bc716601a071179f434
+  languageName: node
+  linkType: hard
+
 "@types/http-proxy@npm:^1.17.5":
   version: 1.17.8
   resolution: "@types/http-proxy@npm:1.17.8"
@@ -10599,6 +10606,7 @@ __metadata:
     "@iplsplatoon/vue-components": 2.3.1
     "@pinia/testing": ^0.0.9
     "@tauri-apps/api": ^1.0.0-rc.2
+    "@types/hosted-git-info": 2.7.0
     "@types/jest": ^24.0.19
     "@types/lodash": ^4.14.178
     "@types/npm-package-arg": ^6.1.1

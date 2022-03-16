@@ -26,6 +26,7 @@
   },
   "devDependencies": {
     "@pinia/testing": "^0.0.9",
+    "@types/hosted-git-info": "2.7.0",
     "@types/jest": "^24.0.19",
     "@types/lodash": "^4.14.178",
     "@types/npm-package-arg": "^6.1.1",
