@@ -1,5 +1,5 @@
 import { mockTauri, mockTauriFs } from '@/__mocks__/tauri'
-import { configFileExists, getBundles, getBundleVersions, getNodecgStatus } from '@/service/nodecg'
+import { configFileExists, getBundles, getBundleVersions, getNodecgStatus, removeBundle } from '@/service/nodecg'
 import { InstallStatus } from '@/store/nodecg'
 
 describe('getNodecgStatus', () => {
@@ -126,5 +126,31 @@ describe('configFileExists', () => {
 
         expect(mockTauriFs.readDir).toHaveBeenCalledWith('/path/cfg')
         expect(result).toEqual(false)
+    })
+})
+
+describe('removeBundle', () => {
+    it('removes bundle directory and config file', async () => {
+        mockTauriFs.removeDir.mockResolvedValue({})
+        mockTauriFs.readDir.mockResolvedValue([{ name: 'bundle-name.json' }])
+        mockTauriFs.removeFile.mockResolvedValue({})
+
+        await removeBundle('bundle-name', '/nodecg/path')
+
+        expect(mockTauriFs.removeDir).toHaveBeenCalledWith('/nodecg/path/bundles/bundle-name')
+        expect(mockTauriFs.readDir).toHaveBeenCalledWith('/nodecg/path/cfg')
+        expect(mockTauriFs.removeFile).toHaveBeenCalledWith('/nodecg/path/cfg/bundle-name.json')
+    })
+
+    it('does not remove config file if it is missing', async () => {
+        mockTauriFs.removeDir.mockResolvedValue({})
+        mockTauriFs.readDir.mockResolvedValue([{ name: 'other-bundle-name.json' }])
+        mockTauriFs.removeFile.mockResolvedValue({})
+
+        await removeBundle('bundle-name', '/nodecg/path')
+
+        expect(mockTauriFs.removeDir).toHaveBeenCalledWith('/nodecg/path/bundles/bundle-name')
+        expect(mockTauriFs.readDir).toHaveBeenCalledWith('/nodecg/path/cfg')
+        expect(mockTauriFs.removeFile).not.toHaveBeenCalled()
     })
 })

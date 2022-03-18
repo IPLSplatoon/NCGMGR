@@ -5,6 +5,10 @@ import { createTestingPinia, TestingPinia } from '@pinia/testing'
 import { useConfigStore } from '@/store/config'
 import { mockTauri } from '@/__mocks__/tauri'
 import { IplButton } from '@iplsplatoon/vue-components'
+import { removeBundle } from '@/service/nodecg'
+import Mock = jest.Mock
+
+jest.mock('@/service/nodecg')
 
 describe('BundleSettings', () => {
     let pinia: TestingPinia
@@ -42,8 +46,8 @@ describe('BundleSettings', () => {
             { name: 'Bundle Two', version: '5.0' }
         ]
         nodecgStore.getBundleList = jest.fn()
-        const wrapper = mount(BundleSettings)
-        mockTauri.invoke.mockResolvedValue({})
+        const wrapper = mount(BundleSettings);
+        (removeBundle as Mock).mockResolvedValue({})
         const bundleRow = wrapper.get('[data-test="bundle_Bundle One"]')
 
         bundleRow.getComponent<typeof IplButton>('[data-test="uninstall-button"]').vm.$emit('click')
@@ -56,10 +60,7 @@ describe('BundleSettings', () => {
         await flushPromises()
 
         expect(wrapper.findComponent('[data-test="uninstall-overlay"]').exists()).toEqual(false)
-        expect(mockTauri.invoke).toHaveBeenCalledWith('uninstall_bundle', {
-            bundleName: 'Bundle One',
-            nodecgPath: '/nodecg/path'
-        })
+        expect(removeBundle).toHaveBeenCalledWith('Bundle One', '/nodecg/path')
         expect(nodecgStore.getBundleList).toHaveBeenCalled()
     })
 

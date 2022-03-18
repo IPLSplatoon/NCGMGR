@@ -110,14 +110,6 @@ fn install_nodecg(handle: tauri::AppHandle, path: String) -> Result<(), String> 
 }
 
 #[tauri::command(async)]
-fn uninstall_bundle(bundle_name: String, nodecg_path: String) -> Result<String, String> {
-    match fs::remove_dir_all(format!("{}/bundles/{}", nodecg_path, bundle_name)) {
-        Ok(_) => Ok("OK".to_string()),
-        Err(e) => Err(format!("Uninstalling bundle {} failed: {}", bundle_name, e.to_string()))
-    }
-}
-
-#[tauri::command(async)]
 fn install_bundle(handle: tauri::AppHandle, bundle_name: String, bundle_url: String, nodecg_path: String) -> Result<(), String> {
     let log_key = "install-bundle";
     log::emit(&handle, log_key, &format!("Installing {}...", bundle_name));
@@ -263,7 +255,6 @@ fn main() {
     let mut builder = tauri::Builder::default()
         .invoke_handler(tauri::generate_handler![
             install_nodecg,
-            uninstall_bundle,
             install_bundle,
             start_nodecg,
             stop_nodecg,

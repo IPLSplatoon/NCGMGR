@@ -62,11 +62,11 @@ import { defineComponent } from '@vue/runtime-core'
 import { IplButton } from '@iplsplatoon/vue-components'
 import IplOverlay from '@/components/mgr/MgrOverlay.vue'
 import { computed, reactive } from 'vue'
-import { invoke } from '@tauri-apps/api/tauri'
 import { useConfigStore } from '@/store/config'
 import { useNodecgStore } from '@/store/nodecg'
 import { themeColors } from '@/styles/colors'
 import BundleConfig from '@/components/bundleList/BundleConfig.vue'
+import { removeBundle } from '@/service/nodecg'
 
 export default defineComponent({
     name: 'BundleList',
@@ -97,10 +97,7 @@ export default defineComponent({
                 uninstallOverlayProps.bundleName = ''
             },
             doUninstall: () => {
-                return invoke('uninstall_bundle', {
-                    bundleName: uninstallOverlayProps.bundleName,
-                    nodecgPath: configStore.installPath
-                }).then(() => {
+                return removeBundle(uninstallOverlayProps.bundleName, configStore.installPath).then(() => {
                     uninstallOverlayProps.visible = false
                 }).finally(() => {
                     nodecgStore.getBundleList()

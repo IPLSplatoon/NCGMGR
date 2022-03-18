@@ -1,4 +1,4 @@
-import { readDir, readTextFile } from '@tauri-apps/api/fs'
+import { readDir, readTextFile, removeDir, removeFile } from '@tauri-apps/api/fs'
 import { PackageSchema } from '@/types/package'
 import isEmpty from 'lodash/isEmpty'
 import { InstallStatus } from '@/store/nodecg'
@@ -78,4 +78,15 @@ export async function getBundleVersions (bundleName: string, nodecgPath: string)
 export async function configFileExists (bundleName: string, nodecgPath: string): Promise<boolean> {
     const configDir = await readDir(`${nodecgPath}/cfg`)
     return configDir.some(item => item.name === `${bundleName}.json`)
+}
+
+export async function removeBundle (bundleName: string, nodecgPath: string): Promise<[void, void]> {
+    return Promise.all([
+        removeDir(`${nodecgPath}/bundles/${bundleName}`),
+        (async () => {
+            if (await configFileExists(bundleName, nodecgPath)) {
+                return removeFile(`${nodecgPath}/cfg/${bundleName}.json`)
+            }
+        })()
+    ])
 }
