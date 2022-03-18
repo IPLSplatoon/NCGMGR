@@ -10,6 +10,7 @@ use std::path::Path;
 use std::process::{Child, ChildStderr, ChildStdout, Command, Stdio};
 use std::sync::Mutex;
 use unwrap_or::unwrap_ok_or;
+use window_vibrancy::{apply_mica, apply_vibrancy, NSVisualEffectMaterial};
 use crate::log::{err_to_string, format_error};
 
 mod npm;
@@ -265,22 +266,7 @@ fn open_path_in_terminal(path: String) -> Result<(), String> {
 }
 
 fn main() {
-    let menu_app = Menu::new()
-        .add_native_item(MenuItem::About("NCGMGR".to_string()));
-
-    let menu_edit = Menu::new()
-        .add_native_item(MenuItem::Cut)
-        .add_native_item(MenuItem::Copy)
-        .add_native_item(MenuItem::Paste)
-        .add_native_item(MenuItem::SelectAll)
-        .add_native_item(MenuItem::Undo)
-        .add_native_item(MenuItem::Redo);
-
-    let menu = Menu::new()
-        .add_submenu(Submenu::new("NCGMGR", menu_app))
-        .add_submenu(Submenu::new("Edit", menu_edit));
-
-    let app = tauri::Builder::default()
+    let mut builder = tauri::Builder::default()
         .invoke_handler(tauri::generate_handler![
             install_nodecg,
             uninstall_bundle,
@@ -291,10 +277,36 @@ fn main() {
             set_bundle_version,
             open_path_in_terminal
         ])
-        .menu(menu)
-        .manage(ManagedNodecg::new())
+        .manage(ManagedNodecg::new());
+
+    if cfg!(target_os = "macos") {
+        let menu_app = Menu::new()
+            .add_native_item(MenuItem::About("NCGMGR".to_string()));
+
+        let menu_edit = Menu::new()
+            .add_native_item(MenuItem::Cut)
+            .add_native_item(MenuItem::Copy)
+            .add_native_item(MenuItem::Paste)
+            .add_native_item(MenuItem::SelectAll)
+            .add_native_item(MenuItem::Undo)
+            .add_native_item(MenuItem::Redo);
+
+        builder = builder.menu(Menu::new()
+            .add_submenu(Submenu::new("NCGMGR", menu_app))
+            .add_submenu(Submenu::new("Edit", menu_edit)));
+    }
+
+    let app = builder
         .build(tauri::generate_context!())
         .expect("error while building tauri application");
+
+    let window = app.get_window("main").unwrap();
+
+    #[cfg(target_os = "macos")]
+    apply_vibrancy(&window, NSVisualEffectMaterial::ContentBackground).unwrap();
+
+    #[cfg(target_os = "windows")]
+    apply_mica(&window).unwrap();
 
     app.run(|handle, e| match e {
         RunEvent::ExitRequested { api, .. } => {
@@ -308,5 +320,5 @@ fn main() {
             }
         }
         _ => {}
-    })
+    });
 }

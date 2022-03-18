@@ -10,6 +10,7 @@
     "beforeBuildCommand": ""
   },
   "tauri": {
+    "macOSPrivateApi": true,
     "bundle": {
       "active": true,
       "targets": "all",
@@ -59,7 +60,8 @@
         "width": 600,
         "height": 600,
         "resizable": false,
-        "fullscreen": false
+        "fullscreen": false,
+        "transparent": true
       }
     ],
     "security": {
