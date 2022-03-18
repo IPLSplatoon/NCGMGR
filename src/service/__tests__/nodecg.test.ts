@@ -119,6 +119,15 @@ describe('configFileExists', () => {
         expect(result).toEqual(true)
     })
 
+    it('returns false when reading the config directory throws an error', async () => {
+        mockTauriFs.readDir.mockRejectedValue(new Error('Error!'))
+
+        const result = await configFileExists('bundle-two', '/nodecg/path')
+
+        expect(mockTauriFs.readDir).toHaveBeenCalledWith('/nodecg/path/cfg')
+        expect(result).toEqual(false)
+    })
+
     it('returns false when config file is missing', async () => {
         mockTauriFs.readDir.mockResolvedValue([{ name: 'bundle-one.json' }, { name: 'bundle-two.json' }])
 
