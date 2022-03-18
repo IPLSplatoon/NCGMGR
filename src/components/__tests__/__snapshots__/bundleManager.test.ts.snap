@@ -1,56 +1,50 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`BundleManager matches snapshot when installing a bundle 1`] = `
-<div>
-  <div class="ipl-space color-dark" data-v-11cc5f1c="">
-    <div class="header layout horizontal center-vertical">
-      <div class="bold grow m-l-4">Bundles</div>
-      <ipl-button-stub icon="sync" color="blue" disabled="false" async="true" progressmessage="Working..." successmessage="Done!" requiresconfirmation="false" shortconfirmationmessage="false" small="true" disableonsuccess="false" href="" tooltip="Refresh" class="button" data-test="refresh-button"></ipl-button-stub>
-      <ipl-button-stub icon="plus-circle" color="green" disabled="false" async="false" progressmessage="Working..." successmessage="Done!" requiresconfirmation="false" shortconfirmationmessage="false" small="true" disableonsuccess="false" href="" tooltip="Install new bundle" class="button m-l-6" data-test="install-new-bundle-button"></ipl-button-stub>
-    </div>
-    <bundle-installer-stub class="m-b-8" style="display: none;"></bundle-installer-stub>
-    <div class="text-center max-width"> No bundles installed. </div>
+<div class="ipl-space color-dark no-padding" data-v-11cc5f1c="">
+  <div class="header layout horizontal center-vertical">
+    <div class="bold grow m-l-4">Bundles</div>
+    <ipl-button-stub icon="sync" color="blue" disabled="false" async="true" progressmessage="Working..." successmessage="Done!" requiresconfirmation="false" shortconfirmationmessage="false" small="true" disableonsuccess="false" href="" tooltip="Refresh" class="button" data-test="refresh-button"></ipl-button-stub>
+    <ipl-button-stub icon="plus-circle" color="green" disabled="false" async="false" progressmessage="Working..." successmessage="Done!" requiresconfirmation="false" shortconfirmationmessage="false" small="true" disableonsuccess="false" href="" tooltip="Install new bundle" class="button m-l-4" data-test="install-new-bundle-button"></ipl-button-stub>
   </div>
+  <bundle-installer-stub class="m-b-8 m-x-8" style="display: none;"></bundle-installer-stub>
+  <div class="text-center m-b-8 max-width"> No bundles installed. </div>
 </div>
 `;
 
 exports[`BundleManager matches snapshot with bundle data 1`] = `
-<div>
-  <div class="ipl-space color-dark" data-v-11cc5f1c="">
-    <div class="header layout horizontal center-vertical">
-      <div class="bold grow m-l-4">Bundles</div>
-      <ipl-button-stub icon="sync" color="blue" disabled="false" async="true" progressmessage="Working..." successmessage="Done!" requiresconfirmation="false" shortconfirmationmessage="false" small="true" disableonsuccess="false" href="" tooltip="Refresh" class="button" data-test="refresh-button"></ipl-button-stub>
-      <ipl-button-stub icon="plus-circle" color="green" disabled="false" async="false" progressmessage="Working..." successmessage="Done!" requiresconfirmation="false" shortconfirmationmessage="false" small="true" disableonsuccess="false" href="" tooltip="Install new bundle" class="button m-l-6" data-test="install-new-bundle-button"></ipl-button-stub>
+<div class="ipl-space color-dark no-padding" data-v-11cc5f1c="">
+  <div class="header layout horizontal center-vertical">
+    <div class="bold grow m-l-4">Bundles</div>
+    <ipl-button-stub icon="sync" color="blue" disabled="false" async="true" progressmessage="Working..." successmessage="Done!" requiresconfirmation="false" shortconfirmationmessage="false" small="true" disableonsuccess="false" href="" tooltip="Refresh" class="button" data-test="refresh-button"></ipl-button-stub>
+    <ipl-button-stub icon="plus-circle" color="green" disabled="false" async="false" progressmessage="Working..." successmessage="Done!" requiresconfirmation="false" shortconfirmationmessage="false" small="true" disableonsuccess="false" href="" tooltip="Install new bundle" class="button m-l-4" data-test="install-new-bundle-button"></ipl-button-stub>
+  </div>
+  <bundle-installer-stub class="m-b-8 m-x-8" style="display: none;"></bundle-installer-stub>
+  <div class="bundle-settings__wrapper max-width">
+    <div class="bundle-settings__header">
+      <div class="bold">Name</div>
+      <div class="bold">Version</div>
+      <div class="max-width"></div>
     </div>
-    <bundle-installer-stub class="m-b-8" style="display: none;"></bundle-installer-stub>
-    <div class="bundle-settings__wrapper max-width">
-      <div class="bundle-settings__header">
-        <div class="bold">Name</div>
-        <div class="bold">Version</div>
-        <div class="max-width"></div>
-      </div>
-      <div class="layout vertical">
-        <div data-test="bundle_Bundle One" class="bundle-settings__item max-width">
-          <div>Bundle One</div>
-          <div>1.2.3</div>
-          <div class="layout horizontal end-horizontal">
-            <ipl-button-stub icon="cog" color="blue" disabled="false" async="false" progressmessage="Working..." successmessage="Done!" requiresconfirmation="false" shortconfirmationmessage="false" small="true" disableonsuccess="false" href="" data-test="configure-button"></ipl-button-stub>
-            <ipl-button-stub icon="trash-alt" color="red" disabled="false" async="false" progressmessage="Working..." successmessage="Done!" requiresconfirmation="false" shortconfirmationmessage="false" small="true" disableonsuccess="false" href="" tooltip="Uninstall" class="uninstall-button m-l-8" data-test="uninstall-button"></ipl-button-stub>
-          </div>
-          <!--v-if-->
-        </div>
-        <div data-test="bundle_Bundle Two" class="bundle-settings__item max-width">
-          <div>Bundle Two</div>
-          <div>5.0</div>
-          <div class="layout horizontal end-horizontal">
-            <ipl-button-stub icon="cog" color="blue" disabled="false" async="false" progressmessage="Working..." successmessage="Done!" requiresconfirmation="false" shortconfirmationmessage="false" small="true" disableonsuccess="false" href="" data-test="configure-button"></ipl-button-stub>
-            <ipl-button-stub icon="trash-alt" color="red" disabled="false" async="false" progressmessage="Working..." successmessage="Done!" requiresconfirmation="false" shortconfirmationmessage="false" small="true" disableonsuccess="false" href="" tooltip="Uninstall" class="uninstall-button m-l-8" data-test="uninstall-button"></ipl-button-stub>
-          </div>
-          <!--v-if-->
-        </div>
+    <div data-test="bundle_Bundle One" class="bundle-settings__item">
+      <div>Bundle One</div>
+      <div>1.2.3</div>
+      <div class="layout horizontal end-horizontal">
+        <ipl-button-stub icon="cog" color="blue" disabled="false" async="false" progressmessage="Working..." successmessage="Done!" requiresconfirmation="false" shortconfirmationmessage="false" small="true" disableonsuccess="false" href="" data-test="configure-button"></ipl-button-stub>
+        <ipl-button-stub icon="trash-alt" color="red" disabled="false" async="false" progressmessage="Working..." successmessage="Done!" requiresconfirmation="false" shortconfirmationmessage="false" small="true" disableonsuccess="false" href="" tooltip="Uninstall" class="uninstall-button m-l-4" data-test="uninstall-button"></ipl-button-stub>
       </div>
       <!--v-if-->
     </div>
+    <div data-test="bundle_Bundle Two" class="bundle-settings__item">
+      <div>Bundle Two</div>
+      <div>5.0</div>
+      <div class="layout horizontal end-horizontal">
+        <ipl-button-stub icon="cog" color="blue" disabled="false" async="false" progressmessage="Working..." successmessage="Done!" requiresconfirmation="false" shortconfirmationmessage="false" small="true" disableonsuccess="false" href="" data-test="configure-button"></ipl-button-stub>
+        <ipl-button-stub icon="trash-alt" color="red" disabled="false" async="false" progressmessage="Working..." successmessage="Done!" requiresconfirmation="false" shortconfirmationmessage="false" small="true" disableonsuccess="false" href="" tooltip="Uninstall" class="uninstall-button m-l-4" data-test="uninstall-button"></ipl-button-stub>
+      </div>
+      <!--v-if-->
+    </div>
+    <!--v-if-->
   </div>
 </div>
 `;
