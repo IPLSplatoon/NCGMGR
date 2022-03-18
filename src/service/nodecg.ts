@@ -82,7 +82,7 @@ export async function configFileExists (bundleName: string, nodecgPath: string):
 
 export async function removeBundle (bundleName: string, nodecgPath: string): Promise<[void, void]> {
     return Promise.all([
-        removeDir(`${nodecgPath}/bundles/${bundleName}`),
+        removeDir(`${nodecgPath}/bundles/${bundleName}`, { recursive: true }),
         (async () => {
             if (await configFileExists(bundleName, nodecgPath)) {
                 return removeFile(`${nodecgPath}/cfg/${bundleName}.json`)

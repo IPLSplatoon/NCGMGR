@@ -137,7 +137,7 @@ describe('removeBundle', () => {
 
         await removeBundle('bundle-name', '/nodecg/path')
 
-        expect(mockTauriFs.removeDir).toHaveBeenCalledWith('/nodecg/path/bundles/bundle-name')
+        expect(mockTauriFs.removeDir).toHaveBeenCalledWith('/nodecg/path/bundles/bundle-name', { recursive: true })
         expect(mockTauriFs.readDir).toHaveBeenCalledWith('/nodecg/path/cfg')
         expect(mockTauriFs.removeFile).toHaveBeenCalledWith('/nodecg/path/cfg/bundle-name.json')
     })
@@ -149,7 +149,7 @@ describe('removeBundle', () => {
 
         await removeBundle('bundle-name', '/nodecg/path')
 
-        expect(mockTauriFs.removeDir).toHaveBeenCalledWith('/nodecg/path/bundles/bundle-name')
+        expect(mockTauriFs.removeDir).toHaveBeenCalledWith('/nodecg/path/bundles/bundle-name', { recursive: true })
         expect(mockTauriFs.readDir).toHaveBeenCalledWith('/nodecg/path/cfg')
         expect(mockTauriFs.removeFile).not.toHaveBeenCalled()
     })
