@@ -20,6 +20,7 @@ semver-parser = "0.10.2"
 itertools = "0.10.3"
 unwrap_or = "1.0.0"
 window-vibrancy = "0.1.0"
+os_info = { version = "3", default-features = false }
 
 [dependencies.tauri]
 version = "1.0.0-rc.4"

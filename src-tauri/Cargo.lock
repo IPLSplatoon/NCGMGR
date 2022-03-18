@@ -1788,6 +1788,7 @@ version = "0.2.0"
 dependencies = [
  "git2",
  "itertools",
+ "os_info",
  "semver-parser",
  "serde",
  "serde_json",

@@ -3,6 +3,8 @@ all(not(debug_assertions), target_os = "windows"),
 windows_subsystem = "windows"
 )]
 
+extern crate core;
+
 use git2::{AutotagOption, FetchOptions, Remote, Repository};
 use tauri::{Manager, Menu, MenuItem, RunEvent, Submenu};
 use std::{fs};
@@ -10,7 +12,10 @@ use std::path::Path;
 use std::process::{Child, ChildStderr, ChildStdout, Command, Stdio};
 use std::sync::Mutex;
 use unwrap_or::unwrap_ok_or;
-use window_vibrancy::{apply_mica, apply_vibrancy, NSVisualEffectMaterial};
+#[cfg(target_os = "macos")]
+use window_vibrancy::{apply_vibrancy, NSVisualEffectMaterial};
+#[cfg(target_os = "windows")]
+use window_vibrancy::{apply_mica};
 use crate::log::{err_to_string, format_error};
 
 mod npm;
@@ -305,8 +310,15 @@ fn main() {
     #[cfg(target_os = "macos")]
     apply_vibrancy(&window, NSVisualEffectMaterial::ContentBackground).unwrap();
 
-    #[cfg(target_os = "windows")]
-    apply_mica(&window).unwrap();
+    if cfg!(target_os = "windows") {
+        let info = os_info::get();
+
+        let build_no = info.version().to_string().split(".").last().unwrap().to_string().parse::<i32>().unwrap();
+        if build_no >= 22000 {
+            #[cfg(target_os = "windows")]
+            apply_mica(&window).unwrap();
+        }
+    }
 
     app.run(|handle, e| match e {
         RunEvent::ExitRequested { api, .. } => {
