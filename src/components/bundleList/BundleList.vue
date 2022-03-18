@@ -62,7 +62,7 @@
 <script lang="ts">
 import { defineComponent } from '@vue/runtime-core'
 import { IplButton } from '@iplsplatoon/vue-components'
-import IplOverlay from '@/components/ipl/iplOverlay.vue'
+import IplOverlay from '@/components/mgr/MgrOverlay.vue'
 import { computed, reactive } from 'vue'
 import { invoke } from '@tauri-apps/api/tauri'
 import { useConfigStore } from '@/store/config'

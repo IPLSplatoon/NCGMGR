@@ -1,16 +1,16 @@
 <template>
-    <ipl-overlay v-model:visible="modelVisible" class="log-overlay" :no-background-close="noBackgroundClose" max-width>
+    <mgr-overlay v-model:visible="modelVisible" class="log-overlay" :no-background-close="noBackgroundClose" max-width>
         <div class="layout vertical center-horizontal">
             <h2 class="m-b-8">{{title}}</h2>
             <log-display :log-key="logKey" class="m-b-8" />
             <ipl-button @click="modelVisible = false" :disabled="!completed" data-test="close-button" label="Close" />
         </div>
-    </ipl-overlay>
+    </mgr-overlay>
 </template>
 
 <script lang="ts">
 import { computed, defineComponent } from 'vue'
-import IplOverlay from '@/components/ipl/iplOverlay.vue'
+import MgrOverlay from '@/components/mgr/MgrOverlay.vue'
 import { IplButton } from '@iplsplatoon/vue-components'
 import { useLogStore } from '@/store/log'
 import LogDisplay from '@/components/logDisplay.vue'
@@ -20,7 +20,7 @@ export default defineComponent({
 
     emits: ['update:visible'],
 
-    components: { LogDisplay, IplOverlay, IplButton },
+    components: { LogDisplay, MgrOverlay, IplButton },
 
     props: {
         title: {

@@ -1,9 +1,9 @@
-import IplOverlay from '@/components/ipl/iplOverlay.vue'
+import MgrOverlay from '@/components/mgr/MgrOverlay.vue'
 import { mount } from '@vue/test-utils'
 
-describe('IplOverlay', () => {
+describe('MgrOverlay', () => {
     it('matches snapshot when visible', () => {
-        const wrapper = mount(IplOverlay, {
+        const wrapper = mount(MgrOverlay, {
             props: {
                 visible: true
             }
@@ -13,7 +13,7 @@ describe('IplOverlay', () => {
     })
 
     it('matches snapshot when visible and max width', () => {
-        const wrapper = mount(IplOverlay, {
+        const wrapper = mount(MgrOverlay, {
             props: {
                 visible: true,
                 maxWidth: true
@@ -24,7 +24,7 @@ describe('IplOverlay', () => {
     })
 
     it('matches snapshot when hidden', () => {
-        const wrapper = mount(IplOverlay, {
+        const wrapper = mount(MgrOverlay, {
             props: {
                 visible: false
             }
@@ -34,14 +34,14 @@ describe('IplOverlay', () => {
     })
 
     it('closes itself on background click if noBackgroundClose is false', () => {
-        const wrapper = mount(IplOverlay, {
+        const wrapper = mount(MgrOverlay, {
             props: {
                 visible: true,
                 noBackgroundClose: false
             }
         })
 
-        wrapper.get('.ipl-overlay__wrapper').trigger('click')
+        wrapper.get('.mgr-overlay__wrapper').trigger('click')
 
         const emitted = wrapper.emitted('update:visible')
         expect(emitted?.length).toEqual(1)
@@ -49,14 +49,14 @@ describe('IplOverlay', () => {
     })
 
     it('does nothing on background click if noBackgroundClose is true', () => {
-        const wrapper = mount(IplOverlay, {
+        const wrapper = mount(MgrOverlay, {
             props: {
                 visible: true,
                 noBackgroundClose: true
             }
         })
 
-        wrapper.get('.ipl-overlay__wrapper').trigger('click')
+        wrapper.get('.mgr-overlay__wrapper').trigger('click')
 
         expect(wrapper.emitted('update:visible')).toBeFalsy()
     })
