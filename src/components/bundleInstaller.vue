@@ -78,8 +78,8 @@ export default defineComponent({
             doInstall: async () => {
                 const logKey = 'install-bundle'
                 logStore.reset(logKey)
-                showInstallLog.value = true
                 await logStore.listen(logKey)
+                showInstallLog.value = true
                 const invocation = invoke('install_bundle', { bundleName, bundleUrl, nodecgPath: configStore.installPath })
                 logStore.logPromiseResult({ promise: invocation, key: logKey })
                 logStore.listenForProcessExit({ key: logKey, callback: () => nodecgStore.getBundleList() })
