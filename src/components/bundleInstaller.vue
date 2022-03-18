@@ -76,13 +76,13 @@ export default defineComponent({
             bundlePath,
             bundlePathValidator,
             doInstall: async () => {
-                logStore.reset('install-bundle')
-                await logStore.listen('install-bundle')
+                const logKey = 'install-bundle'
+                logStore.reset(logKey)
                 showInstallLog.value = true
+                await logStore.listen(logKey)
                 const invocation = invoke('install_bundle', { bundleName, bundleUrl, nodecgPath: configStore.installPath })
-                logStore.logPromiseResult({ promise: invocation, key: 'install-bundle' })
-                await invocation
-                nodecgStore.getBundleList()
+                logStore.logPromiseResult({ promise: invocation, key: logKey })
+                logStore.listenForProcessExit({ key: logKey, callback: () => nodecgStore.getBundleList() })
             }
         }
     }

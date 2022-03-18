@@ -146,16 +146,17 @@ export default defineComponent({
                 }
             }),
             async setVersion () {
-                logStore.reset('change-bundle-version')
-                await logStore.listen('change-bundle-version')
+                const logKey = 'change-bundle-version'
+                logStore.reset(logKey)
+                await logStore.listen(logKey)
                 showInstallLog.value = true
                 const invocation = invoke('set_bundle_version', {
                     bundleName: props.bundle.name,
                     version: selectedVersion.value,
                     nodecgPath: configStore.installPath
                 })
-                logStore.logPromiseResult({ promise: invocation, key: 'change-bundle-version' })
-                await invocation
+                logStore.logPromiseResult({ promise: invocation, key: logKey })
+                logStore.listenForProcessExit({ key: logKey })
             },
             async openBundleFolder () {
                 await open(getBundlePath())

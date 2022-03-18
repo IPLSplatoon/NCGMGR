@@ -1,6 +1,7 @@
 import { Bundle, getBundles, getNodecgStatus } from '@/service/nodecg'
 import { useConfigStore } from '@/store/config'
 import { defineStore } from 'pinia'
+import { listenForProcessExit } from '@/service/messaging'
 
 export enum InstallStatus {
     UNKNOWN,
@@ -63,4 +64,8 @@ export const useNodecgStore = defineStore('nodecg', {
             this.status.bundlesLoading = false
         }
     }
+})
+
+listenForProcessExit('run-nodecg', () => {
+    useNodecgStore().$state.status.runStatus = RunStatus.STOPPED
 })

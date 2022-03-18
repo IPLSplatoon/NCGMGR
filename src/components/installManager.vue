@@ -114,12 +114,18 @@ export default defineComponent({
                 nodecgStore.checkNodecgStatus()
             },
             async doInstall () {
-                logStore.reset('install-nodecg')
+                const logKey = 'install-nodecg'
+                logStore.reset(logKey)
+                await logStore.listen(logKey)
                 showLog.value = true
                 const invocation = invoke('install_nodecg', { path: installFolder.value })
-                logStore.logPromiseResult({ promise: invocation, key: 'install-nodecg' })
-                await invocation
-                nodecgStore.checkNodecgStatus()
+                logStore.logPromiseResult({ promise: invocation, key: logKey })
+                logStore.listenForProcessExit({
+                    key: logKey,
+                    callback: () => {
+                        nodecgStore.checkNodecgStatus()
+                    }
+                })
             },
 
             runStatus: computed(() => nodecgStore.status.runStatus),
@@ -127,13 +133,12 @@ export default defineComponent({
             async doLaunch () {
                 logStore.reset('run-nodecg')
                 const invocation = invoke('start_nodecg', { path: installFolder.value })
-                logStore.logPromiseResult({ promise: invocation, key: 'run-nodecg', noLogOnSuccess: true })
+                logStore.logPromiseResult({ promise: invocation, key: 'run-nodecg' })
                 await invocation
                 nodecgStore.status.runStatus = RunStatus.RUNNING
             },
             async doStop () {
                 await invoke('stop_nodecg')
-                nodecgStore.status.runStatus = RunStatus.STOPPED
             }
         }
     }

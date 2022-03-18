@@ -94,20 +94,26 @@ describe('Installer', () => {
         expect(wrapper.findComponent('[data-test="launch-button"]').exists()).toEqual(false)
     })
 
-    it('handles installation', () => {
+    it('handles installation', async () => {
         const configStore = useConfigStore()
         configStore.installPath = '/install/path'
         const logStore = useLogStore()
         logStore.reset = jest.fn()
+        logStore.listen = jest.fn()
+        logStore.logPromiseResult = jest.fn()
+        logStore.listenForProcessExit = jest.fn()
         const nodecgStore = useNodecgStore()
         nodecgStore.status.installStatus = InstallStatus.READY_TO_INSTALL
         mockTauri.invoke.mockResolvedValue({})
         const wrapper = shallowMount(InstallManager)
 
-        wrapper.getComponent<typeof IplButton>('[data-test="install-button"]').vm.$emit('click')
+        await wrapper.getComponent<typeof IplButton>('[data-test="install-button"]').vm.$emit('click')
 
         expect(logStore.reset).toHaveBeenCalledWith('install-nodecg')
+        expect(logStore.listen).toHaveBeenCalledWith('install-nodecg')
         expect(mockTauri.invoke).toHaveBeenCalledWith('install_nodecg', { path: '/install/path' })
+        expect(logStore.logPromiseResult).toHaveBeenCalledWith({ promise: expect.anything(), key: 'install-nodecg' })
+        expect(logStore.listenForProcessExit).toHaveBeenCalledWith({ key: 'install-nodecg', callback: expect.anything() })
     })
 
     it('handles launching', async () => {
@@ -126,7 +132,7 @@ describe('Installer', () => {
 
         expect(logStore.reset).toHaveBeenCalledWith('run-nodecg')
         expect(mockTauri.invoke).toHaveBeenCalledWith('start_nodecg', { path: '/install/path' })
-        expect(logStore.logPromiseResult).toHaveBeenCalledWith({ promise: expect.anything(), key: 'run-nodecg', noLogOnSuccess: true })
+        expect(logStore.logPromiseResult).toHaveBeenCalledWith({ promise: expect.anything(), key: 'run-nodecg' })
         expect(nodecgStore.status.runStatus).toEqual(RunStatus.RUNNING)
     })
 
@@ -155,15 +161,11 @@ describe('Installer', () => {
     })
 
     it('handles nodecg stopping', async () => {
-        const nodecgStore = useNodecgStore()
-        nodecgStore.status.runStatus = RunStatus.RUNNING
         mockTauri.invoke.mockResolvedValue({})
         const wrapper = shallowMount(InstallManager)
 
-        wrapper.getComponent<typeof IplButton>('[data-test="stop-button"]').vm.$emit('click')
-        await flushPromises()
+        await wrapper.getComponent<typeof IplButton>('[data-test="stop-button"]').vm.$emit('click')
 
         expect(mockTauri.invoke).toHaveBeenCalledWith('stop_nodecg')
-        expect(nodecgStore.status.runStatus).toEqual(RunStatus.STOPPED)
     })
 })

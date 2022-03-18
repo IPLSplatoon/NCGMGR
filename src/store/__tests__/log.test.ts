@@ -2,6 +2,10 @@ import { mockTauriEvent } from '@/__mocks__/tauri'
 import { useLogStore } from '@/store/log'
 import { flushPromises } from '@vue/test-utils'
 import { createPinia, setActivePinia } from 'pinia'
+import { listenForProcessExit } from '@/service/messaging'
+import Mock = jest.Mock
+
+jest.mock('@/service/messaging')
 
 describe('logStore', () => {
     beforeEach(() => {
@@ -107,46 +111,12 @@ describe('logStore', () => {
     })
 
     describe('logPromiseResult', () => {
-        it('inserts successful result into store', async () => {
-            const logStore = useLogStore()
-
-            logStore.logPromiseResult({
-                promise: Promise.resolve(),
-                key: 'key3',
-                noLogOnSuccess: false
-            })
-            await flushPromises()
-
-            expect(logStore.lines).toEqual({
-                key3: [{
-                    message: 'Success!',
-                    type: 'success'
-                }]
-            })
-            expect(logStore.completed).toEqual({ key3: true })
-        })
-
-        it('does not insert successful result into store if noLogOnSuccess is true', async () => {
-            const logStore = useLogStore()
-
-            logStore.logPromiseResult({
-                promise: Promise.resolve(),
-                key: 'key3',
-                noLogOnSuccess: true
-            })
-            await flushPromises()
-
-            expect(logStore.lines).toEqual({})
-            expect(logStore.completed).toEqual({ key3: true })
-        })
-
-        it('inserts unsuccessful result into store', async () => {
+        it('logs error to store', async () => {
             const logStore = useLogStore()
 
             logStore.logPromiseResult({
                 promise: Promise.reject(new Error('Failed!')),
-                key: 'key2',
-                noLogOnSuccess: false
+                key: 'key2'
             })
             await flushPromises()
 
@@ -156,7 +126,28 @@ describe('logStore', () => {
                     type: 'error'
                 }]
             })
-            expect(logStore.completed).toEqual({ key2: true })
+        })
+    })
+
+    describe('listenForProcessExit', () => {
+        it('listens for process exit and sets completed on exit event', async () => {
+            const unlisten = jest.fn()
+            const callback = jest.fn();
+            (listenForProcessExit as Mock).mockResolvedValue(unlisten)
+            const logStore = useLogStore()
+            logStore.setCompleted = jest.fn()
+
+            await logStore.listenForProcessExit({ key: 'log-key', callback })
+
+            expect(callback).not.toHaveBeenCalled()
+            expect(unlisten).not.toHaveBeenCalled()
+            expect(logStore.setCompleted).not.toHaveBeenCalled();
+
+            (listenForProcessExit as Mock).mock.calls[0][1]()
+
+            expect(callback).toHaveBeenCalled()
+            expect(unlisten).toHaveBeenCalled()
+            expect(logStore.setCompleted).toHaveBeenCalledWith({ key: 'log-key', completed: true })
         })
     })
 })

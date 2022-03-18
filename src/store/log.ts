@@ -1,6 +1,7 @@
 import { LogEvent } from '@/types/log'
 import { Event, listen, UnlistenFn } from '@tauri-apps/api/event'
 import { defineStore } from 'pinia'
+import { listenForProcessExit } from '@/service/messaging'
 
 export interface LogStore {
     lines: Record<string, LogEvent[]>
@@ -44,18 +45,8 @@ export const useLogStore = defineStore('log', {
                 delete unlistenFns[key]
             }
         },
-        logPromiseResult ({ promise, key, noLogOnSuccess = false }: { promise: Promise<unknown>, key: string, noLogOnSuccess?: boolean }) {
-            promise.then(() => {
-                if (!noLogOnSuccess) {
-                    this.insertLine({
-                        line: {
-                            message: 'Success!',
-                            type: 'success'
-                        },
-                        key
-                    })
-                }
-            }).catch(e => {
+        logPromiseResult ({ promise, key }: { promise: Promise<unknown>, key: string }) {
+            promise.catch(e => {
                 this.insertLine({
                     line: {
                         message: String(e),
@@ -63,8 +54,15 @@ export const useLogStore = defineStore('log', {
                     },
                     key
                 })
-            }).finally(() => {
+            })
+        },
+        async listenForProcessExit ({ key, callback }: { key: string, callback?: () => void }): Promise<void> {
+            const unlisten = await listenForProcessExit(key, () => {
                 this.setCompleted({ key, completed: true })
+                unlisten()
+                if (callback) {
+                    callback()
+                }
             })
         }
     }
