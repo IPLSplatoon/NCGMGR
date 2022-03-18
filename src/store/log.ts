@@ -54,6 +54,7 @@ export const useLogStore = defineStore('log', {
                     },
                     key
                 })
+                this.setCompleted({ key, completed: true })
             })
         },
         async listenForProcessExit ({ key, callback }: { key: string, callback?: () => void }): Promise<void> {

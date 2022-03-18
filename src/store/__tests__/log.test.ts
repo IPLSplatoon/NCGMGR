@@ -126,6 +126,7 @@ describe('logStore', () => {
                     type: 'error'
                 }]
             })
+            expect(logStore.completed).toEqual({ key2: true })
         })
     })
 
