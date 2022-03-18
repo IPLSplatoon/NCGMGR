@@ -227,10 +227,8 @@ fn set_bundle_version(handle: tauri::AppHandle, bundle_name: String, version: St
 #[tauri::command(async)]
 fn open_path_in_terminal(path: String) -> Result<(), String> {
     if cfg!(target_os = "windows") {
-        return match std::process::Command::new("start")
-            .arg("cmd")
-            .arg("/k")
-            .arg(format!("cd /d {}", path))
+        return match std::process::Command::new("cmd")
+            .args(["/c", "start", "cmd.exe", "/k", &format!("cd /D {}", path)])
             .spawn() {
             Ok(_) => { Ok(()) },
             Err(e) => { format_error("Failed to open path", e) }
