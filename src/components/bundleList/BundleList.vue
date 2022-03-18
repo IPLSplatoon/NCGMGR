@@ -1,8 +1,8 @@
 <template>
-    <div v-if="loading" class="text-center">
+    <div v-if="loading" class="text-center m-b-8">
         Loading...
     </div>
-    <div v-else-if="bundles.length < 1" class="text-center">
+    <div v-else-if="bundles.length < 1" class="text-center m-b-8">
         No bundles installed.
     </div>
     <div v-else class="bundle-settings__wrapper">
@@ -11,35 +11,33 @@
             <div class="bold">Version</div>
             <div class="max-width" />
         </div>
-        <div class="layout vertical">
-            <div
-                v-for="bundle in bundles"
-                :key="`bundle_${bundle.name}`"
-                :data-test="`bundle_${bundle.name}`"
-                class="bundle-settings__item max-width"
-            >
-                <div>{{ bundle.name }}</div>
-                <div>{{ bundle.version }}</div>
-                <div class="layout horizontal end-horizontal">
-                    <ipl-button
-                        small
-                        icon="cog"
-                        :color="visibleBundleConfigs[bundle.name] ? themeColors.backgroundTertiary : 'blue'"
-                        data-test="configure-button"
-                        @click="toggleConfiguration(bundle.name)"
-                    />
-                    <ipl-button
-                        color="red"
-                        icon="trash-alt"
-                        small
-                        tooltip="Uninstall"
-                        class="uninstall-button m-l-8"
-                        data-test="uninstall-button"
-                        @click="initiateUninstall(bundle.name)"
-                    />
-                </div>
-                <bundle-config v-if="visibleBundleConfigs[bundle.name]" :bundle="bundle" style="grid-area: settings" />
+        <div
+            v-for="bundle in bundles"
+            :key="`bundle_${bundle.name}`"
+            :data-test="`bundle_${bundle.name}`"
+            class="bundle-settings__item"
+        >
+            <div>{{ bundle.name }}</div>
+            <div>{{ bundle.version }}</div>
+            <div class="layout horizontal end-horizontal">
+                <ipl-button
+                    small
+                    icon="cog"
+                    :color="visibleBundleConfigs[bundle.name] ? themeColors.backgroundTertiary : 'blue'"
+                    data-test="configure-button"
+                    @click="toggleConfiguration(bundle.name)"
+                />
+                <ipl-button
+                    color="red"
+                    icon="trash-alt"
+                    small
+                    tooltip="Uninstall"
+                    class="uninstall-button m-l-4"
+                    data-test="uninstall-button"
+                    @click="initiateUninstall(bundle.name)"
+                />
             </div>
+            <bundle-config v-if="visibleBundleConfigs[bundle.name]" :bundle="bundle" style="grid-area: settings" />
         </div>
         <ipl-overlay v-model:visible="uninstallOverlayProps.visible" data-test="uninstall-overlay">
             <div class="text-center">
@@ -127,7 +125,7 @@ export default defineComponent({
     align-items: center;
     grid-template-columns: 4fr 1fr 0.75fr;
     gap: 4px;
-    margin: 4px 0;
+    margin: 4px 8px;
 }
 
 .bundle-settings__item {
@@ -137,11 +135,11 @@ export default defineComponent({
     grid-template-columns: 4fr 1fr 0.75fr;
     grid-template-areas: 'name version buttons'
                          'settings settings settings';
-    padding: 4px 0;
+    padding: 4px 8px;
     border-top: 1px solid $input-color;
 
-    &:last-child {
-        padding-bottom: 0;
+    &:nth-child(even) {
+        background-color: var(--space-background-secondary);
     }
 }
 </style>

@@ -24,13 +24,20 @@ $input-color: #737373;
 
 :root {
     --text-color: white;
+    --space-background: rgba(96, 96, 96, 0.075);
+    --space-background-secondary: rgba(173, 173, 173, 0.1);
+    --space-border: rgba(115, 115, 115, 0.5);
     --background-primary: #262F40;
     --background-secondary: #2F3A4F;
     --background-tertiary: #181e29;
+    --input-color-active: white;
 }
 
 @media (prefers-color-scheme: light) {
     :root {
         --text-color: #222;
+        --space-background: rgba(215, 215, 215, 0.1);
+        --space-background-secondary: rgba(215, 215, 215, 0.3);
+        --input-color-active: #222;
     }
 }

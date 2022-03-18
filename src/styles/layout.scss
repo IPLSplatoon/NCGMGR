@@ -41,6 +41,14 @@ $layout-margins: 2, 4, 6, 8, 16;
     .m-r-#{$margin} {
         margin-right: #{$margin}px;
     }
+    .m-x-#{$margin} {
+        margin-right: #{$margin}px;
+        margin-left: #{$margin}px;
+    }
+}
+
+.no-padding {
+    padding: 0 !important;
 }
 
 .max-width {

@@ -1,31 +1,29 @@
 <template>
-    <div>
-        <ipl-space>
-            <div class="header layout horizontal center-vertical">
-                <div class="bold grow m-l-4">Bundles</div>
-                <ipl-button
-                    icon="sync"
-                    small
-                    tooltip="Refresh"
-                    class="button"
-                    @click="refreshBundles"
-                    async
-                    data-test="refresh-button"
-                />
-                <ipl-button
-                    icon="plus-circle"
-                    :color="installingBundle ? themeColors.backgroundTertiary : 'green'"
-                    small
-                    tooltip="Install new bundle"
-                    class="button m-l-6"
-                    data-test="install-new-bundle-button"
-                    @click="installingBundle = !installingBundle"
-                />
-            </div>
-            <bundle-installer v-show="installingBundle" class="m-b-8" />
-            <bundle-list class="max-width" />
-        </ipl-space>
-    </div>
+    <ipl-space class="no-padding">
+        <div class="header layout horizontal center-vertical">
+            <div class="bold grow m-l-4">Bundles</div>
+            <ipl-button
+                icon="sync"
+                small
+                tooltip="Refresh"
+                class="button"
+                @click="refreshBundles"
+                async
+                data-test="refresh-button"
+            />
+            <ipl-button
+                icon="plus-circle"
+                :color="installingBundle ? themeColors.backgroundTertiary : 'green'"
+                small
+                tooltip="Install new bundle"
+                class="button m-l-4"
+                data-test="install-new-bundle-button"
+                @click="installingBundle = !installingBundle"
+            />
+        </div>
+        <bundle-installer v-show="installingBundle" class="m-b-8 m-x-8" />
+        <bundle-list class="max-width" />
+    </ipl-space>
 </template>
 
 <script lang="ts">
@@ -70,6 +68,6 @@ export default defineComponent({
 @import 'src/styles/table';
 
 .header {
-    padding-bottom: 6px;
+    padding: 8px;
 }
 </style>

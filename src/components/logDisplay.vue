@@ -67,7 +67,7 @@ export default defineComponent({
     min-height: 64px;
     overflow: scroll;
     color: var(--text-color);
-    background-color: var(--background-secondary);
+    background-color: var(--space-background);
 
     span {
         margin-left: 6px;
