@@ -131,25 +131,25 @@ describe('configFileExists', () => {
 
 describe('removeBundle', () => {
     it('removes bundle directory and config file', async () => {
-        mockTauriFs.removeDir.mockResolvedValue({})
+        mockTauri.invoke.mockResolvedValue({})
         mockTauriFs.readDir.mockResolvedValue([{ name: 'bundle-name.json' }])
         mockTauriFs.removeFile.mockResolvedValue({})
 
         await removeBundle('bundle-name', '/nodecg/path')
 
-        expect(mockTauriFs.removeDir).toHaveBeenCalledWith('/nodecg/path/bundles/bundle-name', { recursive: true })
+        expect(mockTauri.invoke).toHaveBeenCalledWith('uninstall_bundle', { nodecgPath: '/nodecg/path', bundleName: 'bundle-name' })
         expect(mockTauriFs.readDir).toHaveBeenCalledWith('/nodecg/path/cfg')
         expect(mockTauriFs.removeFile).toHaveBeenCalledWith('/nodecg/path/cfg/bundle-name.json')
     })
 
     it('does not remove config file if it is missing', async () => {
-        mockTauriFs.removeDir.mockResolvedValue({})
+        mockTauri.invoke.mockResolvedValue({})
         mockTauriFs.readDir.mockResolvedValue([{ name: 'other-bundle-name.json' }])
         mockTauriFs.removeFile.mockResolvedValue({})
 
         await removeBundle('bundle-name', '/nodecg/path')
 
-        expect(mockTauriFs.removeDir).toHaveBeenCalledWith('/nodecg/path/bundles/bundle-name', { recursive: true })
+        expect(mockTauri.invoke).toHaveBeenCalledWith('uninstall_bundle', { nodecgPath: '/nodecg/path', bundleName: 'bundle-name' })
         expect(mockTauriFs.readDir).toHaveBeenCalledWith('/nodecg/path/cfg')
         expect(mockTauriFs.removeFile).not.toHaveBeenCalled()
     })

@@ -251,6 +251,14 @@ fn open_path_in_terminal(path: String) -> Result<(), String> {
     }
 }
 
+#[tauri::command(async)]
+fn uninstall_bundle(bundle_name: String, nodecg_path: String) -> Result<String, String> {
+    match rm_rf::remove(format!("{}/bundles/{}", nodecg_path, bundle_name)) {
+        Ok(_) => Ok("OK".to_string()),
+        Err(e) => Err(format!("Uninstalling bundle {} failed: {}", bundle_name, e.to_string()))
+    }
+}
+
 fn main() {
     let mut builder = tauri::Builder::default()
         .invoke_handler(tauri::generate_handler![
@@ -260,7 +268,8 @@ fn main() {
             stop_nodecg,
             fetch_bundle_versions,
             set_bundle_version,
-            open_path_in_terminal
+            open_path_in_terminal,
+            uninstall_bundle
         ])
         .manage(ManagedNodecg::new());
 

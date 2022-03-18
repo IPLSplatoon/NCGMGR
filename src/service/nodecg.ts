@@ -80,9 +80,9 @@ export async function configFileExists (bundleName: string, nodecgPath: string):
     return configDir.some(item => item.name === `${bundleName}.json`)
 }
 
-export async function removeBundle (bundleName: string, nodecgPath: string): Promise<[void, void]> {
+export async function removeBundle (bundleName: string, nodecgPath: string): Promise<[string, void]> {
     return Promise.all([
-        removeDir(`${nodecgPath}/bundles/${bundleName}`, { recursive: true }),
+        invoke<string>('uninstall_bundle', { nodecgPath, bundleName }),
         (async () => {
             if (await configFileExists(bundleName, nodecgPath)) {
                 return removeFile(`${nodecgPath}/cfg/${bundleName}.json`)

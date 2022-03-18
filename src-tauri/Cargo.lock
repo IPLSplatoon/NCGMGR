@@ -1789,6 +1789,7 @@ dependencies = [
  "git2",
  "itertools",
  "os_info",
+ "rm_rf",
  "semver-parser",
  "serde",
  "serde_json",
@@ -2371,6 +2372,15 @@ dependencies = [
 ]
 
 [[package]]
+name = "psm"
+version = "0.1.17"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "6eca0fa5dd7c4c96e184cec588f0b1db1ee3165e678db21c09793105acb17e6f"
+dependencies = [
+ "cc",
+]
+
+[[package]]
 name = "quote"
 version = "1.0.10"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -2599,6 +2609,15 @@ dependencies = [
  "wasm-bindgen-futures",
  "web-sys",
  "windows 0.30.0",
+]
+
+[[package]]
+name = "rm_rf"
+version = "0.6.1"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "9b76a2cc4e96dea40afd3a45baf51a2e36a1f8bf61405cf88a2b15367f68c658"
+dependencies = [
+ "stacker",
 ]
 
 [[package]]
@@ -2933,6 +2952,19 @@ name = "stable_deref_trait"
 version = "1.2.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "a8f112729512f8e442d81f95a8a7ddf2b7c6b8a1a6f509a95864142b30cab2d3"
+
+[[package]]
+name = "stacker"
+version = "0.1.14"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "90939d5171a4420b3ff5fbc8954d641e7377335454c259dcb80786f3f21dc9b4"
+dependencies = [
+ "cc",
+ "cfg-if",
+ "libc",
+ "psm",
+ "winapi",
+]
 
 [[package]]
 name = "state"

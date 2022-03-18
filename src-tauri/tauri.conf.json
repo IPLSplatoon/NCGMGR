@@ -24,9 +24,9 @@
       ],
       "resources": [],
       "externalBin": [],
-      "copyright": "",
+      "copyright": "© inkfarer (inkfarer@inkfarer.com)",
       "category": "Utility",
-      "shortDescription": "",
+      "shortDescription": "Helps manage NodeCG installations.",
       "longDescription": "",
       "deb": {
         "depends": [],
