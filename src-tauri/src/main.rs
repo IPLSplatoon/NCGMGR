@@ -11,7 +11,6 @@ use tauri::api::process::{Command, CommandChild, CommandEvent};
 use tauri::async_runtime::Receiver;
 use std::{fs};
 use std::path::{Path, PathBuf};
-use std::process::{Child};
 use std::sync::Mutex;
 use unwrap_or::unwrap_ok_or;
 #[cfg(target_os = "macos")]
@@ -90,35 +89,24 @@ fn clone_nodecg(path: &str) -> Result<String, String> {
         .and_then(|_| return Ok("OK".to_string()))
 }
 
-fn log_npm_install(handle: &tauri::AppHandle, mut child: Child, log_key: &str) -> Result<String, String> {
+fn log_npm_install(handle: &tauri::AppHandle, receiver: Receiver<CommandEvent>, log_key: &'static str) -> () {
     log::emit(&handle, log_key, "Installing npm dependencies...");
-    log::emit_process_output(&handle, log_key, child.stdout.take().unwrap(), child.stderr.take().unwrap());
-    match child.wait_with_output() {
-        Ok(result) => {
-            if result.status.success() {
-                Ok("OK".to_string())
-            } else {
-                let code = result.status.code();
-                if code.is_some() {
-                    Err(format!("Installing npm dependencies failed with status code {}", code.unwrap().to_string()))
-                } else {
-                    Err("Failed to install npm dependencies".to_string())
-                }
-            }
-        }
-        Err(e) => format_error("Failed to install npm dependencies", e)
-    }
+    log::emit_tauri_process_output(&handle, log_key, receiver);
 }
 
 #[tauri::command(async)]
-fn install_nodecg(handle: tauri::AppHandle, path: String) -> Result<String, String> {
+fn install_nodecg(handle: tauri::AppHandle, path: String) -> Result<(), String> {
     let log_key = "install-nodecg";
     log::emit(&handle, log_key, "Starting NodeCG install...");
-    clone_nodecg(&path).and_then(|_result| {
+    match clone_nodecg(&path).and_then(|_result| {
         npm::install_npm_dependencies(&path).and_then(|child| {
-            log_npm_install(&handle, child, log_key)
+            log_npm_install(&handle, child, log_key);
+            Ok(())
         })
-    })
+    }) {
+        Err(e) => format_error("Failed to install NodeCG", e),
+        Ok(_) => Ok(())
+    }
 }
 
 #[tauri::command(async)]
@@ -130,7 +118,7 @@ fn uninstall_bundle(bundle_name: String, nodecg_path: String) -> Result<String, 
 }
 
 #[tauri::command(async)]
-fn install_bundle(handle: tauri::AppHandle, bundle_name: String, bundle_url: String, nodecg_path: String) -> Result<String, String> {
+fn install_bundle(handle: tauri::AppHandle, bundle_name: String, bundle_url: String, nodecg_path: String) -> Result<(), String> {
     let log_key = "install-bundle";
     log::emit(&handle, log_key, &format!("Installing {}...", bundle_name));
 
@@ -161,9 +149,13 @@ fn install_bundle(handle: tauri::AppHandle, bundle_name: String, bundle_url: Str
         Err(e) => return format_error(&format!("Failed to clone bundle '{}'", bundle_name), e)
     }
 
-    npm::install_npm_dependencies(&bundle_path).and_then(|child| {
-        log_npm_install(&handle, child, log_key)
-    })
+    match npm::install_npm_dependencies(&bundle_path).and_then(|child| {
+        log_npm_install(&handle, child, log_key);
+        Ok(())
+    }) {
+        Err(e) => format_error("Failed to install bundle", e),
+        Ok(_) => Ok(())
+    }
 }
 
 #[tauri::command(async)]
@@ -211,7 +203,7 @@ fn fetch_bundle_versions(bundle_name: String, nodecg_path: String) -> Result<Vec
 }
 
 #[tauri::command(async)]
-fn set_bundle_version(handle: tauri::AppHandle, bundle_name: String, version: String, nodecg_path: String) -> Result<String, String> {
+fn set_bundle_version(handle: tauri::AppHandle, bundle_name: String, version: String, nodecg_path: String) -> Result<(), String> {
     let log_key = "change-bundle-version";
     let bundle_dir = format!("{}/bundles/{}", nodecg_path, bundle_name);
     let path = Path::new(&bundle_dir);
@@ -231,9 +223,13 @@ fn set_bundle_version(handle: tauri::AppHandle, bundle_name: String, version: St
         Err(e) => return format_error(&format!("Failed to open git repository for bundle '{}'", bundle_name), e)
     }
 
-    npm::install_npm_dependencies(&bundle_dir).and_then(|child| {
-        log_npm_install(&handle, child, log_key)
-    })
+    match npm::install_npm_dependencies(&bundle_dir).and_then(|child| {
+        log_npm_install(&handle, child, log_key);
+        Ok(())
+    }) {
+        Err(e) => format_error("Failed to set bundle version", e),
+        Ok(_) => Ok(())
+    }
 }
 
 #[tauri::command(async)]
