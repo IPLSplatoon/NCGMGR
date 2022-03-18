@@ -7,9 +7,11 @@ extern crate core;
 
 use git2::{AutotagOption, FetchOptions, Remote, Repository};
 use tauri::{Manager, Menu, MenuItem, RunEvent, Submenu};
+use tauri::api::process::{Command, CommandChild, CommandEvent};
+use tauri::async_runtime::Receiver;
 use std::{fs};
-use std::path::Path;
-use std::process::{Child, ChildStderr, ChildStdout, Command, Stdio};
+use std::path::{Path, PathBuf};
+use std::process::{Child};
 use std::sync::Mutex;
 use unwrap_or::unwrap_ok_or;
 #[cfg(target_os = "macos")]
@@ -25,13 +27,8 @@ mod git;
 const NODECG_GIT_PATH: &str = "https://github.com/nodecg/nodecg.git";
 const NODECG_TAG: &str = "v1.8.1";
 
-struct ProcessOutput {
-    stdout: ChildStdout,
-    stderr: ChildStderr
-}
-
 struct ManagedNodecg {
-    process: Mutex<Option<Child>>
+    process: Mutex<Option<CommandChild>>
 }
 
 impl ManagedNodecg {
@@ -41,26 +38,22 @@ impl ManagedNodecg {
         }
     }
 
-    fn start(&self, nodecg_path: &str) -> Result<ProcessOutput, String> {
+    fn start(&self, nodecg_path: &str) -> Result<Receiver<CommandEvent>, String> {
         let mut process = unwrap_ok_or!(self.process.lock(), e, { return format_error("Failed to access process", e) });
 
         if process.is_some() {
             return Err("NodeCG is already running.".to_string())
         }
 
-        let mut child = unwrap_ok_or!(
+        let child = unwrap_ok_or!(
             Command::new("node")
-                .arg(format!("{}/index.js", nodecg_path))
-                .stdout(Stdio::piped())
-                .stderr(Stdio::piped())
-                .current_dir(nodecg_path)
+                .args([format!("{}/index.js", nodecg_path)])
+                .current_dir(PathBuf::from(nodecg_path))
                 .spawn(), e,
             { return format_error("Failed to start NodeCG", e) });
-        let stdout = child.stdout.take().unwrap();
-        let stderr = child.stderr.take().unwrap();
-        *process = Some(child);
+        *process = Some(child.1);
 
-        Ok(ProcessOutput { stdout, stderr })
+        Ok(child.0)
     }
 
     fn stop(&self) -> Result<(), String> {
@@ -174,10 +167,10 @@ fn install_bundle(handle: tauri::AppHandle, bundle_name: String, bundle_url: Str
 }
 
 #[tauri::command(async)]
-fn start_nodecg(handle: tauri::AppHandle, nodecg: tauri::State<ManagedNodecg>, path: String) -> Result<String, String> {
+fn start_nodecg(handle: tauri::AppHandle, nodecg: tauri::State<'_, ManagedNodecg>, path: String) -> Result<String, String> {
     let log_key = "run-nodecg";
     let output = unwrap_ok_or!(nodecg.start(&path), e, { return format_error("Failed to start NodeCG", e) });
-    log::emit_process_output(&handle, log_key, output.stdout, output.stderr);
+    log::emit_tauri_process_output(&handle, log_key, output);
 
     Ok("Started successfully".to_string())
 }
@@ -246,7 +239,7 @@ fn set_bundle_version(handle: tauri::AppHandle, bundle_name: String, version: St
 #[tauri::command(async)]
 fn open_path_in_terminal(path: String) -> Result<(), String> {
     if cfg!(target_os = "windows") {
-        return match Command::new("start")
+        return match std::process::Command::new("start")
             .arg("cmd")
             .arg("/k")
             .arg(format!("cd /d {}", path))
@@ -255,7 +248,7 @@ fn open_path_in_terminal(path: String) -> Result<(), String> {
             Err(e) => { format_error("Failed to open path", e) }
         }
     } else if cfg!(target_os = "macos") {
-        return match Command::new("open")
+        return match std::process::Command::new("open")
             .arg("-a")
             .arg("Terminal")
             .arg(path)
@@ -286,7 +279,8 @@ fn main() {
 
     if cfg!(target_os = "macos") {
         let menu_app = Menu::new()
-            .add_native_item(MenuItem::About("NCGMGR".to_string()));
+            .add_native_item(MenuItem::About("NCGMGR".to_string()))
+            .add_native_item(MenuItem::Quit);
 
         let menu_edit = Menu::new()
             .add_native_item(MenuItem::Cut)
