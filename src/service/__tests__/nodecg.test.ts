@@ -1,6 +1,17 @@
-import { mockTauri, mockTauriFs } from '@/__mocks__/tauri'
-import { configFileExists, getBundles, getBundleVersions, getNodecgStatus, removeBundle } from '@/service/nodecg'
+import { mockTauri, mockTauriFs, mockTauriShell } from '@/__mocks__/tauri'
+import {
+    configFileExists, createConfigFile,
+    getBundles,
+    getBundleVersions,
+    getNodecgStatus,
+    openConfigFile,
+    removeBundle
+} from '@/service/nodecg'
 import { InstallStatus } from '@/store/nodecg'
+import { fileExists, folderExists } from '@/util/fs'
+import Mock = jest.Mock
+
+jest.mock('@/util/fs')
 
 describe('getNodecgStatus', () => {
     it('returns ready to install response when directory is empty', async () => {
@@ -111,55 +122,77 @@ describe('getBundleVersions', () => {
 
 describe('configFileExists', () => {
     it('returns true when config file is found', async () => {
-        mockTauriFs.readDir.mockResolvedValue([{ name: 'bundle-one.json' }, { name: 'bundle-two.json' }])
+        (fileExists as Mock).mockResolvedValue(true)
 
         const result = await configFileExists('bundle-two', '/nodecg/path')
 
-        expect(mockTauriFs.readDir).toHaveBeenCalledWith('/nodecg/path/cfg')
+        expect(fileExists).toHaveBeenCalledWith('/nodecg/path/cfg/bundle-two.json')
         expect(result).toEqual(true)
     })
 
-    it('returns false when reading the config directory throws an error', async () => {
-        mockTauriFs.readDir.mockRejectedValue(new Error('Error!'))
+    it('returns false when config file is not found', async () => {
+        (fileExists as Mock).mockResolvedValue(false)
 
         const result = await configFileExists('bundle-two', '/nodecg/path')
 
-        expect(mockTauriFs.readDir).toHaveBeenCalledWith('/nodecg/path/cfg')
-        expect(result).toEqual(false)
-    })
-
-    it('returns false when config file is missing', async () => {
-        mockTauriFs.readDir.mockResolvedValue([{ name: 'bundle-one.json' }, { name: 'bundle-two.json' }])
-
-        const result = await configFileExists('bundle-three', '/path')
-
-        expect(mockTauriFs.readDir).toHaveBeenCalledWith('/path/cfg')
+        expect(fileExists).toHaveBeenCalledWith('/nodecg/path/cfg/bundle-two.json')
         expect(result).toEqual(false)
     })
 })
 
 describe('removeBundle', () => {
     it('removes bundle directory and config file', async () => {
-        mockTauri.invoke.mockResolvedValue({})
-        mockTauriFs.readDir.mockResolvedValue([{ name: 'bundle-name.json' }])
+        mockTauri.invoke.mockResolvedValue({});
+        (fileExists as Mock).mockResolvedValue(true)
         mockTauriFs.removeFile.mockResolvedValue({})
 
         await removeBundle('bundle-name', '/nodecg/path')
 
         expect(mockTauri.invoke).toHaveBeenCalledWith('uninstall_bundle', { nodecgPath: '/nodecg/path', bundleName: 'bundle-name' })
-        expect(mockTauriFs.readDir).toHaveBeenCalledWith('/nodecg/path/cfg')
+        expect(fileExists).toHaveBeenCalledWith('/nodecg/path/cfg/bundle-name.json')
         expect(mockTauriFs.removeFile).toHaveBeenCalledWith('/nodecg/path/cfg/bundle-name.json')
     })
 
     it('does not remove config file if it is missing', async () => {
-        mockTauri.invoke.mockResolvedValue({})
-        mockTauriFs.readDir.mockResolvedValue([{ name: 'other-bundle-name.json' }])
+        mockTauri.invoke.mockResolvedValue({});
+        (fileExists as Mock).mockResolvedValue(false)
         mockTauriFs.removeFile.mockResolvedValue({})
 
         await removeBundle('bundle-name', '/nodecg/path')
 
         expect(mockTauri.invoke).toHaveBeenCalledWith('uninstall_bundle', { nodecgPath: '/nodecg/path', bundleName: 'bundle-name' })
-        expect(mockTauriFs.readDir).toHaveBeenCalledWith('/nodecg/path/cfg')
+        expect(fileExists).toHaveBeenCalledWith('/nodecg/path/cfg/bundle-name.json')
         expect(mockTauriFs.removeFile).not.toHaveBeenCalled()
+    })
+})
+
+describe('openConfigFile', () => {
+    it('opens file at expected path', () => {
+        openConfigFile('bundle-name', '/nodecg/path')
+
+        expect(mockTauriShell.open).toHaveBeenCalledWith('/nodecg/path/cfg/bundle-name.json')
+    })
+})
+
+describe('createConfigFile', () => {
+    it('creates config folder if required and writes new file', async () => {
+        (folderExists as Mock).mockResolvedValue(false)
+        mockTauriFs.createDir.mockResolvedValue({ })
+
+        await createConfigFile('bundleName', '/nodecg/path')
+
+        expect(folderExists).toHaveBeenCalledWith('/nodecg/path/cfg')
+        expect(mockTauriFs.createDir).toHaveBeenCalledWith('/nodecg/path/cfg')
+        expect(mockTauriFs.writeFile).toHaveBeenCalledWith({ path: '/nodecg/path/cfg/bundleName.json', contents: '{\n\n}' })
+    })
+
+    it('does not create config folder if it already exists and writes new file', async () => {
+        (folderExists as Mock).mockResolvedValue(true)
+
+        await createConfigFile('bundle-name', '/nodecg/path')
+
+        expect(folderExists).toHaveBeenCalledWith('/nodecg/path/cfg')
+        expect(mockTauriFs.createDir).not.toHaveBeenCalled()
+        expect(mockTauriFs.writeFile).toHaveBeenCalledWith({ path: '/nodecg/path/cfg/bundle-name.json', contents: '{\n\n}' })
     })
 })

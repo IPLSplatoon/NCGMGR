@@ -20,7 +20,9 @@ export const mockTauriFs = {
     readDir: jest.fn(),
     readTextFile: jest.fn(),
     removeDir: jest.fn(),
-    removeFile: jest.fn()
+    removeFile: jest.fn(),
+    createDir: jest.fn(),
+    writeFile: jest.fn()
 }
 
 jest.mock('@tauri-apps/api/fs', () => mockTauriFs)

@@ -1,6 +1,6 @@
 import { createTestingPinia, TestingPinia } from '@pinia/testing'
 import { config, flushPromises, mount } from '@vue/test-utils'
-import { getBundleVersions, configFileExists } from '@/service/nodecg'
+import { getBundleVersions, configFileExists, openConfigFile, createConfigFile } from '@/service/nodecg'
 import BundleConfig from '../BundleConfig.vue'
 import Mock = jest.Mock
 import type { IplSelect, IplButton } from '@iplsplatoon/vue-components'
@@ -58,6 +58,36 @@ describe('BundleConfig', () => {
 
     it('matches snapshot when no bundle versions are found', async () => {
         (getBundleVersions as Mock).mockResolvedValue([])
+        const wrapper = mount(BundleConfig, {
+            props: {
+                bundle: {
+                    name: 'bundle-name',
+                    version: '0.0.1'
+                }
+            }
+        })
+        await flushPromises()
+
+        expect(wrapper.html()).toMatchSnapshot()
+    })
+
+    it('matches snapshot when config file exists', async () => {
+        (configFileExists as Mock).mockResolvedValue(true)
+        const wrapper = mount(BundleConfig, {
+            props: {
+                bundle: {
+                    name: 'bundle-name',
+                    version: '0.0.1'
+                }
+            }
+        })
+        await flushPromises()
+
+        expect(wrapper.html()).toMatchSnapshot()
+    })
+
+    it('matches snapshot when config file is missing', async () => {
+        (configFileExists as Mock).mockResolvedValue(false)
         const wrapper = mount(BundleConfig, {
             props: {
                 bundle: {
@@ -249,7 +279,7 @@ describe('BundleConfig', () => {
     it('disables opening config file if config file is missing', async () => {
         (configFileExists as Mock).mockResolvedValue(false)
         useConfigStore().installPath = '/nodecg/install/path'
-        const wrapper = mount(BundleConfig, {
+        const wrapper = await mount(BundleConfig, {
             props: {
                 bundle: {
                     name: 'cool-bundle',
@@ -257,7 +287,6 @@ describe('BundleConfig', () => {
                 }
             }
         })
-        await flushPromises()
 
         expect(configFileExists).toHaveBeenCalledWith('cool-bundle', '/nodecg/install/path')
         expect(wrapper.getComponent<typeof IplButton>('[data-test="open-config-file-button"]').vm.$props.disabled).toEqual(true)
@@ -266,7 +295,7 @@ describe('BundleConfig', () => {
     it('disables opening config file if checking for config file presence fails', async () => {
         (configFileExists as Mock).mockRejectedValue(new Error('Error!'))
         useConfigStore().installPath = '/nodecg/install/path'
-        const wrapper = mount(BundleConfig, {
+        const wrapper = await mount(BundleConfig, {
             props: {
                 bundle: {
                     name: 'cool-bundle',
@@ -274,7 +303,6 @@ describe('BundleConfig', () => {
                 }
             }
         })
-        await flushPromises()
 
         expect(configFileExists).toHaveBeenCalledWith('cool-bundle', '/nodecg/install/path')
         expect(wrapper.getComponent<typeof IplButton>('[data-test="open-config-file-button"]').vm.$props.disabled).toEqual(true)
@@ -297,9 +325,10 @@ describe('BundleConfig', () => {
         expect(wrapper.getComponent<typeof IplButton>('[data-test="open-config-file-button"]').vm.$props.disabled).toEqual(false)
     })
 
-    it('handles opening config file', () => {
+    it('handles opening config file if it exists', async () => {
+        (configFileExists as Mock).mockResolvedValue(true)
         useConfigStore().installPath = '/nodecg/install'
-        const wrapper = mount(BundleConfig, {
+        const wrapper = await mount(BundleConfig, {
             props: {
                 bundle: {
                     name: 'rad-bundle',
@@ -310,6 +339,29 @@ describe('BundleConfig', () => {
 
         wrapper.getComponent<typeof IplButton>('[data-test="open-config-file-button"]').vm.$emit('click')
 
-        expect(mockTauriShell.open).toHaveBeenCalledWith('/nodecg/install/cfg/rad-bundle.json')
+        expect(configFileExists).toHaveBeenCalledWith('rad-bundle', '/nodecg/install')
+        expect(openConfigFile).toHaveBeenCalledWith('rad-bundle', '/nodecg/install')
+    })
+
+    it('handles creating config file if it is missing', async () => {
+        (configFileExists as Mock).mockResolvedValue(false);
+        (createConfigFile as Mock).mockResolvedValue({})
+        useConfigStore().installPath = '/nodecg/path'
+        const wrapper = await mount(BundleConfig, {
+            props: {
+                bundle: {
+                    name: 'rad-bundle',
+                    version: '0.0.1'
+                }
+            }
+        })
+
+        await wrapper.getComponent<typeof IplButton>('[data-test="open-config-file-button"]').vm.$emit('click')
+        await flushPromises()
+
+        expect(configFileExists).toHaveBeenCalledTimes(2)
+        expect(configFileExists).toHaveBeenCalledWith('rad-bundle', '/nodecg/path')
+        expect(createConfigFile).toHaveBeenCalledWith('rad-bundle', '/nodecg/path')
+        expect(openConfigFile).toHaveBeenCalledWith('rad-bundle', '/nodecg/path')
     })
 })

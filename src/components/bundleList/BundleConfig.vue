@@ -44,11 +44,12 @@
                 @click="openBundleInTerminal"
             />
             <ipl-button
-                label="Open config file"
-                :disabled="!hasConfigFile"
+                :label="hasConfigFile ? 'Open config file' : 'Create config file'"
+                :color="hasConfigFile ? 'blue' : 'green'"
+                :disabled="configFileLoading"
                 class="m-t-8"
                 data-test="open-config-file-button"
-                @click="openConfigFile"
+                @click="openOrCreateConfigFile"
             />
         </ipl-space>
     </ipl-space>
@@ -57,7 +58,7 @@
 <script lang="ts">
 import { defineComponent } from '@vue/runtime-core'
 import { computed, PropType, ref, watch } from 'vue'
-import { Bundle, configFileExists, getBundleVersions } from '@/service/nodecg'
+import { Bundle, configFileExists, createConfigFile, getBundleVersions, openConfigFile } from '@/service/nodecg'
 import { IplButton, IplMessage, IplSelect, IplSpace } from '@iplsplatoon/vue-components'
 import { useConfigStore } from '@/store/config'
 import LogOverlay from '@/components/logOverlay.vue'
@@ -90,6 +91,7 @@ export default defineComponent({
         const selectedVersion = ref('')
         const showInstallLog = ref(false)
         const hasConfigFile = ref(false)
+        const configFileLoading = ref(true)
         const enableOpenTerminal = ref(false)
 
         type().then(type => {
@@ -114,14 +116,21 @@ export default defineComponent({
                 versionsLoading.value = false
             })
 
+            checkConfigFile(newValue)
+        }, { immediate: true })
+
+        async function checkConfigFile (bundleName: string): Promise<void> {
+            configFileLoading.value = true
             hasConfigFile.value = false
-            configFileExists(newValue, useConfigStore().installPath).then(result => {
+            configFileExists(bundleName, useConfigStore().installPath).then(result => {
                 hasConfigFile.value = result
             }).catch(e => {
                 hasConfigFile.value = false
                 console.error(e)
+            }).finally(() => {
+                configFileLoading.value = false
             })
-        }, { immediate: true })
+        }
 
         function getBundlePath () {
             return `${useConfigStore().installPath}/bundles/${props.bundle.name}`
@@ -130,6 +139,7 @@ export default defineComponent({
         return {
             enableOpenTerminal,
             hasConfigFile,
+            configFileLoading,
             showInstallLog,
             selectedVersion,
             versionsLoading,
@@ -161,8 +171,14 @@ export default defineComponent({
             async openBundleFolder () {
                 await open(getBundlePath())
             },
-            async openConfigFile () {
-                await open(`${useConfigStore().installPath}/cfg/${props.bundle.name}.json`)
+            async openOrCreateConfigFile () {
+                const configStore = useConfigStore()
+                if (!hasConfigFile.value) {
+                    await createConfigFile(props.bundle.name, configStore.installPath)
+                    checkConfigFile(props.bundle.name)
+                }
+
+                await openConfigFile(props.bundle.name, configStore.installPath)
             },
             async openBundleInTerminal () {
                 await invoke('open_path_in_terminal', { path: getBundlePath() })

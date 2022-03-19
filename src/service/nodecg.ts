@@ -1,8 +1,10 @@
-import { readDir, readTextFile, removeFile } from '@tauri-apps/api/fs'
+import { createDir, readDir, readTextFile, removeFile, writeFile } from '@tauri-apps/api/fs'
 import { PackageSchema } from '@/types/package'
 import isEmpty from 'lodash/isEmpty'
 import { InstallStatus } from '@/store/nodecg'
 import { invoke } from '@tauri-apps/api/tauri'
+import { fileExists, folderExists } from '@/util/fs'
+import { open } from '@tauri-apps/api/shell'
 
 export async function getNodecgStatus (directory: string): Promise<{ status: InstallStatus, message: string }> {
     if (isEmpty(directory?.trim())) {
@@ -76,13 +78,7 @@ export async function getBundleVersions (bundleName: string, nodecgPath: string)
 }
 
 export async function configFileExists (bundleName: string, nodecgPath: string): Promise<boolean> {
-    try {
-        const configDir = await readDir(`${nodecgPath}/cfg`)
-        return configDir.some(item => item.name === `${bundleName}.json`)
-    } catch (e) {
-        console.error('Got error while checking for config file:', e)
-        return false
-    }
+    return fileExists(`${nodecgPath}/cfg/${bundleName}.json`)
 }
 
 export async function removeBundle (bundleName: string, nodecgPath: string): Promise<[string, void]> {
@@ -94,4 +90,16 @@ export async function removeBundle (bundleName: string, nodecgPath: string): Pro
             }
         })()
     ])
+}
+
+export async function openConfigFile (bundleName: string, nodecgPath: string): Promise<void> {
+    return open(`${nodecgPath}/cfg/${bundleName}.json`)
+}
+
+export async function createConfigFile (bundleName: string, nodecgPath: string): Promise<void> {
+    if (!await folderExists(`${nodecgPath}/cfg`)) {
+        await createDir(`${nodecgPath}/cfg`)
+    }
+
+    return writeFile({ path: `${nodecgPath}/cfg/${bundleName}.json`, contents: '{\n\n}' })
 }
