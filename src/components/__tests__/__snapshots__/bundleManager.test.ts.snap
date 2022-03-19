@@ -27,20 +27,24 @@ exports[`BundleManager matches snapshot with bundle data 1`] = `
       <div class="max-width"></div>
     </div>
     <div data-test="bundle_Bundle One" class="bundle-settings__item">
-      <div>Bundle One</div>
-      <div>1.2.3</div>
-      <div class="layout horizontal end-horizontal">
-        <ipl-button-stub icon="cog" color="blue" disabled="false" async="false" progressmessage="Working..." successmessage="Done!" requiresconfirmation="false" shortconfirmationmessage="false" small="true" disableonsuccess="false" href="" data-test="configure-button"></ipl-button-stub>
-        <ipl-button-stub icon="trash-alt" color="red" disabled="false" async="false" progressmessage="Working..." successmessage="Done!" requiresconfirmation="false" shortconfirmationmessage="false" small="true" disableonsuccess="false" href="" tooltip="Uninstall" class="uninstall-button m-l-4" data-test="uninstall-button"></ipl-button-stub>
+      <div class="bundle-settings__item-content">
+        <div>Bundle One</div>
+        <div>1.2.3</div>
+        <div class="layout horizontal end-horizontal">
+          <ipl-button-stub icon="cog" color="blue" disabled="false" async="false" progressmessage="Working..." successmessage="Done!" requiresconfirmation="false" shortconfirmationmessage="false" small="true" disableonsuccess="false" href="" data-test="configure-button"></ipl-button-stub>
+          <ipl-button-stub icon="trash-alt" color="red" disabled="false" async="false" progressmessage="Working..." successmessage="Done!" requiresconfirmation="false" shortconfirmationmessage="false" small="true" disableonsuccess="false" href="" tooltip="Uninstall" class="uninstall-button m-l-4" data-test="uninstall-button"></ipl-button-stub>
+        </div>
       </div>
       <!--v-if-->
     </div>
     <div data-test="bundle_Bundle Two" class="bundle-settings__item">
-      <div>Bundle Two</div>
-      <div>5.0</div>
-      <div class="layout horizontal end-horizontal">
-        <ipl-button-stub icon="cog" color="blue" disabled="false" async="false" progressmessage="Working..." successmessage="Done!" requiresconfirmation="false" shortconfirmationmessage="false" small="true" disableonsuccess="false" href="" data-test="configure-button"></ipl-button-stub>
-        <ipl-button-stub icon="trash-alt" color="red" disabled="false" async="false" progressmessage="Working..." successmessage="Done!" requiresconfirmation="false" shortconfirmationmessage="false" small="true" disableonsuccess="false" href="" tooltip="Uninstall" class="uninstall-button m-l-4" data-test="uninstall-button"></ipl-button-stub>
+      <div class="bundle-settings__item-content">
+        <div>Bundle Two</div>
+        <div>5.0</div>
+        <div class="layout horizontal end-horizontal">
+          <ipl-button-stub icon="cog" color="blue" disabled="false" async="false" progressmessage="Working..." successmessage="Done!" requiresconfirmation="false" shortconfirmationmessage="false" small="true" disableonsuccess="false" href="" data-test="configure-button"></ipl-button-stub>
+          <ipl-button-stub icon="trash-alt" color="red" disabled="false" async="false" progressmessage="Working..." successmessage="Done!" requiresconfirmation="false" shortconfirmationmessage="false" small="true" disableonsuccess="false" href="" tooltip="Uninstall" class="uninstall-button m-l-4" data-test="uninstall-button"></ipl-button-stub>
+        </div>
       </div>
       <!--v-if-->
     </div>

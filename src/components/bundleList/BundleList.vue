@@ -17,27 +17,29 @@
             :data-test="`bundle_${bundle.name}`"
             class="bundle-settings__item"
         >
-            <div>{{ bundle.name }}</div>
-            <div>{{ bundle.version }}</div>
-            <div class="layout horizontal end-horizontal">
-                <ipl-button
-                    small
-                    icon="cog"
-                    :color="visibleBundleConfigs[bundle.name] ? themeColors.backgroundTertiary : 'blue'"
-                    data-test="configure-button"
-                    @click="toggleConfiguration(bundle.name)"
-                />
-                <ipl-button
-                    color="red"
-                    icon="trash-alt"
-                    small
-                    tooltip="Uninstall"
-                    class="uninstall-button m-l-4"
-                    data-test="uninstall-button"
-                    @click="initiateUninstall(bundle.name)"
-                />
+            <div class="bundle-settings__item-content">
+                <div>{{ bundle.name }}</div>
+                <div>{{ bundle.version }}</div>
+                <div class="layout horizontal end-horizontal">
+                    <ipl-button
+                        small
+                        icon="cog"
+                        :color="visibleBundleConfigs[bundle.name] ? themeColors.backgroundTertiary : 'blue'"
+                        data-test="configure-button"
+                        @click="toggleConfiguration(bundle.name)"
+                    />
+                    <ipl-button
+                        color="red"
+                        icon="trash-alt"
+                        small
+                        tooltip="Uninstall"
+                        class="uninstall-button m-l-4"
+                        data-test="uninstall-button"
+                        @click="initiateUninstall(bundle.name)"
+                    />
+                </div>
             </div>
-            <bundle-config v-if="visibleBundleConfigs[bundle.name]" :bundle="bundle" style="grid-area: settings" />
+            <bundle-config v-if="visibleBundleConfigs[bundle.name]" :bundle="bundle" class="m-x-8" />
         </div>
         <ipl-overlay v-model:visible="uninstallOverlayProps.visible" data-test="uninstall-overlay">
             <div class="text-center">
@@ -126,17 +128,18 @@ export default defineComponent({
 }
 
 .bundle-settings__item {
-    display: grid;
-    align-items: center;
-    gap: 0 4px;
-    grid-template-columns: 4fr 1fr 0.75fr;
-    grid-template-areas: 'name version buttons'
-                         'settings settings settings';
-    padding: 4px 8px;
     border-top: 1px solid $input-color;
 
-    &:nth-child(even) {
+    &:nth-child(even) > .bundle-settings__item-content {
         background-color: var(--space-background-secondary);
+    }
+
+    > .bundle-settings__item-content {
+        display: grid;
+        align-items: center;
+        gap: 0 4px;
+        grid-template-columns: 4fr 1fr 0.75fr;
+        padding: 4px 8px;
     }
 }
 </style>
