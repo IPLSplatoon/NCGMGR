@@ -45,7 +45,7 @@ export default defineComponent({
         return {
             log: computed(() => {
                 const log = logStore.lines[props.logKey] ?? []
-                return log.map(line => ({ ...line, message: Anser.ansiToHtml(line.message) }))
+                return log.map(line => ({ ...line, message: Anser.ansiToHtml(line.message, { use_classes: true }) }))
             })
         }
     }
