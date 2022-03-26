@@ -24,6 +24,14 @@
                 class="m-l-8"
                 color="green"
             />
+            <ipl-button
+                label="Open dashboard"
+                :disabled="runStatus !== RunStatus.RUNNING"
+                data-test="open-dashboard-button"
+                @click="openDashboard"
+                class="m-l-8"
+                color="green"
+            />
         </div>
     </ipl-space>
     <ipl-space class="m-t-8 layout vertical center-horizontal" v-show="runStatus !== RunStatus.NOT_STARTED">
@@ -55,6 +63,7 @@ import { IplButton, IplSpace } from '@iplsplatoon/vue-components'
 import StatusRow from '@/components/statusRow.vue'
 import { InstallStatus, RunStatus, useNodecgStore } from '@/store/nodecg'
 import LogDisplay from '@/components/logDisplay.vue'
+import { openDashboard } from '@/service/nodecg'
 
 export default defineComponent({
     name: 'InstallManager',
@@ -139,6 +148,9 @@ export default defineComponent({
             },
             async doStop () {
                 await invoke('stop_nodecg')
+            },
+            openDashboard () {
+                openDashboard(installFolder.value)
             }
         }
     }

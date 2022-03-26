@@ -5,6 +5,7 @@ import { InstallStatus } from '@/store/nodecg'
 import { invoke } from '@tauri-apps/api/tauri'
 import { fileExists, folderExists } from '@/util/fs'
 import { open } from '@tauri-apps/api/shell'
+import { NodecgConfiguration } from '@/types/nodecg'
 
 export async function getNodecgStatus (directory: string): Promise<{ status: InstallStatus, message: string }> {
     if (isEmpty(directory?.trim())) {
@@ -102,4 +103,17 @@ export async function createConfigFile (bundleName: string, nodecgPath: string):
     }
 
     return writeFile({ path: `${nodecgPath}/cfg/${bundleName}.json`, contents: '{\n\n}' })
+}
+
+export async function getNodecgConfig (nodecgPath: string): Promise<NodecgConfiguration | null> {
+    if (!await folderExists(`${nodecgPath}/cfg`) || !await fileExists(`${nodecgPath}/cfg/nodecg.json`)) {
+        return null
+    }
+
+    return JSON.parse(await readTextFile(`${nodecgPath}/cfg/nodecg.json`))
+}
+
+export async function openDashboard (nodecgPath: string): Promise<void> {
+    const config = await getNodecgConfig(nodecgPath)
+    return open(`http://localhost:${config?.port ?? '9090'}/dashboard`)
 }

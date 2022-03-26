@@ -6,6 +6,9 @@ import { IplButton } from '@iplsplatoon/vue-components'
 import { createTestingPinia, TestingPinia } from '@pinia/testing'
 import { useConfigStore } from '@/store/config'
 import { useLogStore } from '@/store/log'
+import { openDashboard } from '@/service/nodecg'
+
+jest.mock('@/service/nodecg')
 
 describe('Installer', () => {
     config.global.stubs = {
@@ -136,28 +139,31 @@ describe('Installer', () => {
         expect(nodecgStore.status.runStatus).toEqual(RunStatus.RUNNING)
     })
 
-    it('disables stop button if nodecg is not started', () => {
+    it('disables stop and show dashboard buttons if nodecg is not started', () => {
         const nodecgStore = useNodecgStore()
         nodecgStore.status.runStatus = RunStatus.NOT_STARTED
         const wrapper = shallowMount(InstallManager)
 
         expect(wrapper.getComponent('[data-test="stop-button"]').attributes().disabled).toEqual('true')
+        expect(wrapper.getComponent('[data-test="open-dashboard-button"]').attributes().disabled).toEqual('true')
     })
 
-    it('disables stop button if nodecg is stopped', () => {
+    it('disables stop and show dashboard buttons if nodecg is stopped', () => {
         const nodecgStore = useNodecgStore()
         nodecgStore.status.runStatus = RunStatus.STOPPED
         const wrapper = shallowMount(InstallManager)
 
         expect(wrapper.getComponent('[data-test="stop-button"]').attributes().disabled).toEqual('true')
+        expect(wrapper.getComponent('[data-test="open-dashboard-button"]').attributes().disabled).toEqual('true')
     })
 
-    it('enables stop button if nodecg is running', () => {
+    it('enables stop and show dashboard buttons if nodecg is running', () => {
         const nodecgStore = useNodecgStore()
         nodecgStore.status.runStatus = RunStatus.RUNNING
         const wrapper = shallowMount(InstallManager)
 
         expect(wrapper.getComponent('[data-test="stop-button"]').attributes().disabled).toEqual('false')
+        expect(wrapper.getComponent('[data-test="open-dashboard-button"]').attributes().disabled).toEqual('false')
     })
 
     it('handles nodecg stopping', async () => {
@@ -167,5 +173,14 @@ describe('Installer', () => {
         await wrapper.getComponent<typeof IplButton>('[data-test="stop-button"]').vm.$emit('click')
 
         expect(mockTauri.invoke).toHaveBeenCalledWith('stop_nodecg')
+    })
+
+    it('handles opening the dashboard', () => {
+        useConfigStore().installPath = '/nodecg/install/path'
+        const wrapper = shallowMount(InstallManager)
+
+        wrapper.getComponent<typeof IplButton>('[data-test="open-dashboard-button"]').vm.$emit('click')
+
+        expect(openDashboard).toHaveBeenCalledWith('/nodecg/install/path')
     })
 })

@@ -2,7 +2,7 @@ import { mockTauri, mockTauriFs, mockTauriShell } from '@/__mocks__/tauri'
 import {
     configFileExists, createConfigFile,
     getBundles,
-    getBundleVersions,
+    getBundleVersions, getNodecgConfig,
     getNodecgStatus,
     openConfigFile,
     removeBundle
@@ -10,6 +10,7 @@ import {
 import { InstallStatus } from '@/store/nodecg'
 import { fileExists, folderExists } from '@/util/fs'
 import Mock = jest.Mock
+import { readTextFile } from '@tauri-apps/api/fs'
 
 jest.mock('@/util/fs')
 
@@ -194,5 +195,43 @@ describe('createConfigFile', () => {
         expect(folderExists).toHaveBeenCalledWith('/nodecg/path/cfg')
         expect(mockTauriFs.createDir).not.toHaveBeenCalled()
         expect(mockTauriFs.writeFile).toHaveBeenCalledWith({ path: '/nodecg/path/cfg/bundle-name.json', contents: '{\n\n}' })
+    })
+})
+
+describe('getNodecgConfig', () => {
+    it('returns null if config folder is not present', async () => {
+        (folderExists as Mock).mockResolvedValue(false)
+
+        const result = await getNodecgConfig('/path')
+
+        expect(folderExists).toHaveBeenCalledWith('/path/cfg')
+        expect(fileExists).not.toHaveBeenCalled()
+        expect(readTextFile).not.toHaveBeenCalled()
+        expect(result).toEqual(null)
+    })
+
+    it('returns null if config file is not present', async () => {
+        (folderExists as Mock).mockResolvedValue(true);
+        (fileExists as Mock).mockResolvedValue(false)
+
+        const result = await getNodecgConfig('/path')
+
+        expect(folderExists).toHaveBeenCalledWith('/path/cfg')
+        expect(fileExists).toHaveBeenCalledWith('/path/cfg/nodecg.json')
+        expect(readTextFile).not.toHaveBeenCalled()
+        expect(result).toEqual(null)
+    })
+
+    it('returns nodecg config file as object', async () => {
+        (folderExists as Mock).mockResolvedValue(true);
+        (fileExists as Mock).mockResolvedValue(true);
+        (readTextFile as Mock).mockResolvedValue(JSON.stringify({ port: 8090 }))
+
+        const result = await getNodecgConfig('/nodecg/path')
+
+        expect(folderExists).toHaveBeenCalledWith('/nodecg/path/cfg')
+        expect(fileExists).toHaveBeenCalledWith('/nodecg/path/cfg/nodecg.json')
+        expect(readTextFile).toHaveBeenCalledWith('/nodecg/path/cfg/nodecg.json')
+        expect(result).toEqual({ port: 8090 })
     })
 })
