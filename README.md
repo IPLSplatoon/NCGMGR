@@ -1,6 +1,6 @@
 # NCGMGR
 
-NodeCG manager, built with Tauri and Vue.js.
+NodeCG ManaGeR, built with [Tauri](https://tauri.studio/) and Vue.js.
 
 ## Commands
 

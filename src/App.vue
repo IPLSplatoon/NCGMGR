@@ -8,6 +8,7 @@ import { computed, defineComponent } from 'vue'
 import InstallManager from '@/components/installManager.vue'
 import BundleManager from '@/components/bundleManager.vue'
 import { InstallStatus, useNodecgStore } from '@/store/nodecg'
+import { useConfigStore } from '@/store/config'
 
 export default defineComponent({
     name: 'App',
@@ -16,9 +17,12 @@ export default defineComponent({
 
     setup () {
         const nodecgStore = useNodecgStore()
+        const configStore = useConfigStore()
+
+        configStore.load()
 
         return {
-            nodecgInstalled: computed(() => nodecgStore.state.status.installStatus === InstallStatus.INSTALLED)
+            nodecgInstalled: computed(() => nodecgStore.status.installStatus === InstallStatus.INSTALLED)
         }
     }
 })

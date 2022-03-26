@@ -1,6 +1,6 @@
 {
   "name": "ncgmgr",
-  "version": "0.2.0",
+  "version": "0.3.0",
   "private": true,
   "scripts": {
     "build": "vue-cli-service build",
@@ -21,10 +21,12 @@
     "core-js": "^3.6.5",
     "lodash": "^4.17.21",
     "npm-package-arg": "8.1.0",
-    "vue": "^3.0.0",
-    "vuex": "^4.0.0-0"
+    "pinia": "^2.0.11",
+    "vue": "^3.2.31"
   },
   "devDependencies": {
+    "@pinia/testing": "^0.0.9",
+    "@types/hosted-git-info": "2.7.0",
     "@types/jest": "^24.0.19",
     "@types/lodash": "^4.14.178",
     "@types/npm-package-arg": "^6.1.1",
@@ -49,7 +51,8 @@
     "sass": "^1.45.1",
     "sass-loader": "^10.2.0",
     "typescript": "~4.1.5",
-    "vue-cli-plugin-tauri": "~1.0.0-rc.1",
+    "vue-cli-plugin-tauri": "latest",
     "vue-jest": "^5.0.0-0"
-  }
+  },
+  "packageManager": "yarn@3.2.0"
 }

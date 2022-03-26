@@ -13,7 +13,7 @@ describe('util/nodecg', () => {
         })
 
         it('returns invalid result if git url of bundle cannot be found', () => {
-            (npa as unknown as Mock).mockReturnValue({ hosted: { git: () => undefined } })
+            (npa as unknown as Mock).mockReturnValue({ hosted: { https: () => undefined } })
 
             expect(normalizeBundlePath('/path')).toEqual({ isValid: false })
         })
@@ -27,7 +27,7 @@ describe('util/nodecg', () => {
         })
 
         it('returns valid result if valid git url is found', () => {
-            (npa as unknown as Mock).mockReturnValue({ hosted: { git: () => 'ssh://bundle-name.git' } })
+            (npa as unknown as Mock).mockReturnValue({ hosted: { https: () => 'ssh://bundle-name.git' } })
 
             expect(normalizeBundlePath('/path')).toEqual({ isValid: true, bundleName: 'bundle-name', bundleUrl: 'ssh://bundle-name.git' })
         })

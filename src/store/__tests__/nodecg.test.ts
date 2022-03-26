@@ -1,96 +1,87 @@
-import { InstallStatus, nodecgStore, RunStatus } from '@/store/nodecg'
+import { InstallStatus, useNodecgStore } from '@/store/nodecg'
 import { getBundles, getNodecgStatus } from '@/service/nodecg'
-import { configStore } from '@/store/config'
+import { useConfigStore } from '@/store/config'
 import Mock = jest.Mock
+import { createPinia, setActivePinia } from 'pinia'
 
 jest.mock('@/service/nodecg')
 
 describe('nodecgStore', () => {
     beforeEach(() => {
-        nodecgStore.replaceState({
-            status: {
-                installStatus: InstallStatus.INSTALLED,
-                runStatus: RunStatus.NOT_STARTED,
-                message: 'Message!',
-                bundlesLoading: false
-            },
-            bundles: []
-        })
+        setActivePinia(createPinia())
     })
 
     describe('checkNodecgStatus', () => {
         it('sets status to unknown before status is found', () => {
+            const nodecgStore = useNodecgStore();
             // eslint-disable-next-line @typescript-eslint/no-empty-function
             (getNodecgStatus as Mock).mockImplementation(() => new Promise(() => {}))
 
-            nodecgStore.dispatch('checkNodecgStatus')
+            nodecgStore.checkNodecgStatus()
 
-            expect(nodecgStore.state.status.installStatus).toEqual(InstallStatus.UNKNOWN)
-            expect(nodecgStore.state.status.message).toEqual('Checking status...')
+            expect(nodecgStore.status.installStatus).toEqual(InstallStatus.UNKNOWN)
+            expect(nodecgStore.status.message).toEqual('Checking status...')
         })
 
         it('sets status', async () => {
+            const nodecgStore = useNodecgStore();
             (getNodecgStatus as Mock).mockResolvedValue({
                 status: InstallStatus.READY_TO_INSTALL,
                 message: 'Message!'
             })
 
-            await nodecgStore.dispatch('checkNodecgStatus')
+            await nodecgStore.checkNodecgStatus()
 
-            expect(nodecgStore.state.status.installStatus).toEqual(InstallStatus.READY_TO_INSTALL)
-            expect(nodecgStore.state.status.message).toEqual('Message!')
+            expect(nodecgStore.status.installStatus).toEqual(InstallStatus.READY_TO_INSTALL)
+            expect(nodecgStore.status.message).toEqual('Message!')
         })
 
         it('handles status check throwing error', async () => {
+            const nodecgStore = useNodecgStore();
             (getNodecgStatus as Mock).mockRejectedValue(new Error('Failure!'))
 
-            await nodecgStore.dispatch('checkNodecgStatus')
+            await nodecgStore.checkNodecgStatus()
 
-            expect(nodecgStore.state.status.installStatus).toEqual(InstallStatus.UNABLE_TO_INSTALL)
-            expect(nodecgStore.state.status.message).toEqual('Error: Failure!')
+            expect(nodecgStore.status.installStatus).toEqual(InstallStatus.UNABLE_TO_INSTALL)
+            expect(nodecgStore.status.message).toEqual('Error: Failure!')
         })
 
         it('gets bundles if nodecg is installed', async () => {
+            const nodecgStore = useNodecgStore();
             (getNodecgStatus as Mock).mockResolvedValue({
                 status: InstallStatus.INSTALLED,
                 message: 'Found!'
             })
 
-            await nodecgStore.dispatch('checkNodecgStatus')
+            await nodecgStore.checkNodecgStatus()
 
-            expect(nodecgStore.state.status.installStatus).toEqual(InstallStatus.INSTALLED)
-            expect(nodecgStore.state.status.message).toEqual('Found!')
+            expect(nodecgStore.status.installStatus).toEqual(InstallStatus.INSTALLED)
+            expect(nodecgStore.status.message).toEqual('Found!')
             expect(getBundles).toHaveBeenCalled()
         })
     })
 
     describe('getBundleList', () => {
         it('sets bundlesLoading to true before reading bundle data', () => {
+            const nodecgStore = useNodecgStore();
             // eslint-disable-next-line @typescript-eslint/no-empty-function
             (getBundles as Mock).mockImplementation(() => new Promise(() => {}))
 
-            nodecgStore.dispatch('getBundleList')
+            nodecgStore.getBundleList()
 
-            expect(nodecgStore.state.status.bundlesLoading).toEqual(true)
+            expect(nodecgStore.status.bundlesLoading).toEqual(true)
             expect(getBundles).toHaveBeenCalled()
         })
 
         it('reads bundle data', async () => {
-            configStore.state.installPath = '/install/path';
+            const nodecgStore = useNodecgStore()
+            useConfigStore().installPath = '/install/path';
             (getBundles as Mock).mockResolvedValue([{ name: 'Cool Bundle' }])
 
-            await nodecgStore.dispatch('getBundleList')
+            await nodecgStore.getBundleList()
 
-            expect(nodecgStore.state.bundles).toEqual([{ name: 'Cool Bundle' }])
+            expect(nodecgStore.bundles).toEqual([{ name: 'Cool Bundle' }])
             expect(getBundles).toHaveBeenCalledWith('/install/path')
-        })
-    })
-
-    describe('setRunStatus', () => {
-        it('sets run status', () => {
-            nodecgStore.commit('setRunStatus', RunStatus.RUNNING)
-
-            expect(nodecgStore.state.status.runStatus).toEqual(RunStatus.RUNNING)
         })
     })
 })

@@ -3,29 +3,31 @@ all(not(debug_assertions), target_os = "windows"),
 windows_subsystem = "windows"
 )]
 
-use std::cmp::Ordering;
-use git2::{Direction, Remote, Repository};
-use tauri::{Event, Manager, Menu, MenuItem, RunEvent, Submenu, WindowEvent};
-use std::{fmt, fs};
-use std::path::Path;
-use std::process::{Child, ChildStderr, ChildStdout, Command, Stdio};
+extern crate core;
+
+use git2::{AutotagOption, FetchOptions, Remote, Repository};
+use tauri::{Manager, Menu, MenuItem, RunEvent, Submenu};
+use tauri::api::process::{Command, CommandChild, CommandEvent};
+use tauri::async_runtime::Receiver;
+use std::{fs};
+use std::path::{Path, PathBuf};
 use std::sync::Mutex;
-use itertools::Itertools;
 use unwrap_or::unwrap_ok_or;
+#[cfg(target_os = "macos")]
+use window_vibrancy::{apply_vibrancy, NSVisualEffectMaterial};
+#[cfg(target_os = "windows")]
+use window_vibrancy::{apply_mica};
+use crate::log::{err_to_string, format_error};
 
 mod npm;
 mod log;
+mod git;
 
 const NODECG_GIT_PATH: &str = "https://github.com/nodecg/nodecg.git";
 const NODECG_TAG: &str = "v1.8.1";
 
-struct ProcessOutput {
-    stdout: ChildStdout,
-    stderr: ChildStderr
-}
-
 struct ManagedNodecg {
-    process: Mutex<Option<Child>>
+    process: Mutex<Option<CommandChild>>
 }
 
 impl ManagedNodecg {
@@ -35,26 +37,22 @@ impl ManagedNodecg {
         }
     }
 
-    fn start(&self, nodecg_path: &str) -> Result<ProcessOutput, String> {
+    fn start(&self, nodecg_path: &str) -> Result<Receiver<CommandEvent>, String> {
         let mut process = unwrap_ok_or!(self.process.lock(), e, { return format_error("Failed to access process", e) });
 
         if process.is_some() {
             return Err("NodeCG is already running.".to_string())
         }
 
-        let mut child = unwrap_ok_or!(
+        let child = unwrap_ok_or!(
             Command::new("node")
-                .arg(format!("{}/index.js", nodecg_path))
-                .stdout(Stdio::piped())
-                .stderr(Stdio::piped())
-                .current_dir(nodecg_path)
+                .args([format!("{}/index.js", nodecg_path)])
+                .current_dir(PathBuf::from(nodecg_path))
                 .spawn(), e,
             { return format_error("Failed to start NodeCG", e) });
-        let stdout = child.stdout.take().unwrap();
-        let stderr = child.stderr.take().unwrap();
-        *process = Some(child);
+        *process = Some(child.1);
 
-        Ok(ProcessOutput { stdout, stderr })
+        Ok(child.0)
     }
 
     fn stop(&self) -> Result<(), String> {
@@ -69,14 +67,6 @@ impl ManagedNodecg {
 
         Ok(())
     }
-}
-
-fn err_to_string<T: fmt::Display>(msg: &str, err: T) -> String {
-    format!("{}: {}", msg, err.to_string())
-}
-
-fn format_error<F, T: fmt::Display>(msg: &str, err: T) -> Result<F, String> {
-    Err(err_to_string(msg, err))
 }
 
 fn clone_nodecg(path: &str) -> Result<String, String> {
@@ -99,47 +89,28 @@ fn clone_nodecg(path: &str) -> Result<String, String> {
         .and_then(|_| return Ok("OK".to_string()))
 }
 
-fn log_npm_install(handle: &tauri::AppHandle, mut child: Child, log_key: &str) -> Result<String, String> {
+fn log_npm_install(handle: &tauri::AppHandle, receiver: Receiver<CommandEvent>, log_key: &'static str) -> () {
     log::emit(&handle, log_key, "Installing npm dependencies...");
-    log::emit_process_output(&handle, log_key, child.stdout.take().unwrap(), child.stderr.take().unwrap());
-    match child.wait_with_output() {
-        Ok(result) => {
-            if result.status.success() {
-                Ok("OK".to_string())
-            } else {
-                let code = result.status.code();
-                if code.is_some() {
-                    Err(format!("Installing npm dependencies failed with status code {}", code.unwrap().to_string()))
-                } else {
-                    Err("Failed to install npm dependencies".to_string())
-                }
-            }
-        }
-        Err(e) => format_error("Failed to install npm dependencies", e)
-    }
+    log::emit_tauri_process_output(&handle, log_key, receiver);
 }
 
 #[tauri::command(async)]
-fn install_nodecg(handle: tauri::AppHandle, path: String) -> Result<String, String> {
+fn install_nodecg(handle: tauri::AppHandle, path: String) -> Result<(), String> {
     let log_key = "install-nodecg";
     log::emit(&handle, log_key, "Starting NodeCG install...");
-    clone_nodecg(&path).and_then(|_result| {
+    match clone_nodecg(&path).and_then(|_result| {
         npm::install_npm_dependencies(&path).and_then(|child| {
-            log_npm_install(&handle, child, log_key)
+            log_npm_install(&handle, child, log_key);
+            Ok(())
         })
-    })
-}
-
-#[tauri::command(async)]
-fn uninstall_bundle(bundle_name: String, nodecg_path: String) -> Result<String, String> {
-    match fs::remove_dir_all(format!("{}/bundles/{}", nodecg_path, bundle_name)) {
-        Ok(_) => Ok("OK".to_string()),
-        Err(e) => Err(format!("Uninstalling bundle {} failed: {}", bundle_name, e.to_string()))
+    }) {
+        Err(e) => format_error("Failed to install NodeCG", e),
+        Ok(_) => Ok(())
     }
 }
 
 #[tauri::command(async)]
-fn install_bundle(handle: tauri::AppHandle, bundle_name: String, bundle_url: String, nodecg_path: String) -> Result<String, String> {
+fn install_bundle(handle: tauri::AppHandle, bundle_name: String, bundle_url: String, nodecg_path: String) -> Result<(), String> {
     let log_key = "install-bundle";
     log::emit(&handle, log_key, &format!("Installing {}...", bundle_name));
 
@@ -150,28 +121,11 @@ fn install_bundle(handle: tauri::AppHandle, bundle_name: String, bundle_url: Str
     }
 
     log::emit(&handle, log_key, "Fetching version list...");
-    let mut remote = match Remote::create_detached(&bundle_url) {
+    let remote = match Remote::create_detached(&bundle_url) {
         Ok(remote) => remote,
         Err(e) => return format_error("Could not create remote", e)
     };
-    let connection = match remote.connect_auth(Direction::Fetch, None, None) {
-        Ok(connection) => connection,
-        Err(e) => return format_error("Could not connect to remote", e)
-    };
-    let versions = unwrap_ok_or!(connection.list(), e, { return format_error("Could not get version list", e) })
-        .iter()
-        .filter(|item| { item.name().starts_with("refs/tags/") })
-        .map(|item| item.name().split("refs/tags/").last().unwrap())
-        .sorted_by(|item1, item2| {
-            let version1 = semver_parser::version::parse(item1);
-            let version2 = semver_parser::version::parse(item2);
-
-            if version1.is_err() || version2.is_err() {
-                Ordering::Less
-            } else {
-                version2.unwrap().cmp(&version1.unwrap())
-            }
-        }).collect_vec();
+    let versions = unwrap_ok_or!(git::fetch_versions(remote), e, { return Err(e) });
 
     log::emit(&handle, log_key, "Cloning repository...");
     let bundle_path = format!("{}/bundles/{}", nodecg_path, bundle_name);
@@ -181,29 +135,26 @@ fn install_bundle(handle: tauri::AppHandle, bundle_name: String, bundle_url: Str
                 let latest_version = versions.first().unwrap();
                 log::emit(&handle, log_key, &format!("Checking out version {}...", latest_version));
 
-                let (object, reference) = unwrap_ok_or!(repo.revparse_ext(latest_version), e, { return format_error("Could not parse ref", e) });
-
-                unwrap_ok_or!(repo.checkout_tree(&object, None), e, { return format_error("Checkout failed", e) });
-
-                unwrap_ok_or!(match reference {
-                    Some(gref) => repo.set_head(gref.name().unwrap()),
-                    None => repo.set_head_detached(object.id())
-                }, e, { return format_error("Failed to set HEAD", e) })
+                unwrap_ok_or!(git::checkout_version(&repo, latest_version.to_string()), e, { return format_error("Failed to check out latest version", e) })
             }
         },
         Err(e) => return format_error(&format!("Failed to clone bundle '{}'", bundle_name), e)
     }
 
-    npm::install_npm_dependencies(&bundle_path).and_then(|child| {
-        log_npm_install(&handle, child, log_key)
-    })
+    match npm::install_npm_dependencies(&bundle_path).and_then(|child| {
+        log_npm_install(&handle, child, log_key);
+        Ok(())
+    }) {
+        Err(e) => format_error("Failed to install bundle", e),
+        Ok(_) => Ok(())
+    }
 }
 
 #[tauri::command(async)]
-fn start_nodecg(handle: tauri::AppHandle, nodecg: tauri::State<ManagedNodecg>, path: String) -> Result<String, String> {
+fn start_nodecg(handle: tauri::AppHandle, nodecg: tauri::State<'_, ManagedNodecg>, path: String) -> Result<String, String> {
     let log_key = "run-nodecg";
     let output = unwrap_ok_or!(nodecg.start(&path), e, { return format_error("Failed to start NodeCG", e) });
-    log::emit_process_output(&handle, log_key, output.stdout, output.stderr);
+    log::emit_tauri_process_output(&handle, log_key, output);
 
     Ok("Started successfully".to_string())
 }
@@ -224,28 +175,138 @@ fn stop_nodecg(handle: tauri::AppHandle, nodecg: tauri::State<ManagedNodecg>) ->
     }
 }
 
+#[tauri::command(async)]
+fn fetch_bundle_versions(bundle_name: String, nodecg_path: String) -> Result<Vec<String>, String> {
+    let bundle_dir = format!("{}/bundles/{}", nodecg_path, bundle_name);
+    let path = Path::new(&bundle_dir);
+
+    if !path.exists() {
+        return Err(format!("Bundle '{}' is not installed.", bundle_name))
+    }
+
+    match Repository::open(path) {
+        Ok(repo) => {
+            let remote = unwrap_ok_or!(git::get_remote(&repo), e, { return format_error("Failed to get remote info", e) });
+
+            git::fetch_versions(remote)
+        },
+        Err(e) => return format_error(&format!("Failed to open git repository for bundle '{}'", bundle_name), e)
+    }
+}
+
+#[tauri::command(async)]
+fn set_bundle_version(handle: tauri::AppHandle, bundle_name: String, version: String, nodecg_path: String) -> Result<(), String> {
+    let log_key = "change-bundle-version";
+    let bundle_dir = format!("{}/bundles/{}", nodecg_path, bundle_name);
+    let path = Path::new(&bundle_dir);
+
+    if !path.exists() {
+        return Err(format!("Bundle '{}' is not installed.", bundle_name))
+    }
+
+    log::emit(&handle, log_key, &format!("Installing {} {}...", bundle_name, version));
+    match Repository::open(path) {
+        Ok(repo) => {
+            let mut remote = unwrap_ok_or!(git::get_remote(&repo), e, { return format_error("Failed to get remote repository", e) });
+            unwrap_ok_or!(remote.fetch(&[""], Some(FetchOptions::new().download_tags(AutotagOption::All)), None), e, return format_error("Failed to fetch version data", e));
+
+            unwrap_ok_or!(git::checkout_version(&repo, version.clone()), e, { return format_error(&format!("Failed to checkout version {}", version), e) });
+        },
+        Err(e) => return format_error(&format!("Failed to open git repository for bundle '{}'", bundle_name), e)
+    }
+
+    match npm::install_npm_dependencies(&bundle_dir).and_then(|child| {
+        log_npm_install(&handle, child, log_key);
+        Ok(())
+    }) {
+        Err(e) => format_error("Failed to set bundle version", e),
+        Ok(_) => Ok(())
+    }
+}
+
+#[tauri::command(async)]
+fn open_path_in_terminal(path: String) -> Result<(), String> {
+    if cfg!(target_os = "windows") {
+        return match std::process::Command::new("cmd")
+            .args(["/c", "start", "cmd.exe", "/k", &format!("cd /D {}", path)])
+            .spawn() {
+            Ok(_) => { Ok(()) },
+            Err(e) => { format_error("Failed to open path", e) }
+        }
+    } else if cfg!(target_os = "macos") {
+        return match std::process::Command::new("open")
+            .arg("-a")
+            .arg("Terminal")
+            .arg(path)
+            .spawn() {
+            Ok(_) => { Ok(()) },
+            Err(e) => { format_error("Failed to open path", e) }
+        }
+    } else {
+        // After some deliberation, I was not able to find a way to open a path in the user's
+        // default terminal emulator when running Linux.
+        Err("Cannot open path in terminal outside MacOS or Windows.".to_string())
+    }
+}
+
+#[tauri::command(async)]
+fn uninstall_bundle(bundle_name: String, nodecg_path: String) -> Result<String, String> {
+    match rm_rf::remove(format!("{}/bundles/{}", nodecg_path, bundle_name)) {
+        Ok(_) => Ok("OK".to_string()),
+        Err(e) => Err(format!("Uninstalling bundle {} failed: {}", bundle_name, e.to_string()))
+    }
+}
+
 fn main() {
-    let menu_app = Menu::new()
-        .add_native_item(MenuItem::About("NCGMGR".to_string()));
+    let mut builder = tauri::Builder::default()
+        .invoke_handler(tauri::generate_handler![
+            install_nodecg,
+            install_bundle,
+            start_nodecg,
+            stop_nodecg,
+            fetch_bundle_versions,
+            set_bundle_version,
+            open_path_in_terminal,
+            uninstall_bundle
+        ])
+        .manage(ManagedNodecg::new());
 
-    let menu_edit = Menu::new()
-        .add_native_item(MenuItem::Cut)
-        .add_native_item(MenuItem::Copy)
-        .add_native_item(MenuItem::Paste)
-        .add_native_item(MenuItem::SelectAll)
-        .add_native_item(MenuItem::Undo)
-        .add_native_item(MenuItem::Redo);
+    if cfg!(target_os = "macos") {
+        let menu_app = Menu::new()
+            .add_native_item(MenuItem::About("NCGMGR".to_string()))
+            .add_native_item(MenuItem::Quit);
 
-    let menu = Menu::new()
-        .add_submenu(Submenu::new("NCGMGR", menu_app))
-        .add_submenu(Submenu::new("Edit", menu_edit));
+        let menu_edit = Menu::new()
+            .add_native_item(MenuItem::Cut)
+            .add_native_item(MenuItem::Copy)
+            .add_native_item(MenuItem::Paste)
+            .add_native_item(MenuItem::SelectAll)
+            .add_native_item(MenuItem::Undo)
+            .add_native_item(MenuItem::Redo);
 
-    let app = tauri::Builder::default()
-        .invoke_handler(tauri::generate_handler![install_nodecg, uninstall_bundle, install_bundle, start_nodecg, stop_nodecg])
-        .menu(menu)
-        .manage(ManagedNodecg::new())
+        builder = builder.menu(Menu::new()
+            .add_submenu(Submenu::new("NCGMGR", menu_app))
+            .add_submenu(Submenu::new("Edit", menu_edit)));
+    }
+
+    let app = builder
         .build(tauri::generate_context!())
         .expect("error while building tauri application");
+
+    let window = app.get_window("main").unwrap();
+
+    #[cfg(target_os = "macos")]
+    apply_vibrancy(&window, NSVisualEffectMaterial::ContentBackground).unwrap();
+
+    if cfg!(target_os = "windows") {
+        let info = os_info::get();
+
+        let build_no = info.version().to_string().split(".").last().unwrap().to_string().parse::<i32>().unwrap();
+        if build_no >= 22000 {
+            #[cfg(target_os = "windows")]
+            apply_mica(&window).unwrap();
+        }
+    }
 
     app.run(|handle, e| match e {
         RunEvent::ExitRequested { api, .. } => {
@@ -259,5 +320,5 @@ fn main() {
             }
         }
         _ => {}
-    })
+    });
 }

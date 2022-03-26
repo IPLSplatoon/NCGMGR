@@ -1,4 +1,5 @@
 @import './colors';
+@import './overrides';
 
 @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700;900&display=swap');
 
@@ -8,8 +9,11 @@ body {
 
     font-family: 'Roboto', sans-serif;
     color: var(--text-color);
-    background-color: var(--background-secondary);
     padding: 12px 8px;
+
+    &.use-opaque-bg {
+        background-color: var(--solid-background);
+    }
 }
 
 * {

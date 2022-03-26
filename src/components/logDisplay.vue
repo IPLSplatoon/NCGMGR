@@ -29,23 +29,23 @@ export default defineComponent({
 
         watch(() => props.logKey, (newValue, oldValue) => {
             if (oldValue) {
-                logStore.dispatch('unlisten', oldValue)
+                logStore.unlisten(oldValue)
             }
-            logStore.dispatch('listen', newValue)
+            logStore.listen(newValue)
         })
 
         onMounted(() => {
-            logStore.dispatch('listen', props.logKey)
+            logStore.listen(props.logKey)
         })
 
         onUnmounted(() => {
-            logStore.dispatch('unlisten', props.logKey)
+            logStore.unlisten(props.logKey)
         })
 
         return {
             log: computed(() => {
-                const log = logStore.state.lines[props.logKey] ?? []
-                return log.map(line => ({ ...line, message: Anser.ansiToHtml(line.message) }))
+                const log = logStore.lines[props.logKey] ?? []
+                return log.map(line => ({ ...line, message: Anser.ansiToHtml(line.message, { use_classes: true }) }))
             })
         }
     }
@@ -59,7 +59,7 @@ export default defineComponent({
 
 .log-display {
     font-family: monospace;
-    width: calc(100vw - 60px);
+    width: calc(100% - 8px);
     max-height: 350px;
     text-align: left;
     border: 1px solid $input-color;
@@ -67,7 +67,7 @@ export default defineComponent({
     min-height: 64px;
     overflow: scroll;
     color: var(--text-color);
-    background-color: var(--background-secondary);
+    background-color: var(--space-background);
 
     span {
         margin-left: 6px;

@@ -69,21 +69,23 @@ export default defineComponent({
         const showLog = ref(false)
 
         const installFolder = computed({
-            get: () => config.state.installPath,
-            set: (newValue: string) => config.commit('setInstallPath', newValue)
+            get: () => config.installPath,
+            set: (newValue: string) => {
+                config.installPath = newValue
+            }
         })
 
-        const nodecgStatus = computed<InstallStatus>(() => nodecgStore.state.status.installStatus)
+        const nodecgStatus = computed<InstallStatus>(() => nodecgStore.status.installStatus)
 
         onMounted(() => {
-            nodecgStore.dispatch('checkNodecgStatus')
+            nodecgStore.checkNodecgStatus()
         })
 
         return {
             installDisabled: computed(() => isEmpty(installFolder.value)),
             installFolder,
             showLog,
-            nodecgStatus: nodecgStatus,
+            nodecgStatus,
             NodecgStatus: InstallStatus,
             nodecgStatusColor: computed(() => {
                 switch (nodecgStatus.value) {
@@ -97,7 +99,7 @@ export default defineComponent({
                         return 'gray'
                 }
             }),
-            nodecgStatusMessage: computed(() => nodecgStore.state.status.message),
+            nodecgStatusMessage: computed(() => nodecgStore.status.message),
             async selectDirectory () {
                 const path = await open({ directory: true })
 
@@ -108,30 +110,35 @@ export default defineComponent({
                 } else {
                     installFolder.value = path
                 }
-                config.dispatch('persist')
-                nodecgStore.dispatch('checkNodecgStatus')
+                config.persist()
+                nodecgStore.checkNodecgStatus()
             },
             async doInstall () {
-                logStore.commit('reset', 'install-nodecg')
+                const logKey = 'install-nodecg'
+                logStore.reset(logKey)
+                await logStore.listen(logKey)
                 showLog.value = true
                 const invocation = invoke('install_nodecg', { path: installFolder.value })
-                logStore.dispatch('logPromiseResult', { promise: invocation, key: 'install-nodecg' })
-                await invocation
-                nodecgStore.dispatch('checkNodecgStatus')
+                logStore.logPromiseResult({ promise: invocation, key: logKey })
+                logStore.listenForProcessExit({
+                    key: logKey,
+                    callback: () => {
+                        nodecgStore.checkNodecgStatus()
+                    }
+                })
             },
 
-            runStatus: computed(() => nodecgStore.state.status.runStatus),
+            runStatus: computed(() => nodecgStore.status.runStatus),
             RunStatus,
             async doLaunch () {
-                logStore.commit('reset', 'run-nodecg')
+                logStore.reset('run-nodecg')
                 const invocation = invoke('start_nodecg', { path: installFolder.value })
-                logStore.dispatch('logPromiseResult', { promise: invocation, key: 'run-nodecg', noLogOnSuccess: true })
+                logStore.logPromiseResult({ promise: invocation, key: 'run-nodecg' })
                 await invocation
-                nodecgStore.commit('setRunStatus', RunStatus.RUNNING)
+                nodecgStore.status.runStatus = RunStatus.RUNNING
             },
             async doStop () {
                 await invoke('stop_nodecg')
-                nodecgStore.commit('setRunStatus', RunStatus.STOPPED)
             }
         }
     }

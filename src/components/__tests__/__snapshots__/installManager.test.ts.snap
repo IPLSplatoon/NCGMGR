@@ -14,5 +14,5 @@ exports[`Installer matches snapshot 1`] = `
   <log-display-stub logkey="run-nodecg" class="m-t-4"></log-display-stub>
   <ipl-button-stub label="Stop" color="red" disabled="true" async="false" progressmessage="Working..." successmessage="Done!" requiresconfirmation="false" shortconfirmationmessage="false" small="false" disableonsuccess="false" href="" class="m-t-8" data-test="stop-button"></ipl-button-stub>
 </div>
-<log-overlay-stub title="Installing..." logkey="install-nodecg" visible="false"></log-overlay-stub>
+<log-overlay-stub title="Installing..." logkey="install-nodecg" visible="false" nobackgroundclose="false"></log-overlay-stub>
 `;

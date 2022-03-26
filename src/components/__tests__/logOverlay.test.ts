@@ -1,21 +1,26 @@
 import LogOverlay from '@/components/logOverlay.vue'
-import { logStoreKey } from '@/store/log'
+import { useLogStore } from '@/store/log'
 import { config, mount } from '@vue/test-utils'
-import { createLogStore } from '@/__mocks__/store'
 import { IplButton } from '@iplsplatoon/vue-components'
+import { createTestingPinia, TestingPinia } from '@pinia/testing'
 
 describe('LogOverlay', () => {
+    let pinia: TestingPinia
+
+    beforeEach(() => {
+        pinia = createTestingPinia()
+        config.global.plugins = [pinia]
+        const logStore = useLogStore()
+        logStore.listen = jest.fn()
+        logStore.unlisten = jest.fn()
+    })
+
     config.global.stubs = {
         IplButton: true
     }
 
     it('matches snapshot', () => {
         const wrapper = mount(LogOverlay, {
-            global: {
-                plugins: [
-                    [createLogStore(), logStoreKey]
-                ]
-            },
             props: {
                 visible: true,
                 title: 'Log Overlay',
@@ -27,14 +32,9 @@ describe('LogOverlay', () => {
     })
 
     it('disables close button if log state is not completed', () => {
-        const store = createLogStore()
-        store.state.completed.logKey = false
+        const store = useLogStore()
+        store.completed.logKey = false
         const wrapper = mount(LogOverlay, {
-            global: {
-                plugins: [
-                    [store, logStoreKey]
-                ]
-            },
             props: {
                 visible: true,
                 title: 'Log Overlay',
@@ -46,14 +46,9 @@ describe('LogOverlay', () => {
     })
 
     it('enables close button if log state is completed', () => {
-        const store = createLogStore()
-        store.state.completed['log-key'] = true
+        const store = useLogStore()
+        store.completed['log-key'] = true
         const wrapper = mount(LogOverlay, {
-            global: {
-                plugins: [
-                    [store, logStoreKey]
-                ]
-            },
             props: {
                 visible: true,
                 title: 'Log Overlay',
@@ -65,14 +60,9 @@ describe('LogOverlay', () => {
     })
 
     it('closes overlay on close button click', () => {
-        const store = createLogStore()
-        store.state.completed['key-1'] = true
+        const store = useLogStore()
+        store.completed['key-1'] = true
         const wrapper = mount(LogOverlay, {
-            global: {
-                plugins: [
-                    [store, logStoreKey]
-                ]
-            },
             props: {
                 visible: true,
                 title: 'Log Overlay',

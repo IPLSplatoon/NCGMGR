@@ -5,7 +5,6 @@
             name="bundleName"
             label="Bundle Repository Path"
             data-test="bundle-path-input"
-            :validator="bundlePathValidator"
         />
         <ipl-button
             class="m-t-8"
@@ -15,21 +14,30 @@
             data-test="install-button"
             @click="doInstall"
         />
-        <log-overlay title="Installing..." v-model:visible="showInstallLog" data-test="bundle-log-overlay" log-key="install-bundle" />
+        <log-overlay
+            v-model:visible="showInstallLog"
+            title="Installing..."
+            data-test="bundle-log-overlay"
+            log-key="install-bundle"
+            no-background-close
+        />
     </ipl-space>
 </template>
 
 <script lang="ts">
 import { defineComponent, ref } from 'vue'
-import { IplButton, IplInput, IplSpace } from '@iplsplatoon/vue-components'
-import { validator } from '@/util/validation/validator'
-import { notBlank } from '@/util/validation/stringValidators'
+import { IplButton, IplInput, IplSpace, provideValidators, notBlank, validator } from '@iplsplatoon/vue-components'
 import { invoke } from '@tauri-apps/api/tauri'
 import { useLogStore } from '@/store/log'
 import { useNodecgStore } from '@/store/nodecg'
 import { useConfigStore } from '@/store/config'
 import LogOverlay from '@/components/logOverlay.vue'
 import { normalizeBundlePath } from '@/util/nodecg'
+import { library } from '@fortawesome/fontawesome-svg-core'
+import { faTrashAlt } from '@fortawesome/free-solid-svg-icons/faTrashAlt'
+import { faCog } from '@fortawesome/free-solid-svg-icons/faCog'
+
+library.add(faTrashAlt, faCog)
 
 export default defineComponent({
     name: 'BundleInstaller',
@@ -59,17 +67,22 @@ export default defineComponent({
             }
         })
 
+        provideValidators({
+            bundleName: bundlePathValidator
+        })
+
         return {
             showInstallLog,
             bundlePath,
             bundlePathValidator,
             doInstall: async () => {
-                logStore.commit('reset', 'install-bundle')
+                const logKey = 'install-bundle'
+                logStore.reset(logKey)
+                await logStore.listen(logKey)
                 showInstallLog.value = true
-                const invocation = invoke('install_bundle', { bundleName, bundleUrl, nodecgPath: configStore.state.installPath })
-                logStore.dispatch('logPromiseResult', { promise: invocation, key: 'install-bundle' })
-                await invocation
-                nodecgStore.dispatch('getBundleList')
+                const invocation = invoke('install_bundle', { bundleName, bundleUrl, nodecgPath: configStore.installPath })
+                logStore.logPromiseResult({ promise: invocation, key: logKey })
+                logStore.listenForProcessExit({ key: logKey, callback: () => nodecgStore.getBundleList() })
             }
         }
     }

@@ -2,13 +2,11 @@ name: CI
 
 on:
   push:
-  pull_request:
-    branches: [ master ]
-    types: [ opened, closed ]
   workflow_dispatch:
 
 jobs:
   test:
+    timeout-minutes: 30
     runs-on: ubuntu-latest
     steps:
       - name: Checkout this repository
@@ -17,23 +15,20 @@ jobs:
           token: ${{ secrets['GITHUB_TOKEN'] }}
           ref: ${{ github.ref }}
           fetch-depth: 0
-          path: ./NCGMGR
 
       - name: Set up Node.js
         uses: actions/setup-node@v2
         with:
-          node-version: '14'
+          node-version: '16'
+          cache: 'yarn'
 
       - name: Install dependencies
-        working-directory: ./NCGMGR
-        run: yarn
+        run: yarn install
 
       - name: Run ESLint on source
-        working-directory: ./NCGMGR
         run: yarn lint
 
       - name: Run tests
-        working-directory: ./NCGMGR
         run: yarn test:ci
 
       - name: Create test report
@@ -41,10 +36,11 @@ jobs:
         uses: tanmen/jest-reporter@v1
         with:
           github-token: ${{ secrets['GITHUB_TOKEN'] }}
-          result-file: ./NCGMGR/result.json
+          result-file: ./result.json
 
   build-publish:
     if: github.ref == 'refs/heads/master'
+    timeout-minutes: 30
     needs: test
     strategy:
       fail-fast: false
@@ -58,7 +54,8 @@ jobs:
       - name: Set up Node.js
         uses: actions/setup-node@v1
         with:
-          node-version: 12
+          node-version: '16'
+          cache: 'yarn'
 
       - name: install Rust stable
         uses: actions-rs/toolchain@v1
@@ -66,7 +63,7 @@ jobs:
           toolchain: stable
 
       - name: install app dependencies and build it
-        run: yarn && yarn tauri:build
+        run: yarn install && yarn tauri:build
 
       - uses: tauri-apps/tauri-action@v0
         env:

@@ -4,7 +4,8 @@ export const themeColors = {
     red: '#e74e36',
     yellow: '#FFC700',
     orange: '#FF682E',
-    disabledText: '#A9AAA9'
+    disabledText: '#A9AAA9',
+    backgroundTertiary: '#181e29'
 }
 
 export const buttonColors: Record<string, string> = {

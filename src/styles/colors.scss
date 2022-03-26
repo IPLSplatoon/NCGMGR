@@ -1,17 +1,17 @@
 $green: #00A651;
 $green-hover: #009549;
 $green-active: #008541;
-$red: #e74e36;
-$red-hover: #cf4631;
-$red-active: #b93e2b;
+$red: #E74E36;
+$red-hover: #CF4631;
+$red-active: #B93E2B;
 $blue: #6155BD;
-$blue-hover: #574caa;
-$blue-active: #4e4497;
-$yellow: #ffc700;
-$yellow-hover: #e5b300;
-$yellow-active: #cc9f00;
+$blue-hover: #574CAA;
+$blue-active: #4E4497;
+$yellow: #FFC700;
+$yellow-hover: #E5B300;
+$yellow-active: #CC9F00;
 
-$error-color: #e74e36;
+$error-color: #E74E36;
 $error-background-color: rgba(231, 78, 54, 0.1);
 
 $warning-color: #FDD835;
@@ -23,8 +23,61 @@ $info-background-color: rgba(62, 98, 240, 0.1);
 $input-color: #737373;
 
 :root {
+    --solid-background: #202020;
     --text-color: white;
+    --space-background: rgba(96, 96, 96, 0.075);
+    --space-background-secondary: rgba(173, 173, 173, 0.075);
+    --space-border: rgba(115, 115, 115, 0.5);
     --background-primary: #262F40;
     --background-secondary: #2F3A4F;
-    --background-tertiary: #181e29;
+    --background-tertiary: #181E29;
+    --input-color-active: white;
+
+    --anser-black-text: rgb(255, 255, 255);
+    --anser-yellow-text: rgb(187, 187, 0);
 }
+
+@media (prefers-color-scheme: light) {
+    :root {
+        --solid-background: #FFF;
+        --text-color: #222;
+        --space-background: rgba(215, 215, 215, 0.1);
+        --space-background-secondary: rgba(215, 215, 215, 0.3);
+        --input-color-active: #222;
+        --background-primary: #EEE;
+        --background-tertiary: #CECECE;
+
+        --anser-black-text: rgb(0, 0, 0);
+        --anser-yellow-text: rgb(134, 131, 0);
+    }
+}
+
+@mixin anser-color($name, $color) {
+    .ansi-#{$name}-fg {
+        color: $color;
+    }
+
+    .ansi-#{$name}-bg {
+        background-color: $color;
+    }
+}
+
+// Most of the defaults for these colors are reasonable, but some aren't readable on a white background.
+
+@include anser-color('black', var(--anser-black-text));
+@include anser-color('red', rgb(187, 0, 0));
+@include anser-color('green', rgb(0, 187, 0));
+@include anser-color('yellow', var(--anser-yellow-text));
+@include anser-color('blue', rgb(0, 0, 187));
+@include anser-color('magenta', rgb(187, 0, 187));
+@include anser-color('cyan', rgb(0, 187, 187));
+@include anser-color('white', var(--text-color));
+
+@include anser-color('bright-black', rgb(85, 85, 85));
+@include anser-color('bright-red', rgb(255, 85, 85));
+@include anser-color('bright-green', rgb(0, 255, 0));
+@include anser-color('bright-yellow', rgb(255, 255, 85));
+@include anser-color('bright-blue', rgb(85, 85, 255));
+@include anser-color('bright-magenta', rgb(255, 85, 255));
+@include anser-color('bright-cyan', rgb(85, 255, 255));
+@include anser-color('bright-white', var(--text-color));

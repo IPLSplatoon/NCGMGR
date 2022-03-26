@@ -1,7 +1,11 @@
 <template>
     <transition name="overlay">
-        <div v-if="visible" @click.self="close" class="ipl-overlay__wrapper layout horizontal center-horizontal center-vertical">
-            <div class="ipl-overlay__content">
+        <div
+            v-if="visible"
+            @click.self="close"
+            class="mgr-overlay__wrapper layout horizontal center-horizontal center-vertical"
+        >
+            <div class="mgr-overlay__content" :class="{ 'max-width': maxWidth }">
                 <slot />
             </div>
         </div>
@@ -12,7 +16,7 @@
 import { defineComponent } from 'vue'
 
 export default defineComponent({
-    name: 'IplOverlay',
+    name: 'MgrOverlay',
 
     emits: ['update:visible'],
 
@@ -20,13 +24,23 @@ export default defineComponent({
         visible: {
             type: Boolean,
             required: true
+        },
+        noBackgroundClose: {
+            type: Boolean,
+            default: false
+        },
+        maxWidth: {
+            type: Boolean,
+            default: false
         }
     },
 
     setup (props, { emit }) {
         return {
             close () {
-                emit('update:visible', false)
+                if (!props.noBackgroundClose) {
+                    emit('update:visible', false)
+                }
             }
         }
     }
@@ -51,8 +65,8 @@ export default defineComponent({
     opacity: 0;
 }
 
-.ipl-overlay__wrapper {
-    position: absolute;
+.mgr-overlay__wrapper {
+    position: fixed;
     width: 100%;
     height: 100%;
     top: 0;
@@ -62,7 +76,7 @@ export default defineComponent({
 
     background-color: rgba(0, 0, 0, 0.5);
 
-    .ipl-overlay__content {
+    .mgr-overlay__content {
         max-width: 90%;
         max-height: 80%;
         background-color: var(--background-primary);

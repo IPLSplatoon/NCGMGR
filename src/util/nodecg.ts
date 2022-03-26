@@ -1,6 +1,5 @@
 import npa from 'npm-package-arg'
-
-type HostedGit = { git: () => string }
+import * as HostedGitInfo from 'hosted-git-info'
 
 export function normalizeBundlePath (path: string): { isValid: boolean, bundleName?: string, bundleUrl?: string } {
     try {
@@ -9,7 +8,7 @@ export function normalizeBundlePath (path: string): { isValid: boolean, bundleNa
             return { isValid: false }
         }
 
-        const gitUrl = (parsedPath.hosted as unknown as HostedGit).git()
+        const gitUrl = (parsedPath.hosted as unknown as HostedGitInfo).https()
         if (!gitUrl) {
             return { isValid: false }
         }
