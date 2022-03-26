@@ -1,6 +1,6 @@
 <template>
     <ipl-expanding-space title="Dependency check" :expanded="!dependencyStore.hasNodejs">
-        <status-row :color="nodejsStatusColor">
+        <status-row :color="nodejsStatusColor" class="m-t-6">
             {{ nodejsStatusText }}
         </status-row>
         <ipl-button class="m-t-8" label="Check again" @click="runDependencyCheck" />

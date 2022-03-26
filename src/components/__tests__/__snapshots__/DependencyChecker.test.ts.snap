@@ -9,7 +9,7 @@ exports[`DependencyChecker matches snapshot when dependencies are loading 1`] = 
     <div class="header-extra" data-v-1dcbcc2a=""></div>
   </div>
   <div class="content" data-v-1dcbcc2a="">
-    <div class="status-row layout horizontal center-vertical">
+    <div class="status-row layout horizontal center-vertical m-t-6">
       <div class="status-row__status-light color-yellow"></div>Loading...
     </div>
     <ipl-button-stub label="Check again" color="blue" disabled="false" async="false" progressmessage="Working..." successmessage="Done!" requiresconfirmation="false" shortconfirmationmessage="false" small="false" disableonsuccess="false" href="" class="m-t-8"></ipl-button-stub>
@@ -26,7 +26,7 @@ exports[`DependencyChecker matches snapshot when dependencies are present 1`] = 
     <div class="header-extra" data-v-1dcbcc2a=""></div>
   </div>
   <div class="content" data-v-1dcbcc2a="" style="display: none;">
-    <div class="status-row layout horizontal center-vertical">
+    <div class="status-row layout horizontal center-vertical m-t-6">
       <div class="status-row__status-light color-green"></div>Found Node.js 12.3.4.
     </div>
     <ipl-button-stub label="Check again" color="blue" disabled="false" async="false" progressmessage="Working..." successmessage="Done!" requiresconfirmation="false" shortconfirmationmessage="false" small="false" disableonsuccess="false" href="" class="m-t-8"></ipl-button-stub>
@@ -43,7 +43,7 @@ exports[`DependencyChecker matches snapshot when node.js is missing 1`] = `
     <div class="header-extra" data-v-1dcbcc2a=""></div>
   </div>
   <div class="content" data-v-1dcbcc2a="">
-    <div class="status-row layout horizontal center-vertical">
+    <div class="status-row layout horizontal center-vertical m-t-6">
       <div class="status-row__status-light color-red"></div>Node.js not found.
     </div>
     <ipl-button-stub label="Check again" color="blue" disabled="false" async="false" progressmessage="Working..." successmessage="Done!" requiresconfirmation="false" shortconfirmationmessage="false" small="false" disableonsuccess="false" href="" class="m-t-8"></ipl-button-stub>
