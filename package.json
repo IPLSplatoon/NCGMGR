@@ -15,7 +15,7 @@
     "@fortawesome/fontawesome-svg-core": "^1.2.36",
     "@fortawesome/free-solid-svg-icons": "^5.15.4",
     "@fortawesome/vue-fontawesome": "^3.0.0-5",
-    "@iplsplatoon/vue-components": "2.3.1",
+    "@iplsplatoon/vue-components": "2.5.0",
     "@tauri-apps/api": "^1.0.0-rc.2",
     "anser": "^2.1.0",
     "core-js": "^3.6.5",

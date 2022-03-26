@@ -1385,6 +1385,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@fortawesome/fontawesome-common-types@npm:6.1.1":
+  version: 6.1.1
+  resolution: "@fortawesome/fontawesome-common-types@npm:6.1.1"
+  checksum: 4db285557dd9d178e313a9596ad1c4ba84e9d47efb53dea3206de1bf98252574e0d95c3a0b114cc3cb5f162e2622a2cf8f037011fc98818ccade7bfb6c0c335b
+  languageName: node
+  linkType: hard
+
 "@fortawesome/fontawesome-common-types@npm:^0.2.36":
   version: 0.2.36
   resolution: "@fortawesome/fontawesome-common-types@npm:0.2.36"
@@ -1398,6 +1405,15 @@ __metadata:
   dependencies:
     "@fortawesome/fontawesome-common-types": ^0.2.36
   checksum: 3011d8c1452b5df52a62eaee8b1ec925b9fdfabcc170fd6da5eaac7cfdef56258b9292ddd06c30f03a6a8ed6faa886565211f2e469fee3c9831c32f93e9383d8
+  languageName: node
+  linkType: hard
+
+"@fortawesome/free-solid-svg-icons@npm:6.1.1":
+  version: 6.1.1
+  resolution: "@fortawesome/free-solid-svg-icons@npm:6.1.1"
+  dependencies:
+    "@fortawesome/fontawesome-common-types": 6.1.1
+  checksum: 9c42f45af9e75410d9e20a110c4262ded1a778887dc3b1200c0576f6b226e6a5568fb85a862090b45b06060f878798ddde60b987ef56aafccbaa1e7a378dd17c
   languageName: node
   linkType: hard
 
@@ -1482,15 +1498,15 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@iplsplatoon/vue-components@npm:2.3.1":
-  version: 2.3.1
-  resolution: "@iplsplatoon/vue-components@npm:2.3.1"
+"@iplsplatoon/vue-components@npm:2.5.0":
+  version: 2.5.0
+  resolution: "@iplsplatoon/vue-components@npm:2.5.0"
   dependencies:
-    "@fortawesome/free-solid-svg-icons": ^5.15.4
+    "@fortawesome/free-solid-svg-icons": 6.1.1
     lodash: ^4.17.21
   peerDependencies:
     vue: ^3.2.26
-  checksum: cc0e7fc4ee1e8e1384e29fdbd8f567a9b58cafdf3252306ba7b89cab6b738cefbd1354d26bb4df6170e1e8d8ed0cdd915b230b7bca1f9e529bbbaa97cb391452
+  checksum: 2ebebd62f9411c17156536ca1dbf78145596f976b1f40e5a1ab7a615fd73e0e4bc872c050670e934e2468db0bb26ef6fc565310512cda3cad767b1571103a719
   languageName: node
   linkType: hard
 
@@ -10603,7 +10619,7 @@ __metadata:
     "@fortawesome/fontawesome-svg-core": ^1.2.36
     "@fortawesome/free-solid-svg-icons": ^5.15.4
     "@fortawesome/vue-fontawesome": ^3.0.0-5
-    "@iplsplatoon/vue-components": 2.3.1
+    "@iplsplatoon/vue-components": 2.5.0
     "@pinia/testing": ^0.0.9
     "@tauri-apps/api": ^1.0.0-rc.2
     "@types/hosted-git-info": 2.7.0

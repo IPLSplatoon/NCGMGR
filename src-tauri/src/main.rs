@@ -257,6 +257,16 @@ fn uninstall_bundle(bundle_name: String, nodecg_path: String) -> Result<String, 
     }
 }
 
+#[tauri::command(async)]
+fn get_nodejs_version() -> Option<String> {
+    let output = Command::new("node").args(["-v"]).output();
+
+    return match output {
+        Ok(output) => Some(output.stdout.trim().to_string()),
+        Err(_) => None
+    }
+}
+
 fn main() {
     let mut builder = tauri::Builder::default()
         .invoke_handler(tauri::generate_handler![
@@ -267,7 +277,8 @@ fn main() {
             fetch_bundle_versions,
             set_bundle_version,
             open_path_in_terminal,
-            uninstall_bundle
+            uninstall_bundle,
+            get_nodejs_version
         ])
         .manage(ManagedNodecg::new());
 
