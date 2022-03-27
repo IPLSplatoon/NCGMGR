@@ -12,7 +12,7 @@ use tauri::async_runtime::Receiver;
 use window_vibrancy::{apply_vibrancy, NSVisualEffectMaterial};
 #[cfg(target_os = "windows")]
 use window_vibrancy::{apply_mica};
-use crate::log::{err_to_string, format_error};
+use crate::log::{err_to_string, format_error, LogEmitter};
 
 mod npm;
 mod log;
@@ -23,9 +23,9 @@ mod dependencies;
 
 use nodecg::ManagedNodecg;
 
-fn log_npm_install(handle: &tauri::AppHandle, receiver: Receiver<CommandEvent>, log_key: &'static str) -> () {
-    log::emit(&handle, log_key, "Installing npm dependencies...");
-    log::emit_tauri_process_output(&handle, log_key, receiver);
+fn log_npm_install(logger: LogEmitter, receiver: Receiver<CommandEvent>) -> () {
+    logger.emit("Installing npm dependencies...");
+    log::emit_tauri_process_output(logger, receiver);
 }
 
 #[tauri::command(async)]
@@ -111,7 +111,8 @@ fn main() {
             match managed_nodecg.stop() {
                 Ok(_) => {}
                 Err(e) => {
-                    log::emit(&handle, "run-nodecg", &err_to_string("Failed to shut down NodeCG", e));
+                    let logger = LogEmitter::new(&handle, "run-nodecg");
+                    logger.emit(&err_to_string("Failed to shut down NodeCG", e));
                     api.prevent_exit();
                 }
             }

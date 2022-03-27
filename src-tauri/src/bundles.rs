@@ -4,29 +4,30 @@ use unwrap_or::unwrap_ok_or;
 use std::{fs};
 
 use crate::git;
-use crate::{format_error, log, log_npm_install, npm};
+use crate::{format_error, log_npm_install, npm};
+use crate::log::LogEmitter;
 
 #[tauri::command(async)]
 pub fn install_bundle(handle: tauri::AppHandle, bundle_name: String, bundle_url: String, nodecg_path: String) -> Result<(), String> {
-    let log_key = "install-bundle";
-    log::emit(&handle, log_key, &format!("Installing {}...", bundle_name));
+    let logger = LogEmitter::new(&handle, "install-bundle");
+    logger.emit(&format!("Installing {}...", bundle_name));
 
     let dir_bundles = format!("{}/bundles", nodecg_path);
     if !Path::new(&dir_bundles).exists() {
-        log::emit(&handle, log_key, "Creating missing bundles directory");
+        logger.emit("Creating missing bundles directory");
         unwrap_ok_or!(fs::create_dir(dir_bundles), e, { return format_error("Failed to create bundles directory", e) });
     }
 
-    log::emit(&handle, log_key, "Fetching version list...");
+    logger.emit("Fetching version list...");
     let versions = unwrap_ok_or!(git::fetch_versions_for_url(&bundle_url), e, { return format_error("Failed to get version list", e) });
 
-    log::emit(&handle, log_key, "Cloning repository...");
+    logger.emit("Cloning repository...");
     let bundle_path = format!("{}/bundles/{}", nodecg_path, bundle_name);
     match Repository::clone(&bundle_url, bundle_path.clone()) {
         Ok(repo) => {
             if versions.len() > 1 {
                 let latest_version = versions.first().unwrap();
-                log::emit(&handle, log_key, &format!("Checking out version {}...", latest_version));
+                logger.emit(&format!("Checking out version {}...", latest_version));
 
                 unwrap_ok_or!(git::checkout_version(&repo, latest_version.to_string()), e, { return format_error("Failed to check out latest version", e) })
             }
@@ -35,7 +36,7 @@ pub fn install_bundle(handle: tauri::AppHandle, bundle_name: String, bundle_url:
     }
 
     match npm::install_npm_dependencies(&bundle_path).and_then(|child| {
-        log_npm_install(&handle, child, log_key);
+        log_npm_install(logger, child);
         Ok(())
     }) {
         Err(e) => format_error("Failed to install bundle", e),
@@ -63,7 +64,7 @@ pub fn fetch_bundle_versions(bundle_name: String, nodecg_path: String) -> Result
 
 #[tauri::command(async)]
 pub fn set_bundle_version(handle: tauri::AppHandle, bundle_name: String, version: String, nodecg_path: String) -> Result<(), String> {
-    let log_key = "change-bundle-version";
+    let logger = LogEmitter::new(&handle, "change-bundle-version");
     let bundle_dir = format!("{}/bundles/{}", nodecg_path, bundle_name);
     let path = Path::new(&bundle_dir);
 
@@ -71,7 +72,7 @@ pub fn set_bundle_version(handle: tauri::AppHandle, bundle_name: String, version
         return Err(format!("Bundle '{}' is not installed.", bundle_name))
     }
 
-    log::emit(&handle, log_key, &format!("Installing {} {}...", bundle_name, version));
+    logger.emit(&format!("Installing {} {}...", bundle_name, version));
     match Repository::open(path) {
         Ok(repo) => {
             let mut remote = unwrap_ok_or!(git::get_remote(&repo), e, { return format_error("Failed to get remote repository", e) });
@@ -83,7 +84,7 @@ pub fn set_bundle_version(handle: tauri::AppHandle, bundle_name: String, version
     }
 
     match npm::install_npm_dependencies(&bundle_dir).and_then(|child| {
-        log_npm_install(&handle, child, log_key);
+        log_npm_install(logger, child);
         Ok(())
     }) {
         Err(e) => format_error("Failed to set bundle version", e),

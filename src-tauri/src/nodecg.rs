@@ -5,7 +5,7 @@ use unwrap_or::unwrap_ok_or;
 use std::path::{PathBuf};
 use git2::Repository;
 
-use crate::log::{format_error, emit, emit_tauri_process_output};
+use crate::log::{format_error, emit_tauri_process_output, LogEmitter};
 use crate::{err_to_string, log_npm_install, npm};
 
 const NODECG_GIT_PATH: &str = "https://github.com/nodecg/nodecg.git";
@@ -76,11 +76,11 @@ fn clone_nodecg(path: &str) -> Result<String, String> {
 
 #[tauri::command(async)]
 pub fn install_nodecg(handle: tauri::AppHandle, path: String) -> Result<(), String> {
-    let log_key = "install-nodecg";
-    emit(&handle, log_key, "Starting NodeCG install...");
+    let logger = LogEmitter::new(&handle, "install-nodecg");
+    logger.emit("Starting NodeCG install...");
     match clone_nodecg(&path).and_then(|_result| {
         npm::install_npm_dependencies(&path).and_then(|child| {
-            log_npm_install(&handle, child, log_key);
+            log_npm_install(logger, child);
             Ok(())
         })
     }) {
@@ -91,24 +91,24 @@ pub fn install_nodecg(handle: tauri::AppHandle, path: String) -> Result<(), Stri
 
 #[tauri::command(async)]
 pub fn start_nodecg(handle: tauri::AppHandle, nodecg: tauri::State<'_, ManagedNodecg>, path: String) -> Result<String, String> {
-    let log_key = "run-nodecg";
+    let logger = LogEmitter::new(&handle, "run-nodecg");
     let output = unwrap_ok_or!(nodecg.start(&path), e, { return format_error("Failed to start NodeCG", e) });
-    emit_tauri_process_output(&handle, log_key, output);
+    emit_tauri_process_output(logger, output);
 
     Ok("Started successfully".to_string())
 }
 
 #[tauri::command(async)]
 pub fn stop_nodecg(handle: tauri::AppHandle, nodecg: tauri::State<ManagedNodecg>) -> Result<(), String> {
-    let log_key = "run-nodecg";
+    let logger = LogEmitter::new(&handle, "run-nodecg");
 
     match nodecg.stop() {
         Ok(_) => {
-            emit(&handle, log_key, "Stopped successfully");
+            logger.emit("Stopped successfully");
             Ok(())
         },
         Err(e) => {
-            emit(&handle, log_key, &err_to_string("Failed to stop NodeCG", e.clone()));
+            logger.emit(&err_to_string("Failed to stop NodeCG", e.clone()));
             Err(e)
         }
     }
