@@ -1,31 +1,28 @@
 use std::cmp::Ordering;
-use git2::Direction;
+use git2::{Direction, Remote};
 use itertools::Itertools;
-use crate::{format_error};
 
-pub fn fetch_versions(mut remote: git2::Remote) -> Result<Vec<String>, String> {
-    let connection = match remote.connect_auth(Direction::Fetch, None, None) {
-        Ok(connection) => connection,
-        Err(e) => return format_error("Could not connect to remote", e)
-    };
+pub fn fetch_versions_for_url(remote_url: &str) -> Result<Vec<String>, Box<dyn std::error::Error>> {
+    let remote = Remote::create_detached(&remote_url)?;
+    fetch_versions(remote)
+}
 
-    match connection.list() {
-        Ok(list) => Ok(
-            list.iter()
-                .filter(|item| { item.name().starts_with("refs/tags/") })
-                .map(|item| item.name().split("refs/tags/").last().unwrap().to_string())
-                .sorted_by(|item1, item2| {
-                    let version1 = semver_parser::version::parse(item1);
-                    let version2 = semver_parser::version::parse(item2);
+pub fn fetch_versions(mut remote: git2::Remote) -> Result<Vec<String>, Box<dyn std::error::Error>> {
+    let connection = remote.connect_auth(Direction::Fetch, None, None)?;
 
-                    if version1.is_err() || version2.is_err() {
-                        Ordering::Less
-                    } else {
-                        version2.unwrap().cmp(&version1.unwrap())
-                    }
-                }).collect_vec()),
-        Err(e) => format_error("Could not get version list", e)
-    }
+    Ok(connection.list()?.iter()
+        .filter(|item| { item.name().starts_with("refs/tags/") })
+        .map(|item| item.name().split("refs/tags/").last().unwrap().to_string())
+        .sorted_by(|item1, item2| {
+            let version1 = semver_parser::version::parse(item1);
+            let version2 = semver_parser::version::parse(item2);
+
+            if version1.is_err() || version2.is_err() {
+                Ordering::Less
+            } else {
+                version2.unwrap().cmp(&version1.unwrap())
+            }
+        }).collect_vec())
 }
 
 pub fn checkout_version(repo: &git2::Repository, version: String) -> Result<(), Box<dyn std::error::Error>> {

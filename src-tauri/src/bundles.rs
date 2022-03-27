@@ -1,5 +1,5 @@
 use std::path::Path;
-use git2::{AutotagOption, FetchOptions, Remote, Repository};
+use git2::{AutotagOption, FetchOptions, Repository};
 use unwrap_or::unwrap_ok_or;
 use std::{fs};
 
@@ -18,11 +18,7 @@ pub fn install_bundle(handle: tauri::AppHandle, bundle_name: String, bundle_url:
     }
 
     log::emit(&handle, log_key, "Fetching version list...");
-    let remote = match Remote::create_detached(&bundle_url) {
-        Ok(remote) => remote,
-        Err(e) => return format_error("Could not create remote", e)
-    };
-    let versions = unwrap_ok_or!(git::fetch_versions(remote), e, { return Err(e) });
+    let versions = unwrap_ok_or!(git::fetch_versions_for_url(&bundle_url), e, { return format_error("Failed to get version list", e) });
 
     log::emit(&handle, log_key, "Cloning repository...");
     let bundle_path = format!("{}/bundles/{}", nodecg_path, bundle_name);
@@ -56,13 +52,12 @@ pub fn fetch_bundle_versions(bundle_name: String, nodecg_path: String) -> Result
         return Err(format!("Bundle '{}' is not installed.", bundle_name))
     }
 
-    match Repository::open(path) {
-        Ok(repo) => {
-            let remote = unwrap_ok_or!(git::get_remote(&repo), e, { return format_error("Failed to get remote info", e) });
+    let repo = unwrap_ok_or!(Repository::open(path), e, { return format_error("Failed to open repository", e) });
+    let remote = unwrap_ok_or!(git::get_remote(&repo), e, { return format_error("Failed to get remote info", e) });
 
-            git::fetch_versions(remote)
-        },
-        Err(e) => return format_error(&format!("Failed to open git repository for bundle '{}'", bundle_name), e)
+    match git::fetch_versions(remote) {
+        Ok(versions) => Ok(versions),
+        Err(e) => format_error("Failed to get version list", e)
     }
 }
 
