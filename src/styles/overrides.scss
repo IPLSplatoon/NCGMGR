@@ -15,7 +15,7 @@
 }
 
 .ipl-button.disabled {
-    background-color: rgba(14, 20, 24, 0.6) !important;
+    background-color: var(--disabled-button-bg) !important;
 }
 
 .ipl-input__text-input-wrapper {
