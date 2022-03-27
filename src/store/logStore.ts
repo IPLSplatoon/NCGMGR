@@ -1,7 +1,7 @@
 import { LogEvent } from '@/types/log'
 import { Event, listen, UnlistenFn } from '@tauri-apps/api/event'
 import { defineStore } from 'pinia'
-import { listenForProcessExit } from '@/service/messaging'
+import { listenForProcessExit } from '@/service/messagingService'
 
 export interface LogStore {
     lines: Record<string, LogEvent[]>

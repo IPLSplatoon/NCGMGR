@@ -1,11 +1,11 @@
 import { mockTauriEvent } from '@/__mocks__/tauri'
-import { useLogStore } from '@/store/log'
+import { useLogStore } from '@/store/logStore'
 import { flushPromises } from '@vue/test-utils'
 import { createPinia, setActivePinia } from 'pinia'
-import { listenForProcessExit } from '@/service/messaging'
+import { listenForProcessExit } from '@/service/messagingService'
 import Mock = jest.Mock
 
-jest.mock('@/service/messaging')
+jest.mock('@/service/messagingService')
 
 describe('logStore', () => {
     beforeEach(() => {

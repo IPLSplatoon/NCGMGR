@@ -1,7 +1,7 @@
-import { Bundle, getBundles, getNodecgStatus } from '@/service/nodecg'
-import { useConfigStore } from '@/store/config'
+import { Bundle, getBundles, getNodecgStatus } from '@/service/nodecgService'
+import { useConfigStore } from '@/store/configStore'
 import { defineStore } from 'pinia'
-import { listenForProcessExit } from '@/service/messaging'
+import { listenForProcessExit } from '@/service/messagingService'
 
 export enum InstallStatus {
     UNKNOWN,

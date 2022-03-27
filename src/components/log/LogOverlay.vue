@@ -12,8 +12,8 @@
 import { computed, defineComponent } from 'vue'
 import MgrOverlay from '@/components/mgr/MgrOverlay.vue'
 import { IplButton } from '@iplsplatoon/vue-components'
-import { useLogStore } from '@/store/log'
-import LogDisplay from '@/components/logDisplay.vue'
+import { useLogStore } from '@/store/logStore'
+import LogDisplay from '@/components/log/LogDisplay.vue'
 
 export default defineComponent({
     name: 'LogOverlay',

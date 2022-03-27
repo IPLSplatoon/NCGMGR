@@ -29,11 +29,11 @@
 <script lang="ts">
 import { defineComponent, ref } from 'vue'
 import { IplButton, IplSpace } from '@iplsplatoon/vue-components'
-import { useNodecgStore } from '@/store/nodecg'
+import { useNodecgStore } from '@/store/nodecgStore'
 import { library } from '@fortawesome/fontawesome-svg-core'
 import { faSync } from '@fortawesome/free-solid-svg-icons/faSync'
 import { faPlusCircle } from '@fortawesome/free-solid-svg-icons/faPlusCircle'
-import BundleInstaller from '@/components/bundleInstaller.vue'
+import BundleInstaller from '@/components/BundleInstaller.vue'
 import BundleList from '@/components/bundleList/BundleList.vue'
 import { themeColors } from '@/styles/colors'
 

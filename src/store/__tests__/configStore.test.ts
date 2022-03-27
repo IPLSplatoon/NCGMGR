@@ -1,4 +1,4 @@
-import { LOCAL_STORAGE_CONFIG_KEY, useConfigStore } from '@/store/config'
+import { LOCAL_STORAGE_CONFIG_KEY, useConfigStore } from '@/store/configStore'
 import { createPinia, setActivePinia } from 'pinia'
 
 describe('configStore', () => {

@@ -1,4 +1,4 @@
-import StatusRow from '@/components/statusRow.vue'
+import StatusRow from '@/components/StatusRow.vue'
 import { shallowMount } from '@vue/test-utils'
 
 describe('StatusRow', () => {

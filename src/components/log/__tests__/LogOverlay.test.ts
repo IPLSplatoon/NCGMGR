@@ -1,5 +1,5 @@
-import LogOverlay from '@/components/logOverlay.vue'
-import { useLogStore } from '@/store/log'
+import LogOverlay from '@/components/log/LogOverlay.vue'
+import { useLogStore } from '@/store/logStore'
 import { config, mount } from '@vue/test-utils'
 import { IplButton } from '@iplsplatoon/vue-components'
 import { createTestingPinia, TestingPinia } from '@pinia/testing'

@@ -1,6 +1,6 @@
-import LogDisplay from '@/components/logDisplay.vue'
+import LogDisplay from '@/components/log/LogDisplay.vue'
 import { config, mount } from '@vue/test-utils'
-import { useLogStore } from '@/store/log'
+import { useLogStore } from '@/store/logStore'
 import { createTestingPinia, TestingPinia } from '@pinia/testing'
 
 describe('LogDisplay', () => {

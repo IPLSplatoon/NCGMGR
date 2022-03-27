@@ -1,13 +1,13 @@
 import { mockTauri } from '@/__mocks__/tauri'
-import BundleInstaller from '@/components/bundleInstaller.vue'
+import BundleInstaller from '@/components/BundleInstaller.vue'
 import { config, flushPromises, mount } from '@vue/test-utils'
 import { normalizeBundlePath } from '@/util/nodecg'
 import Mock = jest.Mock
 import { IplButton, IplInput } from '@iplsplatoon/vue-components'
 import { createTestingPinia, TestingPinia } from '@pinia/testing'
-import { useConfigStore } from '@/store/config'
-import { useLogStore } from '@/store/log'
-import { useNodecgStore } from '@/store/nodecg'
+import { useConfigStore } from '@/store/configStore'
+import { useLogStore } from '@/store/logStore'
+import { useNodecgStore } from '@/store/nodecgStore'
 
 jest.mock('@/util/nodecg')
 

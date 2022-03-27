@@ -11,7 +11,7 @@
 
 <script lang="ts">
 import { computed, defineComponent, onMounted, onUnmounted, watch } from 'vue'
-import { useLogStore } from '@/store/log'
+import { useLogStore } from '@/store/logStore'
 import Anser from 'anser'
 
 export default defineComponent({
@@ -53,9 +53,9 @@ export default defineComponent({
 </script>
 
 <style lang="scss" scoped>
-@import 'src/styles/layout';
-@import 'src/styles/text';
-@import 'src/styles/colors';
+@import '../../styles/layout';
+@import '../../styles/text';
+@import '../../styles/colors';
 
 .log-display {
     font-family: monospace;

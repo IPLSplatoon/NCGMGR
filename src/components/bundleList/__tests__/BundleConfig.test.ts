@@ -1,15 +1,15 @@
 import { createTestingPinia, TestingPinia } from '@pinia/testing'
 import { config, flushPromises, mount } from '@vue/test-utils'
-import { getBundleVersions, configFileExists, openConfigFile, createConfigFile } from '@/service/nodecg'
+import { getBundleVersions, configFileExists, openConfigFile, createConfigFile } from '@/service/nodecgService'
 import BundleConfig from '../BundleConfig.vue'
 import Mock = jest.Mock
 import type { IplSelect, IplButton } from '@iplsplatoon/vue-components'
-import { useLogStore } from '@/store/log'
+import { useLogStore } from '@/store/logStore'
 import { mockTauri, mockTauriOs, mockTauriShell } from '@/__mocks__/tauri'
-import { useConfigStore } from '@/store/config'
-import LogOverlay from '@/components/logOverlay.vue'
+import { useConfigStore } from '@/store/configStore'
+import LogOverlay from '@/components/log/LogOverlay.vue'
 
-jest.mock('@/service/nodecg')
+jest.mock('@/service/nodecgService')
 
 describe('BundleConfig', () => {
     let pinia: TestingPinia

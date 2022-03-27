@@ -1,14 +1,14 @@
 import { mockTauri, mockTauriDialog } from '@/__mocks__/tauri'
 import { config, flushPromises, shallowMount } from '@vue/test-utils'
-import InstallManager from '../installManager.vue'
-import { InstallStatus, useNodecgStore, RunStatus } from '@/store/nodecg'
+import InstallManager from '../InstallManager.vue'
+import { InstallStatus, useNodecgStore, RunStatus } from '@/store/nodecgStore'
 import { IplButton } from '@iplsplatoon/vue-components'
 import { createTestingPinia, TestingPinia } from '@pinia/testing'
-import { useConfigStore } from '@/store/config'
-import { useLogStore } from '@/store/log'
-import { openDashboard } from '@/service/nodecg'
+import { useConfigStore } from '@/store/configStore'
+import { useLogStore } from '@/store/logStore'
+import { openDashboard } from '@/service/nodecgService'
 
-jest.mock('@/service/nodecg')
+jest.mock('@/service/nodecgService')
 
 describe('Installer', () => {
     config.global.stubs = {

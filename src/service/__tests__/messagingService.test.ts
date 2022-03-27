@@ -1,4 +1,4 @@
-import { listenForProcessExit } from '@/service/messaging'
+import { listenForProcessExit } from '@/service/messagingService'
 import { mockTauriEvent } from '@/__mocks__/tauri'
 
 describe('listenForProcessExit', () => {

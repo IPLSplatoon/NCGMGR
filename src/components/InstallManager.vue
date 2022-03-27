@@ -61,15 +61,15 @@
 import { computed, defineComponent, onMounted, ref } from 'vue'
 import isEmpty from 'lodash/isEmpty'
 import { invoke } from '@tauri-apps/api/tauri'
-import { useConfigStore } from '@/store/config'
+import { useConfigStore } from '@/store/configStore'
 import { open } from '@tauri-apps/api/dialog'
-import LogOverlay from '@/components/logOverlay.vue'
-import { useLogStore } from '@/store/log'
+import LogOverlay from '@/components/log/LogOverlay.vue'
+import { useLogStore } from '@/store/logStore'
 import { IplButton, IplExpandingSpace, IplSpace } from '@iplsplatoon/vue-components'
-import StatusRow from '@/components/statusRow.vue'
-import { InstallStatus, RunStatus, useNodecgStore } from '@/store/nodecg'
-import LogDisplay from '@/components/logDisplay.vue'
-import { openDashboard } from '@/service/nodecg'
+import StatusRow from '@/components/StatusRow.vue'
+import { InstallStatus, RunStatus, useNodecgStore } from '@/store/nodecgStore'
+import LogDisplay from '@/components/log/LogDisplay.vue'
+import { openDashboard } from '@/service/nodecgService'
 
 export default defineComponent({
     name: 'InstallManager',

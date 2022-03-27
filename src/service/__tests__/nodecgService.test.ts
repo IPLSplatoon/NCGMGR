@@ -6,8 +6,8 @@ import {
     getNodecgStatus,
     openConfigFile,
     removeBundle
-} from '@/service/nodecg'
-import { InstallStatus } from '@/store/nodecg'
+} from '@/service/nodecgService'
+import { InstallStatus } from '@/store/nodecgStore'
 import { fileExists, folderExists } from '@/util/fs'
 import Mock = jest.Mock
 import { readTextFile } from '@tauri-apps/api/fs'

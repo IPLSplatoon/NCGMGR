@@ -1,8 +1,8 @@
-import BundleManager from '@/components/bundleManager.vue'
+import BundleManager from '@/components/BundleManager.vue'
 import { config, mount } from '@vue/test-utils'
 import { IplButton } from '@iplsplatoon/vue-components'
 import { createTestingPinia, TestingPinia } from '@pinia/testing'
-import { useNodecgStore } from '@/store/nodecg'
+import { useNodecgStore } from '@/store/nodecgStore'
 
 describe('BundleManager', () => {
     config.global.stubs = {

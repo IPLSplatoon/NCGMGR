@@ -1,7 +1,7 @@
 import { createDir, readDir, readTextFile, removeFile, writeFile } from '@tauri-apps/api/fs'
 import { PackageSchema } from '@/types/package'
 import isEmpty from 'lodash/isEmpty'
-import { InstallStatus } from '@/store/nodecg'
+import { InstallStatus } from '@/store/nodecgStore'
 import { invoke } from '@tauri-apps/api/tauri'
 import { fileExists, folderExists } from '@/util/fs'
 import { open } from '@tauri-apps/api/shell'

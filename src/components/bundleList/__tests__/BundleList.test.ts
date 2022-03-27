@@ -1,14 +1,14 @@
-import { useNodecgStore } from '@/store/nodecg'
+import { useNodecgStore } from '@/store/nodecgStore'
 import { config, flushPromises, mount } from '@vue/test-utils'
 import BundleSettings from '@/components/bundleList/BundleList.vue'
 import { createTestingPinia, TestingPinia } from '@pinia/testing'
-import { useConfigStore } from '@/store/config'
+import { useConfigStore } from '@/store/configStore'
 import { mockTauri } from '@/__mocks__/tauri'
 import { IplButton } from '@iplsplatoon/vue-components'
-import { removeBundle } from '@/service/nodecg'
+import { removeBundle } from '@/service/nodecgService'
 import Mock = jest.Mock
 
-jest.mock('@/service/nodecg')
+jest.mock('@/service/nodecgService')
 
 describe('BundleSettings', () => {
     let pinia: TestingPinia

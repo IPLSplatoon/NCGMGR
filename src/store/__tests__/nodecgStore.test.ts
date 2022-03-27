@@ -1,10 +1,10 @@
-import { InstallStatus, useNodecgStore } from '@/store/nodecg'
-import { getBundles, getNodecgStatus } from '@/service/nodecg'
-import { useConfigStore } from '@/store/config'
+import { InstallStatus, useNodecgStore } from '@/store/nodecgStore'
+import { getBundles, getNodecgStatus } from '@/service/nodecgService'
+import { useConfigStore } from '@/store/configStore'
 import Mock = jest.Mock
 import { createPinia, setActivePinia } from 'pinia'
 
-jest.mock('@/service/nodecg')
+jest.mock('@/service/nodecgService')
 
 describe('nodecgStore', () => {
     beforeEach(() => {

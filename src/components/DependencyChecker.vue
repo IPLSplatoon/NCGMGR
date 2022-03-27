@@ -11,7 +11,7 @@ import { defineComponent } from '@vue/runtime-core'
 import { IplExpandingSpace } from '@iplsplatoon/vue-components'
 import { useDependencyStore } from '@/store/dependencyStore'
 import { computed, onMounted } from 'vue'
-import StatusRow from '@/components/statusRow.vue'
+import StatusRow from '@/components/StatusRow.vue'
 
 export default defineComponent({
     name: 'DependencyChecker',

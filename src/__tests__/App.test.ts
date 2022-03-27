@@ -1,6 +1,6 @@
 import App from '@/App.vue'
 import { shallowMount } from '@vue/test-utils'
-import { InstallStatus, useNodecgStore } from '@/store/nodecg'
+import { InstallStatus, useNodecgStore } from '@/store/nodecgStore'
 import { createTestingPinia, TestingPinia } from '@pinia/testing'
 import { useDependencyStore } from '@/store/dependencyStore'
 

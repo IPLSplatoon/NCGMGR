@@ -6,10 +6,10 @@
 
 <script lang="ts">
 import { computed, defineComponent } from 'vue'
-import InstallManager from '@/components/installManager.vue'
-import BundleManager from '@/components/bundleManager.vue'
-import { InstallStatus, useNodecgStore } from '@/store/nodecg'
-import { useConfigStore } from '@/store/config'
+import InstallManager from '@/components/InstallManager.vue'
+import BundleManager from '@/components/BundleManager.vue'
+import { InstallStatus, useNodecgStore } from '@/store/nodecgStore'
+import { useConfigStore } from '@/store/configStore'
 import DependencyChecker from '@/components/DependencyChecker.vue'
 import { useDependencyStore } from '@/store/dependencyStore'
 
