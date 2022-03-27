@@ -11,9 +11,9 @@ export enum InstallStatus {
 }
 
 export enum RunStatus {
-    NOT_STARTED,
-    RUNNING,
-    STOPPED
+    NOT_STARTED = 'NOT_STARTED',
+    RUNNING = 'RUNNING',
+    STOPPED = 'STOPPED'
 }
 
 export interface NodecgStore {

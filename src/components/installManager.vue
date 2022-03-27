@@ -8,12 +8,11 @@
             <ipl-button label="Select folder" @click="selectDirectory" data-test="install-directory-select-button" />
             <ipl-button
                 v-if="nodecgStatus === NodecgStatus.INSTALLED"
-                :disabled="runStatus === RunStatus.RUNNING"
-                label="Launch"
+                :label="runStatus === RunStatus.RUNNING ? 'Stop' : 'Start'"
                 class="m-l-8"
-                color="green"
-                data-test="launch-button"
-                @click="doLaunch"
+                :color="runStatus === RunStatus.RUNNING ? 'red' : 'green'"
+                data-test="start-stop-toggle-button"
+                @click="toggleStartStop"
             />
             <ipl-button
                 v-else
@@ -52,14 +51,6 @@
         <template #default>
             <div class="layout vertical center-horizontal">
                 <log-display log-key="run-nodecg" class="m-t-4" />
-                <ipl-button
-                    label="Stop"
-                    color="red"
-                    class="m-t-8"
-                    data-test="stop-button"
-                    :disabled="runStatus !== RunStatus.RUNNING"
-                    @click="doStop"
-                />
             </div>
         </template>
     </ipl-expanding-space>
@@ -154,15 +145,16 @@ export default defineComponent({
 
             runStatus: computed(() => nodecgStore.status.runStatus),
             RunStatus,
-            async doLaunch () {
-                logStore.reset('run-nodecg')
-                const invocation = invoke('start_nodecg', { path: installFolder.value })
-                logStore.logPromiseResult({ promise: invocation, key: 'run-nodecg' })
-                await invocation
-                nodecgStore.status.runStatus = RunStatus.RUNNING
-            },
-            async doStop () {
-                await invoke('stop_nodecg')
+            async toggleStartStop () {
+                if (nodecgStore.status.runStatus === RunStatus.RUNNING) {
+                    await invoke('stop_nodecg')
+                } else {
+                    logStore.reset('run-nodecg')
+                    const invocation = invoke('start_nodecg', { path: installFolder.value })
+                    logStore.logPromiseResult({ promise: invocation, key: 'run-nodecg' })
+                    await invocation
+                    nodecgStore.status.runStatus = RunStatus.RUNNING
+                }
             },
             openDashboard () {
                 openDashboard(installFolder.value)
