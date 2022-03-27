@@ -12,7 +12,8 @@ jest.mock('@/service/nodecg')
 
 describe('Installer', () => {
     config.global.stubs = {
-        IplSpace: false
+        IplSpace: false,
+        IplExpandingSpace: false
     }
 
     let pinia: TestingPinia
@@ -139,7 +140,7 @@ describe('Installer', () => {
         expect(nodecgStore.status.runStatus).toEqual(RunStatus.RUNNING)
     })
 
-    it('disables stop and show dashboard buttons if nodecg is not started', () => {
+    it('disables stop and show dashboard buttons if nodecg is not started', async () => {
         const nodecgStore = useNodecgStore()
         nodecgStore.status.runStatus = RunStatus.NOT_STARTED
         const wrapper = shallowMount(InstallManager)

@@ -34,20 +34,35 @@
             />
         </div>
     </ipl-space>
-    <ipl-space class="m-t-8 layout vertical center-horizontal" v-show="runStatus !== RunStatus.NOT_STARTED">
-        <div class="max-width m-l-6">
-            Log
-        </div>
-        <log-display log-key="run-nodecg" class="m-t-4" />
-        <ipl-button
-            label="Stop"
-            color="red"
-            class="m-t-8"
-            data-test="stop-button"
-            :disabled="runStatus !== RunStatus.RUNNING"
-            @click="doStop"
-        />
-    </ipl-space>
+    <ipl-expanding-space
+        v-show="runStatus !== RunStatus.NOT_STARTED"
+        class="m-t-8"
+        expanded
+        data-test="nodecg-log-space"
+    >
+        <template #title>
+            NodeCG log
+            <span
+                class="badge"
+                :class="runStatus === RunStatus.RUNNING ? 'badge-green' : 'badge-red'"
+            >
+                {{ runStatus === RunStatus.RUNNING ? 'Running' : 'Stopped' }}
+            </span>
+        </template>
+        <template #default>
+            <div class="layout vertical center-horizontal">
+                <log-display log-key="run-nodecg" class="m-t-4" />
+                <ipl-button
+                    label="Stop"
+                    color="red"
+                    class="m-t-8"
+                    data-test="stop-button"
+                    :disabled="runStatus !== RunStatus.RUNNING"
+                    @click="doStop"
+                />
+            </div>
+        </template>
+    </ipl-expanding-space>
     <log-overlay title="Installing..." v-model:visible="showLog" log-key="install-nodecg" />
 </template>
 
@@ -59,7 +74,7 @@ import { useConfigStore } from '@/store/config'
 import { open } from '@tauri-apps/api/dialog'
 import LogOverlay from '@/components/logOverlay.vue'
 import { useLogStore } from '@/store/log'
-import { IplButton, IplSpace } from '@iplsplatoon/vue-components'
+import { IplButton, IplExpandingSpace, IplSpace } from '@iplsplatoon/vue-components'
 import StatusRow from '@/components/statusRow.vue'
 import { InstallStatus, RunStatus, useNodecgStore } from '@/store/nodecg'
 import LogDisplay from '@/components/logDisplay.vue'
@@ -68,7 +83,7 @@ import { openDashboard } from '@/service/nodecg'
 export default defineComponent({
     name: 'InstallManager',
 
-    components: { LogDisplay, StatusRow, IplSpace, IplButton, LogOverlay },
+    components: { IplExpandingSpace, LogDisplay, StatusRow, IplSpace, IplButton, LogOverlay },
 
     setup () {
         const config = useConfigStore()
