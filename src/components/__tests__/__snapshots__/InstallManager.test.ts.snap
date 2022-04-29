@@ -23,7 +23,7 @@ exports[`Installer matches snapshot 1`] = `
     </div>
   </div>
 </div>
-<log-overlay-stub title="Installing..." logkey="install-nodecg" visible="false" nobackgroundclose="false"></log-overlay-stub>
+<log-overlay-stub title="Installing..." logkey="install-nodecg" visible="false" nobackgroundclose="false" withprogress="false"></log-overlay-stub>
 `;
 
 exports[`Installer matches snapshot when nodecg status is NOT_STARTED 1`] = `
@@ -49,7 +49,7 @@ exports[`Installer matches snapshot when nodecg status is NOT_STARTED 1`] = `
     </div>
   </div>
 </div>
-<log-overlay-stub title="Installing..." logkey="install-nodecg" visible="false" nobackgroundclose="false"></log-overlay-stub>
+<log-overlay-stub title="Installing..." logkey="install-nodecg" visible="false" nobackgroundclose="false" withprogress="false"></log-overlay-stub>
 `;
 
 exports[`Installer matches snapshot when nodecg status is RUNNING 1`] = `
@@ -75,7 +75,7 @@ exports[`Installer matches snapshot when nodecg status is RUNNING 1`] = `
     </div>
   </div>
 </div>
-<log-overlay-stub title="Installing..." logkey="install-nodecg" visible="false" nobackgroundclose="false"></log-overlay-stub>
+<log-overlay-stub title="Installing..." logkey="install-nodecg" visible="false" nobackgroundclose="false" withprogress="false"></log-overlay-stub>
 `;
 
 exports[`Installer matches snapshot when nodecg status is STOPPED 1`] = `
@@ -101,5 +101,5 @@ exports[`Installer matches snapshot when nodecg status is STOPPED 1`] = `
     </div>
   </div>
 </div>
-<log-overlay-stub title="Installing..." logkey="install-nodecg" visible="false" nobackgroundclose="false"></log-overlay-stub>
+<log-overlay-stub title="Installing..." logkey="install-nodecg" visible="false" nobackgroundclose="false" withprogress="false"></log-overlay-stub>
 `;

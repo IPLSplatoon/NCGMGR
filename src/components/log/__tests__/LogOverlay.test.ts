@@ -16,7 +16,8 @@ describe('LogOverlay', () => {
     })
 
     config.global.stubs = {
-        IplButton: true
+        IplButton: true,
+        ProgressDisplay: true
     }
 
     it('matches snapshot', () => {
@@ -25,6 +26,19 @@ describe('LogOverlay', () => {
                 visible: true,
                 title: 'Log Overlay',
                 logKey: 'log1'
+            }
+        })
+
+        expect(wrapper.html()).toMatchSnapshot()
+    })
+
+    it('matches snapshot with progress display', () => {
+        const wrapper = mount(LogOverlay, {
+            props: {
+                visible: true,
+                title: 'Log Overlay',
+                logKey: 'log1',
+                withProgress: true
             }
         })
 

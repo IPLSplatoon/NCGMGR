@@ -5,6 +5,20 @@ exports[`LogOverlay matches snapshot 1`] = `
   <div class="mgr-overlay__content max-width">
     <div class="layout vertical center-horizontal">
       <h2 class="m-b-8">Log Overlay</h2>
+      <!--v-if-->
+      <div class="log-display m-b-8"></div>
+      <ipl-button-stub label="Close" color="blue" disabled="true" async="false" progressmessage="Working..." successmessage="Done!" requiresconfirmation="false" shortconfirmationmessage="false" small="false" disableonsuccess="false" href="" data-test="close-button"></ipl-button-stub>
+    </div>
+  </div>
+</div>
+`;
+
+exports[`LogOverlay matches snapshot with progress display 1`] = `
+<div class="mgr-overlay__wrapper layout horizontal center-horizontal center-vertical log-overlay">
+  <div class="mgr-overlay__content max-width">
+    <div class="layout vertical center-horizontal">
+      <h2 class="m-b-8">Log Overlay</h2>
+      <progress-display-stub logkey="log1" class="m-b-8 max-width"></progress-display-stub>
       <div class="log-display m-b-8"></div>
       <ipl-button-stub label="Close" color="blue" disabled="true" async="false" progressmessage="Working..." successmessage="Done!" requiresconfirmation="false" shortconfirmationmessage="false" small="false" disableonsuccess="false" href="" data-test="close-button"></ipl-button-stub>
     </div>

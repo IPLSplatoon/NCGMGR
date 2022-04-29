@@ -198,7 +198,7 @@ describe('BundleConfig', () => {
         await flushPromises()
 
         expect(logStore.reset).toHaveBeenCalledWith('change-bundle-version')
-        expect(logStore.listen).toHaveBeenCalledWith('change-bundle-version')
+        expect(logStore.listen).toHaveBeenCalledWith('change-bundle-version', true)
         expect(mockTauri.invoke).toHaveBeenCalledWith('set_bundle_version', {
             bundleName: 'bundle-name',
             version: '2.0.1',

@@ -32,8 +32,19 @@ describe('logStore', () => {
         })
     })
 
+    describe('setProgress', () => {
+        it('sets progress in state', () => {
+            const store = useLogStore()
+            store.progressEntries = { key2: { max_step: 4, step: 2 } }
+
+            store.setProgress('key1', { max_step: 5, step: 3 })
+
+            expect(store.progressEntries).toEqual({ key2: { max_step: 4, step: 2 }, key1: { max_step: 5, step: 3 } })
+        })
+    })
+
     describe('reset', () => {
-        it('clears lines and sets completed to false', () => {
+        it('clears messages and progress', () => {
             const logStore = useLogStore()
             logStore.lines = {
                 key1: [{ message: 'MESSAGE 1' }],
@@ -43,17 +54,23 @@ describe('logStore', () => {
                 key1: true,
                 key2: true
             }
+            logStore.progressEntries = {
+                key1: { max_step: 5, step: 4 },
+                key2: { max_step: 5, step: 3 }
+            }
 
             logStore.reset('key1')
 
             expect(logStore.lines).toEqual({
                 key1: [],
                 key2: [{ message: 'MESSAGE 2' }]
-            }
-            )
+            })
             expect(logStore.completed).toEqual({
                 key1: false,
                 key2: true
+            })
+            expect(logStore.progressEntries).toEqual({
+                key2: { max_step: 5, step: 3 }
             })
         })
     })
@@ -79,11 +96,11 @@ describe('logStore', () => {
     })
 
     describe('listen', () => {
-        it('listens for log events and adds received events to store', () => {
+        it('listens for log events and adds received events to store', async () => {
             const logStore = useLogStore()
             mockTauriEvent.listen.mockResolvedValue(jest.fn())
 
-            logStore.listen('key1')
+            await logStore.listen('key1')
 
             expect(mockTauriEvent.listen).toHaveBeenCalledTimes(1)
             expect(mockTauriEvent.listen).toHaveBeenCalledWith('log:key1', expect.any(Function))
@@ -94,6 +111,31 @@ describe('logStore', () => {
             })
 
             expect(logStore.lines).toEqual({ key1: [{ message: 'MESSAGE!' }] })
+        })
+
+        it('listens for progress events when required', async () => {
+            const logStore = useLogStore()
+            mockTauriEvent.listen.mockResolvedValue(jest.fn())
+
+            await logStore.listen('key2', true)
+
+            expect(mockTauriEvent.listen).toHaveBeenCalledTimes(2)
+            expect(mockTauriEvent.listen).toHaveBeenCalledWith('log:key2', expect.any(Function))
+            expect(mockTauriEvent.listen).toHaveBeenCalledWith('progress:key2', expect.any(Function))
+
+            const messageCallback = mockTauriEvent.listen.mock.calls[0][1]
+            messageCallback({
+                payload: { message: 'MESSAGE!' }
+            })
+
+            expect(logStore.lines).toEqual({ key2: [{ message: 'MESSAGE!' }] })
+
+            const progressCallback = mockTauriEvent.listen.mock.calls[1][1]
+            progressCallback({
+                payload: { max_step: 5, step: 3 }
+            })
+
+            expect(logStore.progressEntries).toEqual({ key2: { max_step: 5, step: 3 } })
         })
     })
 
@@ -107,6 +149,17 @@ describe('logStore', () => {
             logStore.unlisten('cool-key')
 
             expect(unlisten).toHaveBeenCalledTimes(1)
+        })
+
+        it('unlistens as expected when listening for progress events', async () => {
+            const logStore = useLogStore()
+            const unlisten = jest.fn()
+            mockTauriEvent.listen.mockResolvedValue(unlisten)
+            await logStore.listen('cool-key', true)
+
+            logStore.unlisten('cool-key')
+
+            expect(unlisten).toHaveBeenCalledTimes(2)
         })
     })
 

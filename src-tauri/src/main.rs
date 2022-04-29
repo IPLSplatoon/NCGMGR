@@ -7,7 +7,7 @@ extern crate core;
 
 use tauri::{Manager, Menu, MenuItem, RunEvent, Submenu};
 use tauri::api::process::{CommandEvent};
-use tauri::async_runtime::Receiver;
+use tauri::async_runtime::{JoinHandle, Receiver};
 #[cfg(target_os = "macos")]
 use window_vibrancy::{apply_vibrancy, NSVisualEffectMaterial};
 #[cfg(target_os = "windows")]
@@ -23,9 +23,9 @@ mod dependencies;
 
 use nodecg::ManagedNodecg;
 
-fn log_npm_install(logger: LogEmitter, receiver: Receiver<CommandEvent>) -> () {
+fn log_npm_install(logger: LogEmitter, receiver: Receiver<CommandEvent>) -> JoinHandle<Option<i32>> {
     logger.emit("Installing npm dependencies...");
-    log::emit_tauri_process_output(logger, receiver);
+    log::emit_tauri_process_output(logger, receiver)
 }
 
 #[tauri::command(async)]
@@ -111,7 +111,7 @@ fn main() {
             match managed_nodecg.stop() {
                 Ok(_) => {}
                 Err(e) => {
-                    let logger = LogEmitter::new(&handle, "run-nodecg");
+                    let logger = LogEmitter::new(handle.clone(), "run-nodecg");
                     logger.emit(&err_to_string("Failed to shut down NodeCG", e));
                     api.prevent_exit();
                 }

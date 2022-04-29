@@ -28,6 +28,7 @@
                 data-test="bundle-log-overlay"
                 log-key="change-bundle-version"
                 no-background-close
+                with-progress
             />
         </ipl-space>
         <ipl-space class="max-width m-l-8 h-max-content">
@@ -158,7 +159,7 @@ export default defineComponent({
             async setVersion () {
                 const logKey = 'change-bundle-version'
                 logStore.reset(logKey)
-                await logStore.listen(logKey)
+                await logStore.listen(logKey, true)
                 showInstallLog.value = true
                 const invocation = invoke('set_bundle_version', {
                     bundleName: props.bundle.name,

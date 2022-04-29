@@ -3,17 +3,27 @@ use tauri::api::process::{CommandEvent, TerminatedPayload};
 use tauri::async_runtime::{JoinHandle, Receiver, spawn};
 use tauri::{Manager};
 
+#[derive(Clone)]
 pub struct LogEmitter {
     handle: tauri::AppHandle,
     key: String,
+    max_progress_step: Option<u32>
 }
 
 impl LogEmitter {
-    pub fn new(handle: &tauri::AppHandle, key: &str) -> LogEmitter {
+    pub fn new(handle: tauri::AppHandle, key: &str) -> LogEmitter {
         LogEmitter {
             handle: handle.clone(),
             key: key.to_string(),
+            max_progress_step: None
         }
+    }
+
+    pub fn with_progress(handle: tauri::AppHandle, key: &str, max_progress_step: u32) -> LogEmitter {
+        let mut emitter = LogEmitter::new(handle, key);
+        emitter.max_progress_step = Some(max_progress_step);
+        emitter.emit_progress(0);
+        emitter
     }
 
     pub fn emit(&self, msg: &str) -> () {
@@ -21,6 +31,15 @@ impl LogEmitter {
             &format!("log:{}", self.key),
             LogPayload { message: msg.to_string() }
         ).expect("Failed to emit log message");
+    }
+
+    pub fn emit_progress(&self, step: u32) -> () {
+        if self.max_progress_step.is_some() {
+            self.handle.emit_all(
+                &format!("progress:{}", self.key),
+                ProgressPayload { step, max_step: self.max_progress_step.unwrap() }
+            ).expect("Failed to emit log message");
+        }
     }
 
     pub fn emit_process_closure(&self, payload: &TerminatedPayload) -> () {
@@ -34,6 +53,12 @@ impl LogEmitter {
 #[derive(Clone, serde::Serialize)]
 struct LogPayload {
     message: String,
+}
+
+#[derive(Clone, serde::Serialize)]
+struct ProgressPayload {
+    step: u32,
+    max_step: u32
 }
 
 #[derive(Clone, serde::Serialize)]

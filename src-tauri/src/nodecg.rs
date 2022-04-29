@@ -76,7 +76,7 @@ fn clone_nodecg(path: &str) -> Result<String, String> {
 
 #[tauri::command(async)]
 pub fn install_nodecg(handle: tauri::AppHandle, path: String) -> Result<(), String> {
-    let logger = LogEmitter::new(&handle, "install-nodecg");
+    let logger = LogEmitter::new(handle, "install-nodecg");
     logger.emit("Starting NodeCG install...");
     match clone_nodecg(&path).and_then(|_result| {
         npm::install_npm_dependencies(&path).and_then(|child| {
@@ -91,7 +91,7 @@ pub fn install_nodecg(handle: tauri::AppHandle, path: String) -> Result<(), Stri
 
 #[tauri::command(async)]
 pub fn start_nodecg(handle: tauri::AppHandle, nodecg: tauri::State<'_, ManagedNodecg>, path: String) -> Result<String, String> {
-    let logger = LogEmitter::new(&handle, "run-nodecg");
+    let logger = LogEmitter::new(handle, "run-nodecg");
     let output = unwrap_ok_or!(nodecg.start(&path), e, { return format_error("Failed to start NodeCG", e) });
     emit_tauri_process_output(logger, output);
 
@@ -100,7 +100,7 @@ pub fn start_nodecg(handle: tauri::AppHandle, nodecg: tauri::State<'_, ManagedNo
 
 #[tauri::command(async)]
 pub fn stop_nodecg(handle: tauri::AppHandle, nodecg: tauri::State<ManagedNodecg>) -> Result<(), String> {
-    let logger = LogEmitter::new(&handle, "run-nodecg");
+    let logger = LogEmitter::new(handle, "run-nodecg");
 
     match nodecg.stop() {
         Ok(_) => {

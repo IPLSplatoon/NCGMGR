@@ -2,6 +2,11 @@
     <mgr-overlay v-model:visible="modelVisible" class="log-overlay" :no-background-close="noBackgroundClose" max-width>
         <div class="layout vertical center-horizontal">
             <h2 class="m-b-8">{{title}}</h2>
+            <progress-display
+                v-if="withProgress"
+                :log-key="logKey"
+                class="m-b-8 max-width"
+            />
             <log-display :log-key="logKey" class="m-b-8" />
             <ipl-button @click="modelVisible = false" :disabled="!completed" data-test="close-button" label="Close" />
         </div>
@@ -14,13 +19,14 @@ import MgrOverlay from '@/components/mgr/MgrOverlay.vue'
 import { IplButton } from '@iplsplatoon/vue-components'
 import { useLogStore } from '@/store/logStore'
 import LogDisplay from '@/components/log/LogDisplay.vue'
+import ProgressDisplay from '@/components/log/ProgressDisplay.vue'
 
 export default defineComponent({
     name: 'LogOverlay',
 
     emits: ['update:visible'],
 
-    components: { LogDisplay, MgrOverlay, IplButton },
+    components: { ProgressDisplay, LogDisplay, MgrOverlay, IplButton },
 
     props: {
         title: {
@@ -36,6 +42,10 @@ export default defineComponent({
             required: true
         },
         noBackgroundClose: {
+            type: Boolean,
+            default: false
+        },
+        withProgress: {
             type: Boolean,
             default: false
         }

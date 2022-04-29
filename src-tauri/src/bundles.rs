@@ -9,7 +9,7 @@ use crate::log::LogEmitter;
 
 #[tauri::command(async)]
 pub fn install_bundle(handle: tauri::AppHandle, bundle_name: String, bundle_url: String, nodecg_path: String) -> Result<(), String> {
-    let logger = LogEmitter::new(&handle, "install-bundle");
+    let logger = LogEmitter::new(handle, "install-bundle");
     logger.emit(&format!("Installing {}...", bundle_name));
 
     let dir_bundles = format!("{}/bundles", nodecg_path);
@@ -64,7 +64,7 @@ pub fn fetch_bundle_versions(bundle_name: String, nodecg_path: String) -> Result
 
 #[tauri::command(async)]
 pub fn set_bundle_version(handle: tauri::AppHandle, bundle_name: String, version: String, nodecg_path: String) -> Result<(), String> {
-    let logger = LogEmitter::new(&handle, "change-bundle-version");
+    let logger = LogEmitter::with_progress(handle, "change-bundle-version", 6);
     let bundle_dir = format!("{}/bundles/{}", nodecg_path, bundle_name);
     let path = Path::new(&bundle_dir);
 
@@ -72,13 +72,17 @@ pub fn set_bundle_version(handle: tauri::AppHandle, bundle_name: String, version
         return Err(format!("Bundle '{}' is not installed.", bundle_name))
     }
 
+    logger.emit_progress(1);
     logger.emit(&format!("Installing {} {}...", bundle_name, version));
     match Repository::open(path) {
         Ok(repo) => {
+            logger.emit_progress(2);
             let mut remote = unwrap_ok_or!(git::get_remote(&repo), e, { return format_error("Failed to get remote repository", e) });
+            logger.emit_progress(3);
             unwrap_ok_or!(remote.fetch(&[""], Some(FetchOptions::new().download_tags(AutotagOption::All)), None), e, return format_error("Failed to fetch version data", e));
-
+            logger.emit_progress(4);
             unwrap_ok_or!(git::checkout_version(&repo, version.clone()), e, { return format_error(&format!("Failed to checkout version {}", version), e) });
+            logger.emit_progress(5);
         },
         Err(e) => return format_error(&format!("Failed to open git repository for bundle '{}'", bundle_name), e)
     }
