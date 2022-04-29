@@ -76,9 +76,10 @@ fn clone_nodecg(path: &str) -> Result<String, String> {
 
 #[tauri::command(async)]
 pub fn install_nodecg(handle: tauri::AppHandle, path: String) -> Result<(), String> {
-    let logger = LogEmitter::new(handle, "install-nodecg");
+    let logger = LogEmitter::with_progress(handle, "install-nodecg", 2);
     logger.emit("Starting NodeCG install...");
     match clone_nodecg(&path).and_then(|_result| {
+        logger.emit_progress(1);
         npm::install_npm_dependencies(&path).and_then(|child| {
             log_npm_install(logger, child);
             Ok(())

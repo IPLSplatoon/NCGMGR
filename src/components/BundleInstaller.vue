@@ -20,6 +20,7 @@
             data-test="bundle-log-overlay"
             log-key="install-bundle"
             no-background-close
+            with-progress
         />
     </ipl-space>
 </template>
@@ -78,7 +79,7 @@ export default defineComponent({
             doInstall: async () => {
                 const logKey = 'install-bundle'
                 logStore.reset(logKey)
-                await logStore.listen(logKey)
+                await logStore.listen(logKey, true)
                 showInstallLog.value = true
                 const invocation = invoke('install_bundle', { bundleName, bundleUrl, nodecgPath: configStore.installPath })
                 logStore.logPromiseResult({ promise: invocation, key: logKey })

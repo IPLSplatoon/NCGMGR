@@ -9,7 +9,7 @@ use crate::log::LogEmitter;
 
 #[tauri::command(async)]
 pub fn install_bundle(handle: tauri::AppHandle, bundle_name: String, bundle_url: String, nodecg_path: String) -> Result<(), String> {
-    let logger = LogEmitter::new(handle, "install-bundle");
+    let logger = LogEmitter::with_progress(handle, "install-bundle", 5);
     logger.emit(&format!("Installing {}...", bundle_name));
 
     let dir_bundles = format!("{}/bundles", nodecg_path);
@@ -17,14 +17,17 @@ pub fn install_bundle(handle: tauri::AppHandle, bundle_name: String, bundle_url:
         logger.emit("Creating missing bundles directory");
         unwrap_ok_or!(fs::create_dir(dir_bundles), e, { return format_error("Failed to create bundles directory", e) });
     }
+    logger.emit_progress(1);
 
     logger.emit("Fetching version list...");
     let versions = unwrap_ok_or!(git::fetch_versions_for_url(&bundle_url), e, { return format_error("Failed to get version list", e) });
+    logger.emit_progress(2);
 
     logger.emit("Cloning repository...");
     let bundle_path = format!("{}/bundles/{}", nodecg_path, bundle_name);
     match Repository::clone(&bundle_url, bundle_path.clone()) {
         Ok(repo) => {
+            logger.emit_progress(3);
             if versions.len() > 1 {
                 let latest_version = versions.first().unwrap();
                 logger.emit(&format!("Checking out version {}...", latest_version));
@@ -34,6 +37,7 @@ pub fn install_bundle(handle: tauri::AppHandle, bundle_name: String, bundle_url:
         },
         Err(e) => return format_error(&format!("Failed to clone bundle '{}'", bundle_name), e)
     }
+    logger.emit_progress(4);
 
     match npm::install_npm_dependencies(&bundle_path).and_then(|child| {
         log_npm_install(logger, child);
@@ -64,7 +68,7 @@ pub fn fetch_bundle_versions(bundle_name: String, nodecg_path: String) -> Result
 
 #[tauri::command(async)]
 pub fn set_bundle_version(handle: tauri::AppHandle, bundle_name: String, version: String, nodecg_path: String) -> Result<(), String> {
-    let logger = LogEmitter::with_progress(handle, "change-bundle-version", 6);
+    let logger = LogEmitter::with_progress(handle, "change-bundle-version", 4);
     let bundle_dir = format!("{}/bundles/{}", nodecg_path, bundle_name);
     let path = Path::new(&bundle_dir);
 
@@ -78,11 +82,9 @@ pub fn set_bundle_version(handle: tauri::AppHandle, bundle_name: String, version
         Ok(repo) => {
             logger.emit_progress(2);
             let mut remote = unwrap_ok_or!(git::get_remote(&repo), e, { return format_error("Failed to get remote repository", e) });
-            logger.emit_progress(3);
             unwrap_ok_or!(remote.fetch(&[""], Some(FetchOptions::new().download_tags(AutotagOption::All)), None), e, return format_error("Failed to fetch version data", e));
-            logger.emit_progress(4);
             unwrap_ok_or!(git::checkout_version(&repo, version.clone()), e, { return format_error(&format!("Failed to checkout version {}", version), e) });
-            logger.emit_progress(5);
+            logger.emit_progress(3);
         },
         Err(e) => return format_error(&format!("Failed to open git repository for bundle '{}'", bundle_name), e)
     }

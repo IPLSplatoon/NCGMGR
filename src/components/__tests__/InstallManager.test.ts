@@ -120,7 +120,7 @@ describe('Installer', () => {
         await wrapper.getComponent<typeof IplButton>('[data-test="install-button"]').vm.$emit('click')
 
         expect(logStore.reset).toHaveBeenCalledWith('install-nodecg')
-        expect(logStore.listen).toHaveBeenCalledWith('install-nodecg')
+        expect(logStore.listen).toHaveBeenCalledWith('install-nodecg', true)
         expect(mockTauri.invoke).toHaveBeenCalledWith('install_nodecg', { path: '/install/path' })
         expect(logStore.logPromiseResult).toHaveBeenCalledWith({ promise: expect.anything(), key: 'install-nodecg' })
         expect(logStore.listenForProcessExit).toHaveBeenCalledWith({ key: 'install-nodecg', callback: expect.anything() })

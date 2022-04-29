@@ -54,7 +54,13 @@
             </div>
         </template>
     </ipl-expanding-space>
-    <log-overlay title="Installing..." v-model:visible="showLog" log-key="install-nodecg" />
+    <log-overlay
+        v-model:visible="showLog"
+        title="Installing..."
+        log-key="install-nodecg"
+        no-background-close
+        with-progress
+    />
 </template>
 
 <script lang="ts">
@@ -131,7 +137,7 @@ export default defineComponent({
             async doInstall () {
                 const logKey = 'install-nodecg'
                 logStore.reset(logKey)
-                await logStore.listen(logKey)
+                await logStore.listen(logKey, true)
                 showLog.value = true
                 const invocation = invoke('install_nodecg', { path: installFolder.value })
                 logStore.logPromiseResult({ promise: invocation, key: logKey })

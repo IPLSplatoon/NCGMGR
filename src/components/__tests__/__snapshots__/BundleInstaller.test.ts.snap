@@ -4,6 +4,6 @@ exports[`BundleInstaller matches snapshot 1`] = `
 <div class="ipl-space color-light" data-v-11cc5f1c="">
   <ipl-input-stub name="bundleName" label="Bundle Repository Path" modelvalue="" type="text" centered="false" disabled="false" data-test="bundle-path-input"></ipl-input-stub>
   <ipl-button-stub label="Install" color="green" disabled="true" async="false" progressmessage="Working..." successmessage="Done!" requiresconfirmation="false" shortconfirmationmessage="false" small="false" disableonsuccess="false" href="" class="m-t-8" data-test="install-button"></ipl-button-stub>
-  <log-overlay-stub title="Installing..." logkey="install-bundle" visible="false" nobackgroundclose="true" withprogress="false" data-test="bundle-log-overlay"></log-overlay-stub>
+  <log-overlay-stub title="Installing..." logkey="install-bundle" visible="false" nobackgroundclose="true" withprogress="true" data-test="bundle-log-overlay"></log-overlay-stub>
 </div>
 `;
