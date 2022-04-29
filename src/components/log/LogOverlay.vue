@@ -20,6 +20,7 @@ import { IplButton } from '@iplsplatoon/vue-components'
 import { useLogStore } from '@/store/logStore'
 import LogDisplay from '@/components/log/LogDisplay.vue'
 import ProgressDisplay from '@/components/log/ProgressDisplay.vue'
+import { ActionState } from '@/types/log'
 
 export default defineComponent({
     name: 'LogOverlay',
@@ -55,7 +56,7 @@ export default defineComponent({
         const logStore = useLogStore()
 
         return {
-            completed: computed(() => logStore.completed[props.logKey]),
+            completed: computed(() => logStore.actionStates[props.logKey] !== ActionState.INCOMPLETE),
             modelVisible: computed({
                 get () {
                     return props.visible

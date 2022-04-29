@@ -3,6 +3,7 @@ import { useLogStore } from '@/store/logStore'
 import { flushPromises } from '@vue/test-utils'
 import { createPinia, setActivePinia } from 'pinia'
 import { listenForProcessExit } from '@/service/messagingService'
+import { ActionState } from '@/types/log'
 import Mock = jest.Mock
 
 jest.mock('@/service/messagingService')
@@ -50,9 +51,9 @@ describe('logStore', () => {
                 key1: [{ message: 'MESSAGE 1' }],
                 key2: [{ message: 'MESSAGE 2' }]
             }
-            logStore.completed = {
-                key1: true,
-                key2: true
+            logStore.actionStates = {
+                key1: ActionState.COMPLETED_SUCCESS,
+                key2: ActionState.COMPLETED_SUCCESS
             }
             logStore.progressEntries = {
                 key1: { max_step: 5, step: 4 },
@@ -65,9 +66,9 @@ describe('logStore', () => {
                 key1: [],
                 key2: [{ message: 'MESSAGE 2' }]
             })
-            expect(logStore.completed).toEqual({
-                key1: false,
-                key2: true
+            expect(logStore.actionStates).toEqual({
+                key1: ActionState.INCOMPLETE,
+                key2: ActionState.COMPLETED_SUCCESS
             })
             expect(logStore.progressEntries).toEqual({
                 key2: { max_step: 5, step: 3 }
@@ -75,22 +76,22 @@ describe('logStore', () => {
         })
     })
 
-    describe('setCompleted', () => {
+    describe('setActionState', () => {
         it('sets completed state', () => {
             const logStore = useLogStore()
-            logStore.completed = {
-                key1: true,
-                key2: true
+            logStore.actionStates = {
+                key1: ActionState.COMPLETED_SUCCESS,
+                key2: ActionState.INCOMPLETE
             }
 
-            logStore.setCompleted({
+            logStore.setActionState({
                 key: 'key2',
-                completed: false
+                state: ActionState.COMPLETED_ERROR
             })
 
-            expect(logStore.completed).toEqual({
-                key1: true,
-                key2: false
+            expect(logStore.actionStates).toEqual({
+                key1: ActionState.COMPLETED_SUCCESS,
+                key2: ActionState.COMPLETED_ERROR
             })
         })
     })
@@ -179,29 +180,32 @@ describe('logStore', () => {
                     type: 'error'
                 }]
             })
-            expect(logStore.completed).toEqual({ key2: true })
+            expect(logStore.actionStates).toEqual({ key2: ActionState.COMPLETED_ERROR })
         })
     })
 
     describe('listenForProcessExit', () => {
-        it('listens for process exit and sets completed on exit event', async () => {
+        it.each([
+            [ActionState.COMPLETED_SUCCESS, true],
+            [ActionState.COMPLETED_ERROR, false]
+        ])('sets action state to %p if process exit success value is %p', async (state, success) => {
             const unlisten = jest.fn()
             const callback = jest.fn();
             (listenForProcessExit as Mock).mockResolvedValue(unlisten)
             const logStore = useLogStore()
-            logStore.setCompleted = jest.fn()
+            logStore.setActionState = jest.fn()
 
             await logStore.listenForProcessExit({ key: 'log-key', callback })
 
             expect(callback).not.toHaveBeenCalled()
             expect(unlisten).not.toHaveBeenCalled()
-            expect(logStore.setCompleted).not.toHaveBeenCalled();
+            expect(logStore.setActionState).not.toHaveBeenCalled();
 
-            (listenForProcessExit as Mock).mock.calls[0][1]()
+            (listenForProcessExit as Mock).mock.calls[0][1]({ payload: { success } })
 
             expect(callback).toHaveBeenCalled()
             expect(unlisten).toHaveBeenCalled()
-            expect(logStore.setCompleted).toHaveBeenCalledWith({ key: 'log-key', completed: true })
+            expect(logStore.setActionState).toHaveBeenCalledWith({ key: 'log-key', state })
         })
     })
 })

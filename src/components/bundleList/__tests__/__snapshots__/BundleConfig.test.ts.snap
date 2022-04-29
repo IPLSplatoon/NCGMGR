@@ -67,9 +67,9 @@ exports[`BundleConfig matches snapshot when config file is missing 1`] = `
 exports[`BundleConfig matches snapshot when getting bundle versions fails 1`] = `
 <div class="ipl-space color-light layout horizontal m-t-8 m-b-8" data-v-11cc5f1c="">
   <div class="ipl-space color-dark max-width h-max-content" data-v-11cc5f1c="">
-    <div class="ipl-message__wrapper layout horizontal center-vertical ipl-message__type-error m-b-8" data-v-5541e800="">
-      <font-awesome-icon-stub icon="exclamation-circle" border="false" fixedwidth="false" listitem="false" pulse="false" swapopacity="false" spin="false" symbol="false" inverse="false" class="icon" data-v-5541e800=""></font-awesome-icon-stub>
-      <div class="message-content" data-v-5541e800="">
+    <div class="ipl-message__wrapper ipl-message__type-error m-b-8" data-v-ec3b4444="">
+      <font-awesome-icon-stub icon="exclamation-circle" border="false" fixedwidth="false" listitem="false" pulse="false" swapopacity="false" spin="false" symbol="false" inverse="false" class="icon" data-v-ec3b4444=""></font-awesome-icon-stub>
+      <div class="message-content" data-v-ec3b4444="">
         <!---->Error: Error!
       </div>
     </div>

@@ -10,14 +10,14 @@ exports[`Installer matches snapshot 1`] = `
     <ipl-button-stub label="Open dashboard" color="green" disabled="true" async="false" progressmessage="Working..." successmessage="Done!" requiresconfirmation="false" shortconfirmationmessage="false" small="false" disableonsuccess="false" href="" data-test="open-dashboard-button" class="m-l-8"></ipl-button-stub>
   </div>
 </div>
-<div class="ipl-expansion-panel__content m-t-8" data-test="nodecg-log-space" data-v-1dcbcc2a="" style="display: none;">
-  <div class="ipl-expansion-panel__header layout horizontal center-vertical" data-v-1dcbcc2a="">
-    <div class="ipl-expansion-panel__header-background" data-v-1dcbcc2a=""></div>
-    <div class="ipl-expansion-panel__title" data-v-1dcbcc2a=""> NodeCG log <span class="badge badge-red">Stopped</span></div>
-    <font-awesome-icon-stub icon="chevron-left" border="false" fixedwidth="false" listitem="false" pulse="false" swapopacity="false" spin="false" symbol="false" inverse="false" class="icon content-expanded" data-v-1dcbcc2a=""></font-awesome-icon-stub>
-    <div class="header-extra" data-v-1dcbcc2a=""></div>
+<div class="ipl-expansion-panel__content m-t-8" data-test="nodecg-log-space" data-v-67856a23="" style="display: none;">
+  <div class="ipl-expansion-panel__header" data-v-67856a23="">
+    <div class="ipl-expansion-panel__header-background" data-v-67856a23=""></div>
+    <div class="ipl-expansion-panel__title" data-v-67856a23=""> NodeCG log <span class="badge badge-red">Stopped</span></div>
+    <font-awesome-icon-stub icon="chevron-left" border="false" fixedwidth="false" listitem="false" pulse="false" swapopacity="false" spin="false" symbol="false" inverse="false" class="icon content-expanded" data-v-67856a23=""></font-awesome-icon-stub>
+    <div class="header-extra" data-v-67856a23=""></div>
   </div>
-  <div class="content" data-v-1dcbcc2a="">
+  <div class="content" data-v-67856a23="">
     <div class="layout vertical center-horizontal">
       <log-display-stub logkey="run-nodecg" class="m-t-4"></log-display-stub>
     </div>
@@ -36,14 +36,14 @@ exports[`Installer matches snapshot when nodecg status is NOT_STARTED 1`] = `
     <ipl-button-stub label="Open dashboard" color="green" disabled="true" async="false" progressmessage="Working..." successmessage="Done!" requiresconfirmation="false" shortconfirmationmessage="false" small="false" disableonsuccess="false" href="" data-test="open-dashboard-button" class="m-l-8"></ipl-button-stub>
   </div>
 </div>
-<div class="ipl-expansion-panel__content m-t-8" data-test="nodecg-log-space" data-v-1dcbcc2a="" style="display: none;">
-  <div class="ipl-expansion-panel__header layout horizontal center-vertical" data-v-1dcbcc2a="">
-    <div class="ipl-expansion-panel__header-background" data-v-1dcbcc2a=""></div>
-    <div class="ipl-expansion-panel__title" data-v-1dcbcc2a=""> NodeCG log <span class="badge badge-red">Stopped</span></div>
-    <font-awesome-icon-stub icon="chevron-left" border="false" fixedwidth="false" listitem="false" pulse="false" swapopacity="false" spin="false" symbol="false" inverse="false" class="icon content-expanded" data-v-1dcbcc2a=""></font-awesome-icon-stub>
-    <div class="header-extra" data-v-1dcbcc2a=""></div>
+<div class="ipl-expansion-panel__content m-t-8" data-test="nodecg-log-space" data-v-67856a23="" style="display: none;">
+  <div class="ipl-expansion-panel__header" data-v-67856a23="">
+    <div class="ipl-expansion-panel__header-background" data-v-67856a23=""></div>
+    <div class="ipl-expansion-panel__title" data-v-67856a23=""> NodeCG log <span class="badge badge-red">Stopped</span></div>
+    <font-awesome-icon-stub icon="chevron-left" border="false" fixedwidth="false" listitem="false" pulse="false" swapopacity="false" spin="false" symbol="false" inverse="false" class="icon content-expanded" data-v-67856a23=""></font-awesome-icon-stub>
+    <div class="header-extra" data-v-67856a23=""></div>
   </div>
-  <div class="content" data-v-1dcbcc2a="">
+  <div class="content" data-v-67856a23="">
     <div class="layout vertical center-horizontal">
       <log-display-stub logkey="run-nodecg" class="m-t-4"></log-display-stub>
     </div>
@@ -62,14 +62,14 @@ exports[`Installer matches snapshot when nodecg status is RUNNING 1`] = `
     <ipl-button-stub label="Open dashboard" color="green" disabled="false" async="false" progressmessage="Working..." successmessage="Done!" requiresconfirmation="false" shortconfirmationmessage="false" small="false" disableonsuccess="false" href="" data-test="open-dashboard-button" class="m-l-8"></ipl-button-stub>
   </div>
 </div>
-<div class="ipl-expansion-panel__content m-t-8" data-test="nodecg-log-space" data-v-1dcbcc2a="">
-  <div class="ipl-expansion-panel__header layout horizontal center-vertical" data-v-1dcbcc2a="">
-    <div class="ipl-expansion-panel__header-background" data-v-1dcbcc2a=""></div>
-    <div class="ipl-expansion-panel__title" data-v-1dcbcc2a=""> NodeCG log <span class="badge badge-green">Running</span></div>
-    <font-awesome-icon-stub icon="chevron-left" border="false" fixedwidth="false" listitem="false" pulse="false" swapopacity="false" spin="false" symbol="false" inverse="false" class="icon content-expanded" data-v-1dcbcc2a=""></font-awesome-icon-stub>
-    <div class="header-extra" data-v-1dcbcc2a=""></div>
+<div class="ipl-expansion-panel__content m-t-8" data-test="nodecg-log-space" data-v-67856a23="">
+  <div class="ipl-expansion-panel__header" data-v-67856a23="">
+    <div class="ipl-expansion-panel__header-background" data-v-67856a23=""></div>
+    <div class="ipl-expansion-panel__title" data-v-67856a23=""> NodeCG log <span class="badge badge-green">Running</span></div>
+    <font-awesome-icon-stub icon="chevron-left" border="false" fixedwidth="false" listitem="false" pulse="false" swapopacity="false" spin="false" symbol="false" inverse="false" class="icon content-expanded" data-v-67856a23=""></font-awesome-icon-stub>
+    <div class="header-extra" data-v-67856a23=""></div>
   </div>
-  <div class="content" data-v-1dcbcc2a="">
+  <div class="content" data-v-67856a23="">
     <div class="layout vertical center-horizontal">
       <log-display-stub logkey="run-nodecg" class="m-t-4"></log-display-stub>
     </div>
@@ -88,14 +88,14 @@ exports[`Installer matches snapshot when nodecg status is STOPPED 1`] = `
     <ipl-button-stub label="Open dashboard" color="green" disabled="true" async="false" progressmessage="Working..." successmessage="Done!" requiresconfirmation="false" shortconfirmationmessage="false" small="false" disableonsuccess="false" href="" data-test="open-dashboard-button" class="m-l-8"></ipl-button-stub>
   </div>
 </div>
-<div class="ipl-expansion-panel__content m-t-8" data-test="nodecg-log-space" data-v-1dcbcc2a="">
-  <div class="ipl-expansion-panel__header layout horizontal center-vertical" data-v-1dcbcc2a="">
-    <div class="ipl-expansion-panel__header-background" data-v-1dcbcc2a=""></div>
-    <div class="ipl-expansion-panel__title" data-v-1dcbcc2a=""> NodeCG log <span class="badge badge-red">Stopped</span></div>
-    <font-awesome-icon-stub icon="chevron-left" border="false" fixedwidth="false" listitem="false" pulse="false" swapopacity="false" spin="false" symbol="false" inverse="false" class="icon content-expanded" data-v-1dcbcc2a=""></font-awesome-icon-stub>
-    <div class="header-extra" data-v-1dcbcc2a=""></div>
+<div class="ipl-expansion-panel__content m-t-8" data-test="nodecg-log-space" data-v-67856a23="">
+  <div class="ipl-expansion-panel__header" data-v-67856a23="">
+    <div class="ipl-expansion-panel__header-background" data-v-67856a23=""></div>
+    <div class="ipl-expansion-panel__title" data-v-67856a23=""> NodeCG log <span class="badge badge-red">Stopped</span></div>
+    <font-awesome-icon-stub icon="chevron-left" border="false" fixedwidth="false" listitem="false" pulse="false" swapopacity="false" spin="false" symbol="false" inverse="false" class="icon content-expanded" data-v-67856a23=""></font-awesome-icon-stub>
+    <div class="header-extra" data-v-67856a23=""></div>
   </div>
-  <div class="content" data-v-1dcbcc2a="">
+  <div class="content" data-v-67856a23="">
     <div class="layout vertical center-horizontal">
       <log-display-stub logkey="run-nodecg" class="m-t-4"></log-display-stub>
     </div>

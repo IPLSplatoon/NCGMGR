@@ -1,4 +1,4 @@
-import { LogEvent, ProgressEvent } from '@/types/log'
+import { ActionState, LogEvent, ProgressEvent } from '@/types/log'
 import { listen, UnlistenFn } from '@tauri-apps/api/event'
 import { defineStore } from 'pinia'
 import { listenForProcessExit } from '@/service/messagingService'
@@ -6,7 +6,7 @@ import { listenForProcessExit } from '@/service/messagingService'
 export interface LogStore {
     lines: Record<string, LogEvent[]>
     progressEntries: Record<string, ProgressEvent>
-    completed: Record<string, boolean>
+    actionStates: Record<string, ActionState>
 }
 
 const unlistenFns: Record<string, UnlistenFn[]> = {}
@@ -15,7 +15,7 @@ export const useLogStore = defineStore('log', {
     state: () => ({
         lines: {},
         progressEntries: {},
-        completed: {}
+        actionStates: {}
     } as LogStore),
     actions: {
         insertLine ({ line, key }: { line: LogEvent, key: string }) {
@@ -30,10 +30,10 @@ export const useLogStore = defineStore('log', {
         reset (key: string) {
             delete this.progressEntries[key]
             this.lines[key] = []
-            this.completed[key] = false
+            this.actionStates[key] = ActionState.INCOMPLETE
         },
-        setCompleted ({ key, completed }: { key: string, completed: boolean }) {
-            this.completed[key] = completed
+        setActionState ({ key, state }: { key: string, state: ActionState }) {
+            this.actionStates[key] = state
         },
         listen (key: string, listenForProgress = false) {
             if (unlistenFns[key]) {
@@ -71,12 +71,15 @@ export const useLogStore = defineStore('log', {
                     },
                     key
                 })
-                this.setCompleted({ key, completed: true })
+                this.setActionState({ key, state: ActionState.COMPLETED_ERROR })
             })
         },
         async listenForProcessExit ({ key, callback }: { key: string, callback?: () => void }): Promise<void> {
-            const unlisten = await listenForProcessExit(key, () => {
-                this.setCompleted({ key, completed: true })
+            const unlisten = await listenForProcessExit(key, event => {
+                this.setActionState({
+                    key,
+                    state: event.payload.success ? ActionState.COMPLETED_SUCCESS : ActionState.COMPLETED_ERROR
+                })
                 unlisten()
                 if (callback) {
                     callback()

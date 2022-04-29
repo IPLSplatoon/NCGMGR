@@ -8,3 +8,9 @@ export interface ProgressEvent {
     // eslint-disable-next-line camelcase
     max_step: number
 }
+
+export enum ActionState {
+    COMPLETED_SUCCESS,
+    COMPLETED_ERROR,
+    INCOMPLETE
+}

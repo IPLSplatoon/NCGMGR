@@ -3,6 +3,7 @@ import { useLogStore } from '@/store/logStore'
 import { config, mount } from '@vue/test-utils'
 import { IplButton } from '@iplsplatoon/vue-components'
 import { createTestingPinia, TestingPinia } from '@pinia/testing'
+import { ActionState } from '@/types/log'
 
 describe('LogOverlay', () => {
     let pinia: TestingPinia
@@ -47,7 +48,7 @@ describe('LogOverlay', () => {
 
     it('disables close button if log state is not completed', () => {
         const store = useLogStore()
-        store.completed.logKey = false
+        store.actionStates.logKey = ActionState.INCOMPLETE
         const wrapper = mount(LogOverlay, {
             props: {
                 visible: true,
@@ -59,9 +60,9 @@ describe('LogOverlay', () => {
         expect(wrapper.getComponent('[data-test="close-button"]').attributes().disabled).toEqual('true')
     })
 
-    it('enables close button if log state is completed', () => {
+    it.each([ActionState.COMPLETED_ERROR, ActionState.COMPLETED_SUCCESS])('enables close button if log state is %s', state => {
         const store = useLogStore()
-        store.completed['log-key'] = true
+        store.actionStates['log-key'] = state
         const wrapper = mount(LogOverlay, {
             props: {
                 visible: true,
@@ -75,7 +76,7 @@ describe('LogOverlay', () => {
 
     it('closes overlay on close button click', () => {
         const store = useLogStore()
-        store.completed['key-1'] = true
+        store.actionStates['key-1'] = ActionState.COMPLETED_SUCCESS
         const wrapper = mount(LogOverlay, {
             props: {
                 visible: true,
