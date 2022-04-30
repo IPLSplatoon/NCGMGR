@@ -64,6 +64,7 @@ fn main() {
             bundles::fetch_bundle_versions,
             bundles::set_bundle_version,
             bundles::uninstall_bundle,
+            bundles::get_bundle_git_tag,
             dependencies::get_nodejs_version
         ])
         .manage(ManagedNodecg::new());

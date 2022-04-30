@@ -87,7 +87,7 @@ export default defineComponent({
         const versions = ref<string[]>([])
         const versionsError = ref<string | null>(null)
         const versionsLoading = ref(true)
-        const selectedVersion = ref('')
+        const selectedVersion = ref<string | undefined>('')
         const showInstallLog = ref(false)
         const hasConfigFile = ref(false)
         const configFileLoading = ref(true)

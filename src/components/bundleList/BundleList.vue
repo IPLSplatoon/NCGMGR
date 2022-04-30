@@ -19,7 +19,7 @@
         >
             <div class="bundle-settings__item-content">
                 <div>{{ bundle.name }}</div>
-                <div>{{ bundle.version }}</div>
+                <div>{{ bundle.version ?? '---' }}</div>
                 <div class="layout horizontal end-horizontal">
                     <ipl-button
                         small

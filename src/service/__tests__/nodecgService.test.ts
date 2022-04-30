@@ -1,6 +1,6 @@
 import { mockTauri, mockTauriFs, mockTauriShell } from '@/__mocks__/tauri'
 import {
-    configFileExists, createConfigFile,
+    configFileExists, createConfigFile, getBundleGitTag,
     getBundles,
     getBundleVersions, getNodecgConfig,
     getNodecgStatus,
@@ -99,12 +99,49 @@ describe('getBundles', () => {
 
         const result = await getBundles('nodecg/dir')
 
+        expect(mockTauri.invoke).not.toHaveBeenCalled()
         expect(mockTauriFs.readDir).toHaveBeenCalledWith('nodecg/dir/bundles', { recursive: true })
         expect(mockTauriFs.readTextFile).toHaveBeenCalledWith('package-json-path-1')
         expect(mockTauriFs.readTextFile).toHaveBeenCalledWith('package-json-path-2')
         expect(result).toEqual([
             { name: 'bundle-one', version: '1.0.0' },
             { name: 'bundle-two', version: '1.0.1' }
+        ])
+    })
+
+    it('requests git tag name if a bundle has version 0.0.0', async () => {
+        mockTauriFs.readTextFile.mockResolvedValueOnce(JSON.stringify({ name: 'bundle-one', version: '0.0.0' }))
+        mockTauriFs.readDir.mockResolvedValue([
+            { children: [{ name: 'package.json', path: 'package-json-path' }] }
+        ])
+        mockTauri.invoke.mockResolvedValue('9.1.2')
+
+        const result = await getBundles('test/nodecg/dir')
+
+        expect(mockTauriFs.readDir).toHaveBeenCalledWith('test/nodecg/dir/bundles', { recursive: true })
+        expect(mockTauriFs.readTextFile).toHaveBeenCalledWith('package-json-path')
+        expect(mockTauri.invoke).toHaveBeenCalledWith('get_bundle_git_tag', { nodecgPath: 'test/nodecg/dir', bundleName: 'bundle-one' })
+        expect(mockTauri.invoke).toHaveBeenCalledTimes(1)
+        expect(result).toEqual([
+            { name: 'bundle-one', version: '9.1.2' }
+        ])
+    })
+
+    it('requests git tag name if a bundle has no version set', async () => {
+        mockTauriFs.readTextFile.mockResolvedValueOnce(JSON.stringify({ name: 'bundle-one' }))
+        mockTauriFs.readDir.mockResolvedValue([
+            { children: [{ name: 'package.json', path: 'package-json-path' }] }
+        ])
+        mockTauri.invoke.mockResolvedValue('9.1.3')
+
+        const result = await getBundles('test/nodecg/dir')
+
+        expect(mockTauriFs.readDir).toHaveBeenCalledWith('test/nodecg/dir/bundles', { recursive: true })
+        expect(mockTauriFs.readTextFile).toHaveBeenCalledWith('package-json-path')
+        expect(mockTauri.invoke).toHaveBeenCalledWith('get_bundle_git_tag', { nodecgPath: 'test/nodecg/dir', bundleName: 'bundle-one' })
+        expect(mockTauri.invoke).toHaveBeenCalledTimes(1)
+        expect(result).toEqual([
+            { name: 'bundle-one', version: '9.1.3' }
         ])
     })
 })
@@ -118,6 +155,18 @@ describe('getBundleVersions', () => {
         expect(mockTauri.invoke).toHaveBeenCalledWith(
             'fetch_bundle_versions', { bundleName: 'bundle-name', nodecgPath: 'nodecg/path' })
         expect(result).toEqual(['1.0.0', '2.0.0'])
+    })
+})
+
+describe('getBundleGitTag', () => {
+    it('invokes tauri method', async () => {
+        mockTauri.invoke.mockResolvedValue('9.0.0')
+
+        const result = await getBundleGitTag('bundle-name', 'nodecg/path')
+
+        expect(mockTauri.invoke).toHaveBeenCalledWith(
+            'get_bundle_git_tag', { bundleName: 'bundle-name', nodecgPath: 'nodecg/path' })
+        expect(result).toEqual('9.0.0')
     })
 })
 

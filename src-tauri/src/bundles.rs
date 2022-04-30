@@ -1,10 +1,11 @@
 use std::path::Path;
+use std::{fs};
 use git2::{AutotagOption, FetchOptions, Repository};
 use unwrap_or::unwrap_ok_or;
-use std::{fs};
 
 use crate::git;
 use crate::{format_error, log_npm_install, npm};
+use crate::git::get_tag_name_at_head;
 use crate::log::LogEmitter;
 
 #[tauri::command(async)]
@@ -103,5 +104,25 @@ pub fn uninstall_bundle(bundle_name: String, nodecg_path: String) -> Result<Stri
     match rm_rf::remove(format!("{}/bundles/{}", nodecg_path, bundle_name)) {
         Ok(_) => Ok("OK".to_string()),
         Err(e) => Err(format!("Uninstalling bundle {} failed: {}", bundle_name, e.to_string()))
+    }
+}
+
+#[tauri::command(async)]
+pub fn get_bundle_git_tag(bundle_name: String, nodecg_path: String) -> Result<Option<String>, String> {
+    let bundle_dir = format!("{}/bundles/{}", nodecg_path, bundle_name);
+    let path = Path::new(&bundle_dir);
+
+    if !path.exists() {
+        return Err(format!("Bundle '{}' is not installed.", bundle_name))
+    }
+
+    match Repository::open(path) {
+        Ok(repo) => {
+            match get_tag_name_at_head(&repo) {
+                Ok(result) => Ok(result),
+                Err(e) => return format_error(&format!("Failed to get version for bundle '{}'", bundle_name), e)
+            }
+        },
+        Err(e) => return format_error(&format!("Failed to open git repository for bundle '{}'", bundle_name), e)
     }
 }

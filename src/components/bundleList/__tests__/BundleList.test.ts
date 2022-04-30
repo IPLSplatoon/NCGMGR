@@ -37,6 +37,18 @@ describe('BundleSettings', () => {
         expect(wrapper.html()).toMatchSnapshot()
     })
 
+    it('matches snapshot', () => {
+        const nodecgStore = useNodecgStore()
+        nodecgStore.bundles = [
+            { name: 'bundle-one', version: '1.2.3' },
+            { name: 'bundle-two', version: '5.0' },
+            { name: 'bundle-three', version: undefined }
+        ]
+        const wrapper = mount(BundleSettings)
+
+        expect(wrapper.html()).toMatchSnapshot()
+    })
+
     it('handles uninstalling a bundle', async () => {
         const configStore = useConfigStore()
         configStore.installPath = '/nodecg/path'

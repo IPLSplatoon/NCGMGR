@@ -47,7 +47,7 @@ export async function getNodecgStatus (directory: string): Promise<{ status: Ins
 
 export interface Bundle {
     name: string
-    version: string
+    version?: string
 }
 
 export async function getBundles (directory: string): Promise<Bundle[]> {
@@ -69,7 +69,9 @@ export async function getBundles (directory: string): Promise<Bundle[]> {
 
                 return {
                     name: packageJson.name,
-                    version: packageJson.version
+                    version: packageJson.version == null || packageJson.version.trim() === '0.0.0'
+                        ? await getBundleGitTag(packageJson.name, directory)
+                        : packageJson.version
                 }
             }))
 }
@@ -116,4 +118,8 @@ export async function getNodecgConfig (nodecgPath: string): Promise<NodecgConfig
 export async function openDashboard (nodecgPath: string): Promise<void> {
     const config = await getNodecgConfig(nodecgPath)
     return open(`http://localhost:${config?.port ?? '9090'}/dashboard`)
+}
+
+export async function getBundleGitTag (bundleName: string, nodecgPath: string): Promise<string> {
+    return invoke('get_bundle_git_tag', { bundleName, nodecgPath })
 }
