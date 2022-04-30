@@ -27,8 +27,6 @@
                 title="Installing..."
                 data-test="bundle-log-overlay"
                 log-key="change-bundle-version"
-                no-background-close
-                with-progress
             />
         </ipl-space>
         <ipl-space class="max-width m-l-8 h-max-content">

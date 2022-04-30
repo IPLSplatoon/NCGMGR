@@ -19,8 +19,6 @@
             title="Installing..."
             data-test="bundle-log-overlay"
             log-key="install-bundle"
-            no-background-close
-            with-progress
         />
     </ipl-space>
 </template>

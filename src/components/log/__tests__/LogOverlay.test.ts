@@ -1,7 +1,7 @@
 import LogOverlay from '@/components/log/LogOverlay.vue'
 import { useLogStore } from '@/store/logStore'
 import { config, mount } from '@vue/test-utils'
-import { IplButton } from '@iplsplatoon/vue-components'
+import type { IplDialogTitle } from '@iplsplatoon/vue-components'
 import { createTestingPinia, TestingPinia } from '@pinia/testing'
 import { ActionState } from '@/types/log'
 
@@ -18,7 +18,8 @@ describe('LogOverlay', () => {
 
     config.global.stubs = {
         IplButton: true,
-        ProgressDisplay: true
+        ProgressDisplay: true,
+        IplDialogTitle: true
     }
 
     it('matches snapshot', () => {
@@ -27,19 +28,6 @@ describe('LogOverlay', () => {
                 visible: true,
                 title: 'Log Overlay',
                 logKey: 'log1'
-            }
-        })
-
-        expect(wrapper.html()).toMatchSnapshot()
-    })
-
-    it('matches snapshot with progress display', () => {
-        const wrapper = mount(LogOverlay, {
-            props: {
-                visible: true,
-                title: 'Log Overlay',
-                logKey: 'log1',
-                withProgress: true
             }
         })
 
@@ -57,7 +45,7 @@ describe('LogOverlay', () => {
             }
         })
 
-        expect(wrapper.getComponent('[data-test="close-button"]').attributes().disabled).toEqual('true')
+        expect(wrapper.getComponent('ipl-dialog-title-stub').attributes().closingdisabled).toEqual('true')
     })
 
     it.each([ActionState.COMPLETED_ERROR, ActionState.COMPLETED_SUCCESS])('enables close button if log state is %s', state => {
@@ -71,7 +59,7 @@ describe('LogOverlay', () => {
             }
         })
 
-        expect(wrapper.getComponent('[data-test="close-button"]').attributes().disabled).toEqual('false')
+        expect(wrapper.getComponent('ipl-dialog-title-stub').attributes().closingdisabled).toEqual('false')
     })
 
     it('closes overlay on close button click', () => {
@@ -85,7 +73,7 @@ describe('LogOverlay', () => {
             }
         })
 
-        wrapper.getComponent<typeof IplButton>('[data-test="close-button"]').vm.$emit('click')
+        wrapper.getComponent<typeof IplDialogTitle>('ipl-dialog-title-stub').vm.$emit('close')
 
         const emitted = wrapper.emitted('update:visible')
         expect(emitted?.length).toEqual(1)

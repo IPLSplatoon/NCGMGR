@@ -58,8 +58,6 @@
         v-model:visible="showLog"
         title="Installing..."
         log-key="install-nodecg"
-        no-background-close
-        with-progress
     />
 </template>
 
