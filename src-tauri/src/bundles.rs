@@ -58,12 +58,18 @@ pub fn fetch_bundle_versions(bundle_name: String, nodecg_path: String) -> Result
         return Err(format!("Bundle '{}' is not installed.", bundle_name))
     }
 
-    let repo = unwrap_ok_or!(Repository::open(path), e, { return format_error("Failed to open repository", e) });
-    let remote = unwrap_ok_or!(git::get_remote(&repo), e, { return format_error("Failed to get remote info", e) });
+    let repo = unwrap_ok_or!(try_open_repository(path), e, { return format_error("Failed to open repository", e) });
 
-    match git::fetch_versions(remote) {
-        Ok(versions) => Ok(versions),
-        Err(e) => format_error("Failed to get version list", e)
+    if repo.is_none() {
+        return Ok(Vec::new())
+    } else {
+        let unwrapped_repo = repo.unwrap();
+        let remote = unwrap_ok_or!(git::get_remote(&unwrapped_repo), e, { return format_error("Failed to get remote info", e) });
+
+        match git::fetch_versions(remote) {
+            Ok(versions) => Ok(versions),
+            Err(e) => format_error("Failed to get version list", e)
+        }
     }
 }
 
