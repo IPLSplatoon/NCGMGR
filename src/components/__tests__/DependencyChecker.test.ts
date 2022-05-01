@@ -6,7 +6,8 @@ import { useDependencyStore } from '@/store/dependencyStore'
 describe('DependencyChecker', () => {
     config.global.stubs = {
         IplButton: true,
-        FontAwesomeIcon: true
+        FontAwesomeIcon: true,
+        StatusRow: true
     }
 
     let pinia: TestingPinia

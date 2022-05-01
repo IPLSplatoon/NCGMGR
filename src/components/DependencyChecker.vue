@@ -1,29 +1,24 @@
 <template>
-    <ipl-expanding-space title="Dependency check" :expanded="!dependencyStore.hasNodejs">
-        <status-row :color="nodejsStatusColor" class="m-t-4">
+    <div>
+        <status-row :color="nodejsStatusColor">
             {{ nodejsStatusText }}
         </status-row>
-    </ipl-expanding-space>
+    </div>
 </template>
 
 <script lang="ts">
 import { defineComponent } from '@vue/runtime-core'
-import { IplExpandingSpace } from '@iplsplatoon/vue-components'
 import { useDependencyStore } from '@/store/dependencyStore'
-import { computed, onMounted } from 'vue'
+import { computed } from 'vue'
 import StatusRow from '@/components/StatusRow.vue'
 
 export default defineComponent({
     name: 'DependencyChecker',
 
-    components: { StatusRow, IplExpandingSpace },
+    components: { StatusRow },
 
     setup () {
         const dependencyStore = useDependencyStore()
-
-        onMounted(() => {
-            dependencyStore.checkVersions()
-        })
 
         return {
             dependencyStore,

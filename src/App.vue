@@ -1,5 +1,5 @@
 <template>
-    <dependency-checker class="m-b-8" />
+    <status-bar class="m-b-8" />
     <install-manager v-if="dependencyStore.hasNodejs" />
     <bundle-manager v-if="nodecgInstalled && dependencyStore.hasNodejs" class="m-t-8" />
 </template>
@@ -10,19 +10,20 @@ import InstallManager from '@/components/InstallManager.vue'
 import BundleManager from '@/components/BundleManager.vue'
 import { InstallStatus, useNodecgStore } from '@/store/nodecgStore'
 import { useConfigStore } from '@/store/configStore'
-import DependencyChecker from '@/components/DependencyChecker.vue'
 import { useDependencyStore } from '@/store/dependencyStore'
+import StatusBar from '@/components/statusBar/StatusBar.vue'
 
 export default defineComponent({
     name: 'App',
 
-    components: { DependencyChecker, BundleManager, InstallManager },
+    components: { StatusBar, BundleManager, InstallManager },
 
     setup () {
         const nodecgStore = useNodecgStore()
         const configStore = useConfigStore()
         const dependencyStore = useDependencyStore()
 
+        dependencyStore.checkVersions()
         configStore.load()
 
         return {
