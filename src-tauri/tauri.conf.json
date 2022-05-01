@@ -29,12 +29,10 @@
       "shortDescription": "Helps manage NodeCG installations.",
       "longDescription": "",
       "deb": {
-        "depends": [],
-        "useBootstrapper": true
+        "depends": []
       },
       "macOS": {
-        "frameworks": [],
-        "useBootstrapper": true
+        "frameworks": []
       },
       "windows": {
         "certificateThumbprint": null,

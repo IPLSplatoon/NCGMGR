@@ -5,7 +5,7 @@ windows_subsystem = "windows"
 
 extern crate core;
 
-use tauri::{Manager, Menu, MenuItem, RunEvent, Submenu};
+use tauri::{AboutMetadata, Manager, Menu, MenuItem, RunEvent, Submenu};
 use tauri::api::process::{CommandEvent};
 use tauri::async_runtime::{JoinHandle, Receiver};
 #[cfg(target_os = "macos")]
@@ -71,7 +71,7 @@ fn main() {
 
     if cfg!(target_os = "macos") {
         let menu_app = Menu::new()
-            .add_native_item(MenuItem::About("NCGMGR".to_string()))
+            .add_native_item(MenuItem::About("NCGMGR".to_string(), AboutMetadata::new()))
             .add_native_item(MenuItem::Quit);
 
         let menu_edit = Menu::new()
