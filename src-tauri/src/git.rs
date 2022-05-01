@@ -1,7 +1,27 @@
 use std::cmp::Ordering;
 use std::collections::BTreeMap;
-use git2::{Direction, Remote};
+use std::path::Path;
+use git2::{Direction, ErrorCode, Remote, Repository};
 use itertools::Itertools;
+
+/*
+ * Returns:
+ * Ok(Some(Repository)) if the repository is found
+ * Ok(None) if the repository is not found
+ * Err if opening the repository causes a different error
+ */
+pub fn try_open_repository<P: AsRef<Path>>(path: P) -> Result<Option<Repository>, git2::Error> {
+    match Repository::open(path) {
+        Ok(repo) => Ok(Some(repo)),
+        Err(e) => {
+            if ErrorCode::NotFound.eq(&e.code()) {
+                Ok(None)
+            } else {
+                Err(e)
+            }
+        }
+    }
+}
 
 pub fn fetch_versions_for_url(remote_url: &str) -> Result<Vec<String>, Box<dyn std::error::Error>> {
     let remote = Remote::create_detached(&remote_url)?;
@@ -26,7 +46,7 @@ pub fn fetch_versions(mut remote: Remote) -> Result<Vec<String>, Box<dyn std::er
         }).collect_vec())
 }
 
-pub fn checkout_version(repo: &git2::Repository, version: String) -> Result<(), Box<dyn std::error::Error>> {
+pub fn checkout_version(repo: &Repository, version: String) -> Result<(), Box<dyn std::error::Error>> {
     let (object, reference) = repo.revparse_ext(&version)?;
     repo.checkout_tree(&object, None)?;
     match reference {
@@ -37,7 +57,7 @@ pub fn checkout_version(repo: &git2::Repository, version: String) -> Result<(), 
     Ok(())
 }
 
-pub fn get_remote(repo: &git2::Repository) -> Result<Remote, Box<dyn std::error::Error>> {
+pub fn get_remote(repo: &Repository) -> Result<Remote, Box<dyn std::error::Error>> {
     let remotes = repo.remotes()?;
     let remote_name = remotes.iter()
         .filter(|remote| { remote.is_some() })
@@ -50,7 +70,7 @@ pub fn get_remote(repo: &git2::Repository) -> Result<Remote, Box<dyn std::error:
     Ok(remote)
 }
 
-pub fn get_tag_name_at_head(repo: &git2::Repository) -> Result<Option<String>, Box<dyn std::error::Error>> {
+pub fn get_tag_name_at_head(repo: &Repository) -> Result<Option<String>, Box<dyn std::error::Error>> {
     let tag_names = repo.tag_names(None)?;
 
     let tag_and_refs = tag_names.iter()

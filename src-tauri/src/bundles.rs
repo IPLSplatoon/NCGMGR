@@ -5,7 +5,7 @@ use unwrap_or::unwrap_ok_or;
 
 use crate::git;
 use crate::{format_error, log_npm_install, npm};
-use crate::git::get_tag_name_at_head;
+use crate::git::{get_tag_name_at_head, try_open_repository};
 use crate::log::LogEmitter;
 
 #[tauri::command(async)]
@@ -116,11 +116,15 @@ pub fn get_bundle_git_tag(bundle_name: String, nodecg_path: String) -> Result<Op
         return Err(format!("Bundle '{}' is not installed.", bundle_name))
     }
 
-    match Repository::open(path) {
+    match try_open_repository(path) {
         Ok(repo) => {
-            match get_tag_name_at_head(&repo) {
-                Ok(result) => Ok(result),
-                Err(e) => return format_error(&format!("Failed to get version for bundle '{}'", bundle_name), e)
+            if repo.is_some() {
+                match get_tag_name_at_head(&repo.unwrap()) {
+                    Ok(result) => Ok(result),
+                    Err(e) => return format_error(&format!("Failed to get version for bundle '{}'", bundle_name), e)
+                }
+            } else {
+                Ok(None)
             }
         },
         Err(e) => return format_error(&format!("Failed to open git repository for bundle '{}'", bundle_name), e)

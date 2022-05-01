@@ -3,7 +3,7 @@
         Loading...
     </div>
     <div v-else-if="bundles.length < 1" class="text-center m-b-8">
-        No bundles installed.
+        No bundles found.
     </div>
     <div v-else class="bundle-settings__wrapper">
         <div class="bundle-settings__header">

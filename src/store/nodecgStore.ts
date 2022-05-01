@@ -60,8 +60,11 @@ export const useNodecgStore = defineStore('nodecg', {
         async getBundleList () {
             const configStore = useConfigStore()
             this.status.bundlesLoading = true
-            this.bundles = await getBundles(configStore.installPath)
-            this.status.bundlesLoading = false
+            try {
+                this.bundles = await getBundles(configStore.installPath)
+            } finally {
+                this.status.bundlesLoading = false
+            }
         }
     }
 })
