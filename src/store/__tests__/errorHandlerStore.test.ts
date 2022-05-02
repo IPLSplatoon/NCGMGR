@@ -17,13 +17,13 @@ describe('errorHandlerStore', () => {
         it('removes error from list', () => {
             const store = useErrorHandlerStore()
             store.recentErrors = {
-                err1: {},
-                err2: {}
+                err1: { err: {}, info: 'info', component: null },
+                err2: { err: {}, info: 'info', component: null }
             }
 
             store.removeRecentError({ key: 'err2' })
 
-            expect(store.recentErrors).toEqual({ err1: {} })
+            expect(store.recentErrors).toEqual({ err1: { err: {}, info: 'info', component: null } })
         })
     })
 
@@ -32,7 +32,8 @@ describe('errorHandlerStore', () => {
             const store = useErrorHandlerStore()
             const error = new Error('yeehaw')
 
-            store.handleError({ err: error, info: 'component event handler' })
+            // @ts-ignore
+            store.handleError({ err: error, info: 'component event handler', component: {} })
 
             expect(console.error).toHaveBeenCalledWith('Got error from \'component event handler\': \n', error)
         })
@@ -42,10 +43,10 @@ describe('errorHandlerStore', () => {
             jest.spyOn(generateId, 'generateId').mockReturnValue('1010101')
             const error = new Error('yeehaw')
 
-            store.handleError({ err: error, info: 'component event handler' })
+            store.handleError({ err: error, info: 'component event handler', component: null })
 
             expect(store.recentErrors).toEqual({
-                1010101: error
+                1010101: { err: error, info: 'component event handler', component: null }
             })
         })
     })

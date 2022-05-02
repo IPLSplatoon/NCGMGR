@@ -1,0 +1,38 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`ErrorList matches snapshot 1`] = `
+<div>
+  <div class="m-y-8 m-x-8 text-center">
+    <div class="m-b-8"> Errors that have occurred in this application will be listed here.<br> It is most useful to developers for diagnosing issues. </div>
+    <ipl-button-stub label="Clear" color="blue" disabled="false" async="false" progressmessage="Working..." successmessage="Done!" requiresconfirmation="false" shortconfirmationmessage="false" small="false" disableonsuccess="false" href=""></ipl-button-stub>
+  </div>
+  <div class="ipl-expanding-space-group">
+    <div class="ipl-expansion-panel__content error-list-item" data-v-67856a23="">
+      <div class="ipl-expansion-panel__header" data-v-67856a23="">
+        <div class="ipl-expansion-panel__header-background" data-v-67856a23=""></div>
+        <div class="ipl-expansion-panel__title" data-v-67856a23="">Error: Error!</div>
+        <font-awesome-icon-stub icon="chevron-left" border="false" fixedwidth="false" listitem="false" pulse="false" swapopacity="false" spin="false" symbol="false" inverse="false" class="icon" data-v-67856a23=""></font-awesome-icon-stub>
+        <div class="header-extra" data-v-67856a23=""></div>
+      </div>
+      <div class="content" data-v-67856a23="" style="display: none;">
+        <ipl-data-row-stub label="Info" value="error information"></ipl-data-row-stub>
+        <ipl-data-row-stub label="Source component" value="ComponentName"></ipl-data-row-stub>
+        <ipl-data-row-stub label="Full error" value="Error: Error!"></ipl-data-row-stub>
+      </div>
+    </div>
+    <div class="ipl-expansion-panel__content error-list-item" data-v-67856a23="">
+      <div class="ipl-expansion-panel__header" data-v-67856a23="">
+        <div class="ipl-expansion-panel__header-background" data-v-67856a23=""></div>
+        <div class="ipl-expansion-panel__title" data-v-67856a23="">Error: Error 2!</div>
+        <font-awesome-icon-stub icon="chevron-left" border="false" fixedwidth="false" listitem="false" pulse="false" swapopacity="false" spin="false" symbol="false" inverse="false" class="icon" data-v-67856a23=""></font-awesome-icon-stub>
+        <div class="header-extra" data-v-67856a23=""></div>
+      </div>
+      <div class="content" data-v-67856a23="" style="display: none;">
+        <ipl-data-row-stub label="Info" value="info"></ipl-data-row-stub>
+        <!--v-if-->
+        <ipl-data-row-stub label="Full error" value="Error: Error 2!"></ipl-data-row-stub>
+      </div>
+    </div>
+  </div>
+</div>
+`;

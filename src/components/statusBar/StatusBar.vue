@@ -19,7 +19,7 @@
                         :title="item.label"
                         @close="item.overlayVisible.value = false"
                     />
-                    <ipl-space class="m-t-8">
+                    <ipl-space class="m-t-8 dialog-component-wrapper">
                         <component :is="item.component" />
                     </ipl-space>
                 </mgr-overlay>
@@ -40,6 +40,7 @@ import { computed, ref } from 'vue'
 import DependencyChecker from '@/components/DependencyChecker.vue'
 import { useDependencyStore } from '@/store/dependencyStore'
 import ErrorList from '@/components/ErrorList.vue'
+import { useErrorHandlerStore } from '@/store/errorHandlerStore'
 
 library.add(faWrench, faExclamationCircle)
 
@@ -50,6 +51,7 @@ export default defineComponent({
 
     setup () {
         const dependencyStore = useDependencyStore()
+        const errorHandlerStore = useErrorHandlerStore()
 
         const items = {
             dependencyCheck: {
@@ -63,7 +65,7 @@ export default defineComponent({
                 icon: 'exclamation-circle',
                 label: 'Error log',
                 overlayVisible: ref(false),
-                highlighted: computed(() => false),
+                highlighted: computed(() => Object.keys(errorHandlerStore.recentErrors).length > 0),
                 component: 'ErrorList'
             }
         }
@@ -112,5 +114,10 @@ export default defineComponent({
             animation: highlight 2s infinite;
         }
     }
+}
+
+#status-item-dialog_errorLog .dialog-component-wrapper {
+    padding: 0;
+    overflow: hidden;
 }
 </style>
