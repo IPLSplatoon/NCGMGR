@@ -1,34 +1,33 @@
 <template>
-    <div>
-        <ipl-space class="status-bar">
-            <template
-                v-for="(item, key) in items"
-                :key="key"
+    <ipl-space class="status-bar">
+        <template
+            v-for="(item, key) in items"
+            :key="key"
+        >
+            <div
+                class="status-bar-item"
+                :class="{ highlighted: item.highlighted.value }"
+                @click="item.overlayVisible.value = true"
+                :id="`status-bar-item_${key}`"
             >
-                <div
-                    class="status-bar-item"
-                    :class="{ highlighted: item.highlighted.value }"
-                    @click="item.overlayVisible.value = true"
-                    :id="`status-bar-item_${key}`"
-                >
-                    <font-awesome-icon :icon="item.icon" class="icon" />
-                    <span class="text">{{ item.label }}</span>
-                </div>
-                <mgr-overlay v-model:visible="item.overlayVisible.value" :id="`status-item-dialog_${key}`">
-                    <ipl-dialog-title
-                        :title="item.label"
-                        @close="item.overlayVisible.value = false"
-                    />
-                    <ipl-space class="m-t-8 dialog-component-wrapper">
-                        <component :is="item.component" />
-                    </ipl-space>
-                </mgr-overlay>
-            </template>
-        </ipl-space>
-    </div>
+                <font-awesome-icon :icon="item.icon" class="icon" />
+                <span class="text">{{ item.label }}</span>
+            </div>
+            <mgr-overlay v-model:visible="item.overlayVisible.value" :id="`status-item-dialog_${key}`">
+                <ipl-dialog-title
+                    :title="item.label"
+                    @close="item.overlayVisible.value = false"
+                />
+                <ipl-space class="m-t-8 dialog-component-wrapper">
+                    <component :is="item.component" />
+                </ipl-space>
+            </mgr-overlay>
+        </template>
+    </ipl-space>
 </template>
 
 <script lang="ts">
+import { computed, ref } from 'vue'
 import { defineComponent } from '@vue/runtime-core'
 import { IplDialogTitle, IplSpace } from '@iplsplatoon/vue-components'
 import { library } from '@fortawesome/fontawesome-svg-core'
@@ -36,10 +35,9 @@ import { faWrench } from '@fortawesome/free-solid-svg-icons/faWrench'
 import { faExclamationCircle } from '@fortawesome/free-solid-svg-icons/faExclamationCircle'
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
 import MgrOverlay from '@/components/mgr/MgrOverlay.vue'
-import { computed, ref } from 'vue'
+import ErrorList from '@/components/ErrorList.vue'
 import DependencyChecker from '@/components/DependencyChecker.vue'
 import { useDependencyStore } from '@/store/dependencyStore'
-import ErrorList from '@/components/ErrorList.vue'
 import { useErrorHandlerStore } from '@/store/errorHandlerStore'
 
 library.add(faWrench, faExclamationCircle)

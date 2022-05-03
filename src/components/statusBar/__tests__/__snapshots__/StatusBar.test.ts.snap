@@ -1,16 +1,14 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`StatusBar matches snapshot 1`] = `
-<div>
-  <div class="ipl-space color-dark status-bar" data-v-11cc5f1c="">
-    <div class="status-bar-item highlighted" id="status-bar-item_dependencyCheck">
-      <font-awesome-icon-stub icon="wrench" border="false" fixedwidth="false" listitem="false" pulse="false" swapopacity="false" spin="false" symbol="false" inverse="false" class="icon"></font-awesome-icon-stub><span class="text">Dependency check</span>
-    </div>
-    <!--v-if-->
-    <div class="status-bar-item" id="status-bar-item_errorLog">
-      <font-awesome-icon-stub icon="exclamation-circle" border="false" fixedwidth="false" listitem="false" pulse="false" swapopacity="false" spin="false" symbol="false" inverse="false" class="icon"></font-awesome-icon-stub><span class="text">Error log</span>
-    </div>
-    <!--v-if-->
+<div class="ipl-space color-dark status-bar" data-v-11cc5f1c="">
+  <div class="status-bar-item highlighted" id="status-bar-item_dependencyCheck">
+    <font-awesome-icon-stub icon="wrench" border="false" fixedwidth="false" listitem="false" pulse="false" swapopacity="false" spin="false" symbol="false" inverse="false" class="icon"></font-awesome-icon-stub><span class="text">Dependency check</span>
   </div>
+  <!--v-if-->
+  <div class="status-bar-item" id="status-bar-item_errorLog">
+    <font-awesome-icon-stub icon="exclamation-circle" border="false" fixedwidth="false" listitem="false" pulse="false" swapopacity="false" spin="false" symbol="false" inverse="false" class="icon"></font-awesome-icon-stub><span class="text">Error log</span>
+  </div>
+  <!--v-if-->
 </div>
 `;
