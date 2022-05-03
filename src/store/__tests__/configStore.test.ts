@@ -24,7 +24,7 @@ describe('configStore', () => {
 
             store.persist()
 
-            expect(localStorage.getItem(LOCAL_STORAGE_CONFIG_KEY)).toEqual('{"installPath":"/path/to/nodecg"}')
+            expect(localStorage.getItem(LOCAL_STORAGE_CONFIG_KEY)).toEqual('{"installPath":"/path/to/nodecg","enableErrorLog":false}')
         })
     })
 })

@@ -1,5 +1,5 @@
 <template>
-    <div>
+    <ipl-space class="error-list">
         <div class="m-y-8 m-x-8 text-center">
             <div class="m-b-8">
                 Errors that have occurred in this application will be listed here.<br>
@@ -27,20 +27,20 @@
             </ipl-expanding-space>
         </ipl-expanding-space-group>
         <div v-else class="m-l-8 m-y-8 text-center">No errors yet!</div>
-    </div>
+    </ipl-space>
 </template>
 
 <script lang="ts">
 import { defineComponent } from '@vue/runtime-core'
 import { useErrorHandlerStore } from '@/store/errorHandlerStore'
-import { IplButton, IplDataRow, IplExpandingSpace, IplExpandingSpaceGroup } from '@iplsplatoon/vue-components'
+import { IplButton, IplDataRow, IplExpandingSpace, IplExpandingSpaceGroup, IplSpace } from '@iplsplatoon/vue-components'
 import { computed } from 'vue'
 import { addDots } from '@/util/stringUtil'
 
 export default defineComponent({
     name: 'ErrorList',
 
-    components: { IplDataRow, IplButton, IplExpandingSpaceGroup, IplExpandingSpace },
+    components: { IplSpace, IplDataRow, IplButton, IplExpandingSpaceGroup, IplExpandingSpace },
 
     setup () {
         const errorHandlerStore = useErrorHandlerStore()
@@ -55,6 +55,10 @@ export default defineComponent({
 </script>
 
 <style lang="scss" scoped>
+.error-list {
+    padding: 0;
+}
+
 .error-list-item {
     border-radius: 0;
     border: 0;

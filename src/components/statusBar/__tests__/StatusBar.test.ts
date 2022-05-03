@@ -4,6 +4,8 @@ import StatusBar from '@/components/statusBar/StatusBar.vue'
 import { useDependencyStore } from '@/store/dependencyStore'
 import MgrOverlay from '@/components/mgr/MgrOverlay.vue'
 import { IplDialogTitle } from '@iplsplatoon/vue-components'
+import { useConfigStore } from '@/store/configStore'
+import { useErrorHandlerStore } from '@/store/errorHandlerStore'
 
 describe('StatusBar', () => {
     let pinia: TestingPinia
@@ -19,7 +21,19 @@ describe('StatusBar', () => {
         DependencyChecker: true
     }
 
-    it('matches snapshot', () => {
+    it('matches snapshot when error log is enabled', () => {
+        const configStore = useConfigStore()
+        configStore.enableErrorLog = true
+
+        const wrapper = mount(StatusBar)
+
+        expect(wrapper.html()).toMatchSnapshot()
+    })
+
+    it('matches snapshot when error log is disabled', () => {
+        const configStore = useConfigStore()
+        configStore.enableErrorLog = false
+
         const wrapper = mount(StatusBar)
 
         expect(wrapper.html()).toMatchSnapshot()
@@ -45,6 +59,30 @@ describe('StatusBar', () => {
         const wrapper = mount(StatusBar)
 
         expect(wrapper.get('#status-bar-item_dependencyCheck').classes()).not.toContain('highlighted')
+    })
+
+    it('highlights error log when errors are present', () => {
+        const errorHandlerStore = useErrorHandlerStore()
+        errorHandlerStore.recentErrors = {
+            err1: { err: new Error(), info: 'info', component: null }
+        }
+        const configStore = useConfigStore()
+        configStore.enableErrorLog = true
+
+        const wrapper = mount(StatusBar)
+
+        expect(wrapper.get('#status-bar-item_errorLog').classes()).toContain('highlighted')
+    })
+
+    it('does not highlight error log when no errors are logged', () => {
+        const errorHandlerStore = useErrorHandlerStore()
+        errorHandlerStore.recentErrors = {}
+        const configStore = useConfigStore()
+        configStore.enableErrorLog = true
+
+        const wrapper = mount(StatusBar)
+
+        expect(wrapper.get('#status-bar-item_errorLog').classes()).not.toContain('highlighted')
     })
 
     it('opens dialog when clicking on status bar item', async () => {

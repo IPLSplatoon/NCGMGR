@@ -18,9 +18,9 @@
                     :title="item.label"
                     @close="item.overlayVisible.value = false"
                 />
-                <ipl-space class="m-t-8 dialog-component-wrapper">
+                <div class="m-t-8">
                     <component :is="item.component" />
-                </ipl-space>
+                </div>
             </mgr-overlay>
         </template>
     </ipl-space>
@@ -36,28 +36,31 @@ import { faExclamationCircle } from '@fortawesome/free-solid-svg-icons/faExclama
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
 import MgrOverlay from '@/components/mgr/MgrOverlay.vue'
 import ErrorList from '@/components/ErrorList.vue'
-import DependencyChecker from '@/components/DependencyChecker.vue'
+import ConfigWindow from '@/components/ConfigWindow.vue'
 import { useDependencyStore } from '@/store/dependencyStore'
 import { useErrorHandlerStore } from '@/store/errorHandlerStore'
+import { useConfigStore } from '@/store/configStore'
+import pick from 'lodash/pick'
 
 library.add(faWrench, faExclamationCircle)
 
 export default defineComponent({
     name: 'StatusBar',
 
-    components: { DependencyChecker, IplDialogTitle, MgrOverlay, IplSpace, FontAwesomeIcon, ErrorList },
+    components: { ConfigWindow, IplDialogTitle, MgrOverlay, IplSpace, FontAwesomeIcon, ErrorList },
 
     setup () {
         const dependencyStore = useDependencyStore()
         const errorHandlerStore = useErrorHandlerStore()
+        const configStore = useConfigStore()
 
         const items = {
             dependencyCheck: {
                 icon: 'wrench',
-                label: 'Dependency check',
+                label: 'Settings',
                 overlayVisible: ref(false),
                 highlighted: computed(() => !dependencyStore.isLoading && !dependencyStore.hasNodejs),
-                component: 'DependencyChecker'
+                component: 'ConfigWindow'
             },
             errorLog: {
                 icon: 'exclamation-circle',
@@ -69,7 +72,10 @@ export default defineComponent({
         }
 
         return {
-            items
+            items: computed(() => pick(items, [
+                'dependencyCheck',
+                ...(configStore.enableErrorLog ? ['errorLog'] : [])
+            ]))
         }
     }
 })
@@ -112,10 +118,5 @@ export default defineComponent({
             animation: highlight 2s infinite;
         }
     }
-}
-
-#status-item-dialog_errorLog .dialog-component-wrapper {
-    padding: 0;
-    overflow: hidden;
 }
 </style>

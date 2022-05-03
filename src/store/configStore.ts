@@ -4,11 +4,13 @@ export const LOCAL_STORAGE_CONFIG_KEY = 'config'
 
 export interface Configuration {
     installPath: string
+    enableErrorLog: boolean
 }
 
 export const useConfigStore = defineStore('config', {
     state: () => ({
-        installPath: ''
+        installPath: '',
+        enableErrorLog: false
     } as Configuration),
     actions: {
         load () {
