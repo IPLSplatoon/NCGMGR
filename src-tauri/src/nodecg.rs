@@ -4,9 +4,11 @@ use tauri::async_runtime::Receiver;
 use unwrap_or::unwrap_ok_or;
 use std::path::{PathBuf};
 use git2::Repository;
+use sysinfo::{Pid, PidExt, ProcessRefreshKind, RefreshKind, System, SystemExt};
 
 use crate::log::{format_error, emit_tauri_process_output, LogEmitter};
 use crate::{err_to_string, log_npm_install, npm};
+use crate::error::MgrError;
 
 const NODECG_GIT_PATH: &str = "https://github.com/nodecg/nodecg.git";
 const NODECG_TAG: &str = "v1.8.1";
@@ -22,11 +24,13 @@ impl ManagedNodecg {
         }
     }
 
-    pub fn start(&self, nodecg_path: &str) -> Result<Receiver<CommandEvent>, String> {
-        let mut process = unwrap_ok_or!(self.process.lock(), e, { return format_error("Failed to access process", e) });
+    pub fn start(&self, nodecg_path: &str) -> Result<Receiver<CommandEvent>, Box<dyn std::error::Error + '_>> {
+        let mut lock = self.process.lock()?;
+        let process = lock.take();
+        let sys = System::new_with_specifics(RefreshKind::new().with_processes(ProcessRefreshKind::new()));
 
-        if process.is_some() {
-            return Err("NodeCG is already running.".to_string())
+        if process.is_some() && sys.process(Pid::from_u32(process.unwrap().pid())).is_some() {
+            return Err(MgrError::new("NodeCG is already running.").boxed())
         }
 
         let child = unwrap_ok_or!(
@@ -34,8 +38,9 @@ impl ManagedNodecg {
                 .args([format!("{}/index.js", nodecg_path)])
                 .current_dir(PathBuf::from(nodecg_path))
                 .spawn(), e,
-            { return format_error("Failed to start NodeCG", e) });
-        *process = Some(child.1);
+            { return Err(MgrError::with_cause("Failed to start NodeCG", e).boxed()) });
+
+        *lock = Some(child.1);
 
         Ok(child.0)
     }

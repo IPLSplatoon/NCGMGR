@@ -16,6 +16,7 @@ use crate::log::{err_to_string, format_error, LogEmitter};
 
 mod npm;
 mod log;
+mod error;
 mod git;
 mod bundles;
 mod nodecg;

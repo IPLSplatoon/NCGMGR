@@ -21,6 +21,7 @@ itertools = "0.10.3"
 unwrap_or = "1.0.0"
 window-vibrancy = "0.1.2"
 os_info = { version = "3.2.0", default-features = false }
+sysinfo = "0.23.11"
 rm_rf = "0.6.1"
 
 [dependencies.tauri]
