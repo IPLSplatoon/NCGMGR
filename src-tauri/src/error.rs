@@ -1,12 +1,6 @@
 use std::error::Error;
 use std::fmt;
 
-/*
-pub fn err_to_string<T: fmt::Display>(msg: &str, err: T) -> String {
-    format!("{}: {}", msg, err.to_string())
-}
- */
-
 pub trait MgrErrorCause: fmt::Display + fmt::Debug {}
 impl<T: fmt::Display + fmt::Debug> MgrErrorCause for T {}
 
