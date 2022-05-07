@@ -13,6 +13,7 @@ use window_vibrancy::{apply_vibrancy, NSVisualEffectMaterial};
 #[cfg(target_os = "windows")]
 use window_vibrancy::{apply_mica};
 use crate::log::{err_to_string, format_error, LogEmitter};
+use sysinfo::{System, SystemExt};
 
 mod npm;
 mod log;
@@ -98,9 +99,9 @@ fn main() {
     apply_vibrancy(&window, NSVisualEffectMaterial::ContentBackground).unwrap();
 
     if cfg!(target_os = "windows") {
-        let info = os_info::get();
+        let sys = System::new();
+        let build_no = sys.kernel_version().unwrap().parse::<i32>().unwrap();
 
-        let build_no = info.version().to_string().split(".").last().unwrap().to_string().parse::<i32>().unwrap();
         if build_no >= 22000 {
             #[cfg(target_os = "windows")]
             apply_mica(&window).unwrap();
