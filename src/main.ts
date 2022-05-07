@@ -2,6 +2,7 @@ import { createApp } from 'vue'
 import App from './App.vue'
 import { createPinia } from 'pinia'
 import { type, version } from '@tauri-apps/api/os'
+import { setUpErrorHandler } from '@/store/errorHandlerStore'
 
 (async () => {
     const useTransparentBg = await supportsTransparentBackground()
@@ -9,9 +10,12 @@ import { type, version } from '@tauri-apps/api/os'
         document.body.classList.add('use-opaque-bg')
     }
 
-    createApp(App)
+    const app = createApp(App)
         .use(createPinia())
-        .mount('#app')
+
+    setUpErrorHandler(app)
+
+    app.mount('#app')
 })()
 
 async function supportsTransparentBackground () {

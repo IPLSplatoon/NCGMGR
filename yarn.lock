@@ -1385,6 +1385,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@fortawesome/fontawesome-common-types@npm:6.1.1":
+  version: 6.1.1
+  resolution: "@fortawesome/fontawesome-common-types@npm:6.1.1"
+  checksum: 4db285557dd9d178e313a9596ad1c4ba84e9d47efb53dea3206de1bf98252574e0d95c3a0b114cc3cb5f162e2622a2cf8f037011fc98818ccade7bfb6c0c335b
+  languageName: node
+  linkType: hard
+
 "@fortawesome/fontawesome-common-types@npm:^0.2.36":
   version: 0.2.36
   resolution: "@fortawesome/fontawesome-common-types@npm:0.2.36"
@@ -1398,6 +1405,15 @@ __metadata:
   dependencies:
     "@fortawesome/fontawesome-common-types": ^0.2.36
   checksum: 3011d8c1452b5df52a62eaee8b1ec925b9fdfabcc170fd6da5eaac7cfdef56258b9292ddd06c30f03a6a8ed6faa886565211f2e469fee3c9831c32f93e9383d8
+  languageName: node
+  linkType: hard
+
+"@fortawesome/free-solid-svg-icons@npm:6.1.1":
+  version: 6.1.1
+  resolution: "@fortawesome/free-solid-svg-icons@npm:6.1.1"
+  dependencies:
+    "@fortawesome/fontawesome-common-types": 6.1.1
+  checksum: 9c42f45af9e75410d9e20a110c4262ded1a778887dc3b1200c0576f6b226e6a5568fb85a862090b45b06060f878798ddde60b987ef56aafccbaa1e7a378dd17c
   languageName: node
   linkType: hard
 
@@ -1482,15 +1498,15 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@iplsplatoon/vue-components@npm:2.3.1":
-  version: 2.3.1
-  resolution: "@iplsplatoon/vue-components@npm:2.3.1"
+"@iplsplatoon/vue-components@npm:2.8.0":
+  version: 2.8.0
+  resolution: "@iplsplatoon/vue-components@npm:2.8.0"
   dependencies:
-    "@fortawesome/free-solid-svg-icons": ^5.15.4
+    "@fortawesome/free-solid-svg-icons": 6.1.1
     lodash: ^4.17.21
   peerDependencies:
     vue: ^3.2.26
-  checksum: cc0e7fc4ee1e8e1384e29fdbd8f567a9b58cafdf3252306ba7b89cab6b738cefbd1354d26bb4df6170e1e8d8ed0cdd915b230b7bca1f9e529bbbaa97cb391452
+  checksum: f841b9126cc5017fdce94747e5fc92a0348f7830fe140b0307ae893d0ad51de7de6c627391aecb58f04a5b213b70b2468e755c0d6d8439ea894f782115326c1c
   languageName: node
   linkType: hard
 
@@ -1791,74 +1807,82 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@tauri-apps/cli-darwin-arm64@npm:1.0.0-rc.4":
-  version: 1.0.0-rc.4
-  resolution: "@tauri-apps/cli-darwin-arm64@npm:1.0.0-rc.4"
+"@tauri-apps/cli-darwin-arm64@npm:1.0.0-rc.9":
+  version: 1.0.0-rc.9
+  resolution: "@tauri-apps/cli-darwin-arm64@npm:1.0.0-rc.9"
   conditions: os=darwin & cpu=arm64
   languageName: node
   linkType: hard
 
-"@tauri-apps/cli-darwin-x64@npm:1.0.0-rc.4":
-  version: 1.0.0-rc.4
-  resolution: "@tauri-apps/cli-darwin-x64@npm:1.0.0-rc.4"
+"@tauri-apps/cli-darwin-x64@npm:1.0.0-rc.9":
+  version: 1.0.0-rc.9
+  resolution: "@tauri-apps/cli-darwin-x64@npm:1.0.0-rc.9"
   conditions: os=darwin & cpu=x64
   languageName: node
   linkType: hard
 
-"@tauri-apps/cli-linux-arm-gnueabihf@npm:1.0.0-rc.4":
-  version: 1.0.0-rc.4
-  resolution: "@tauri-apps/cli-linux-arm-gnueabihf@npm:1.0.0-rc.4"
+"@tauri-apps/cli-linux-arm-gnueabihf@npm:1.0.0-rc.9":
+  version: 1.0.0-rc.9
+  resolution: "@tauri-apps/cli-linux-arm-gnueabihf@npm:1.0.0-rc.9"
   conditions: os=linux & cpu=arm
   languageName: node
   linkType: hard
 
-"@tauri-apps/cli-linux-arm64-gnu@npm:1.0.0-rc.4":
-  version: 1.0.0-rc.4
-  resolution: "@tauri-apps/cli-linux-arm64-gnu@npm:1.0.0-rc.4"
+"@tauri-apps/cli-linux-arm64-gnu@npm:1.0.0-rc.9":
+  version: 1.0.0-rc.9
+  resolution: "@tauri-apps/cli-linux-arm64-gnu@npm:1.0.0-rc.9"
   conditions: os=linux & cpu=arm64
   languageName: node
   linkType: hard
 
-"@tauri-apps/cli-linux-arm64-musl@npm:1.0.0-rc.4":
-  version: 1.0.0-rc.4
-  resolution: "@tauri-apps/cli-linux-arm64-musl@npm:1.0.0-rc.4"
+"@tauri-apps/cli-linux-arm64-musl@npm:1.0.0-rc.9":
+  version: 1.0.0-rc.9
+  resolution: "@tauri-apps/cli-linux-arm64-musl@npm:1.0.0-rc.9"
   conditions: os=linux & cpu=arm64
   languageName: node
   linkType: hard
 
-"@tauri-apps/cli-linux-x64-gnu@npm:1.0.0-rc.4":
-  version: 1.0.0-rc.4
-  resolution: "@tauri-apps/cli-linux-x64-gnu@npm:1.0.0-rc.4"
+"@tauri-apps/cli-linux-x64-gnu@npm:1.0.0-rc.9":
+  version: 1.0.0-rc.9
+  resolution: "@tauri-apps/cli-linux-x64-gnu@npm:1.0.0-rc.9"
   conditions: os=linux & cpu=x64
   languageName: node
   linkType: hard
 
-"@tauri-apps/cli-linux-x64-musl@npm:1.0.0-rc.4":
-  version: 1.0.0-rc.4
-  resolution: "@tauri-apps/cli-linux-x64-musl@npm:1.0.0-rc.4"
+"@tauri-apps/cli-linux-x64-musl@npm:1.0.0-rc.9":
+  version: 1.0.0-rc.9
+  resolution: "@tauri-apps/cli-linux-x64-musl@npm:1.0.0-rc.9"
   conditions: os=linux & cpu=x64
   languageName: node
   linkType: hard
 
-"@tauri-apps/cli-win32-x64-msvc@npm:1.0.0-rc.4":
-  version: 1.0.0-rc.4
-  resolution: "@tauri-apps/cli-win32-x64-msvc@npm:1.0.0-rc.4"
+"@tauri-apps/cli-win32-ia32-msvc@npm:1.0.0-rc.9":
+  version: 1.0.0-rc.9
+  resolution: "@tauri-apps/cli-win32-ia32-msvc@npm:1.0.0-rc.9"
+  conditions: os=win32 & cpu=ia32
+  languageName: node
+  linkType: hard
+
+"@tauri-apps/cli-win32-x64-msvc@npm:1.0.0-rc.9":
+  version: 1.0.0-rc.9
+  resolution: "@tauri-apps/cli-win32-x64-msvc@npm:1.0.0-rc.9"
   conditions: os=win32 & cpu=x64
   languageName: node
   linkType: hard
 
-"@tauri-apps/cli@npm:1.0.0-rc.4":
-  version: 1.0.0-rc.4
-  resolution: "@tauri-apps/cli@npm:1.0.0-rc.4"
+"@tauri-apps/cli@npm:1.0.0-rc.9":
+  version: 1.0.0-rc.9
+  resolution: "@tauri-apps/cli@npm:1.0.0-rc.9"
   dependencies:
-    "@tauri-apps/cli-darwin-arm64": 1.0.0-rc.4
-    "@tauri-apps/cli-darwin-x64": 1.0.0-rc.4
-    "@tauri-apps/cli-linux-arm-gnueabihf": 1.0.0-rc.4
-    "@tauri-apps/cli-linux-arm64-gnu": 1.0.0-rc.4
-    "@tauri-apps/cli-linux-arm64-musl": 1.0.0-rc.4
-    "@tauri-apps/cli-linux-x64-gnu": 1.0.0-rc.4
-    "@tauri-apps/cli-linux-x64-musl": 1.0.0-rc.4
-    "@tauri-apps/cli-win32-x64-msvc": 1.0.0-rc.4
+    "@tauri-apps/cli-darwin-arm64": 1.0.0-rc.9
+    "@tauri-apps/cli-darwin-x64": 1.0.0-rc.9
+    "@tauri-apps/cli-linux-arm-gnueabihf": 1.0.0-rc.9
+    "@tauri-apps/cli-linux-arm64-gnu": 1.0.0-rc.9
+    "@tauri-apps/cli-linux-arm64-musl": 1.0.0-rc.9
+    "@tauri-apps/cli-linux-x64-gnu": 1.0.0-rc.9
+    "@tauri-apps/cli-linux-x64-musl": 1.0.0-rc.9
+    "@tauri-apps/cli-win32-ia32-msvc": 1.0.0-rc.9
+    "@tauri-apps/cli-win32-x64-msvc": 1.0.0-rc.9
   dependenciesMeta:
     "@tauri-apps/cli-darwin-arm64":
       optional: true
@@ -1874,11 +1898,13 @@ __metadata:
       optional: true
     "@tauri-apps/cli-linux-x64-musl":
       optional: true
+    "@tauri-apps/cli-win32-ia32-msvc":
+      optional: true
     "@tauri-apps/cli-win32-x64-msvc":
       optional: true
   bin:
     tauri: tauri.js
-  checksum: 910bbc3734fd77adf1f5b585cff07f277f6a20c0a560847d3f3b18dd3450a6ba00f5e7658ae1db3b565392c9d387cef60ff7f7725823b7a772d665df75cc390b
+  checksum: c8fc2871d125c7ddd17b29bae820c492ba2b2b815f708e09ae6cddfd01e62d89ab739341bfb6d6ac494e5268821805b961ad4cd661f0b1f30d57ea523495af7c
   languageName: node
   linkType: hard
 
@@ -10603,7 +10629,7 @@ __metadata:
     "@fortawesome/fontawesome-svg-core": ^1.2.36
     "@fortawesome/free-solid-svg-icons": ^5.15.4
     "@fortawesome/vue-fontawesome": ^3.0.0-5
-    "@iplsplatoon/vue-components": 2.3.1
+    "@iplsplatoon/vue-components": 2.8.0
     "@pinia/testing": ^0.0.9
     "@tauri-apps/api": ^1.0.0-rc.2
     "@types/hosted-git-info": 2.7.0
@@ -10637,7 +10663,7 @@ __metadata:
     sass-loader: ^10.2.0
     typescript: ~4.1.5
     vue: ^3.2.31
-    vue-cli-plugin-tauri: latest
+    vue-cli-plugin-tauri: ^1.0.0-rc.2
     vue-jest: ^5.0.0-0
   languageName: unknown
   linkType: soft
@@ -14864,13 +14890,13 @@ __metadata:
   languageName: node
   linkType: hard
 
-"vue-cli-plugin-tauri@npm:latest":
-  version: 1.0.0-rc.1
-  resolution: "vue-cli-plugin-tauri@npm:1.0.0-rc.1"
+"vue-cli-plugin-tauri@npm:^1.0.0-rc.2":
+  version: 1.0.0-rc.2
+  resolution: "vue-cli-plugin-tauri@npm:1.0.0-rc.2"
   dependencies:
-    "@tauri-apps/cli": 1.0.0-rc.4
+    "@tauri-apps/cli": 1.0.0-rc.9
     "@vue/cli-shared-utils": ^4.1.1
-  checksum: ee770cf5ac8a9d432964d7d83252b354ab8997a182c2ca6699ee32dbce5a12a15c505c51114053ab56e4a35efd98624b7d126014aafa2c07883b255647488628
+  checksum: 12996d251e88fb6176e7f2f8bd5a780e434a20a8c9981a98dfd6b447b36e43a545197ae23dd04fc7d261a20d2a2ff3a41c68b230b05acefbed9c8e69e1838637
   languageName: node
   linkType: hard
 

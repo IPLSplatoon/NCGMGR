@@ -1,3 +1,12 @@
+.ipl-expansion-panel__content, .ipl-dialog-title {
+    background-color: var(--space-background) !important;
+    border: 1px solid var(--space-border);
+}
+
+.ipl-expansion-panel__header-background:hover {
+    background-color: var(--space-background-secondary) !important;
+}
+
 .ipl-space {
     &.color-dark, &.color-light {
         background-color: var(--space-background) !important;
@@ -6,7 +15,7 @@
 }
 
 .ipl-button.disabled {
-    background-color: rgba(14, 20, 24, 0.6) !important;
+    background-color: var(--disabled-button-bg) !important;
 }
 
 .ipl-input__text-input-wrapper {

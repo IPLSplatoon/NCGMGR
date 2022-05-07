@@ -27,7 +27,6 @@
                 title="Installing..."
                 data-test="bundle-log-overlay"
                 log-key="change-bundle-version"
-                no-background-close
             />
         </ipl-space>
         <ipl-space class="max-width m-l-8 h-max-content">
@@ -58,13 +57,13 @@
 <script lang="ts">
 import { defineComponent } from '@vue/runtime-core'
 import { computed, PropType, ref, watch } from 'vue'
-import { Bundle, configFileExists, createConfigFile, getBundleVersions, openConfigFile } from '@/service/nodecg'
+import { Bundle, configFileExists, createConfigFile, getBundleVersions, openConfigFile } from '@/service/nodecgService'
 import { IplButton, IplMessage, IplSelect, IplSpace } from '@iplsplatoon/vue-components'
-import { useConfigStore } from '@/store/config'
-import LogOverlay from '@/components/logOverlay.vue'
-import { useLogStore } from '@/store/log'
+import { useConfigStore } from '@/store/configStore'
+import LogOverlay from '@/components/log/LogOverlay.vue'
+import { useLogStore } from '@/store/logStore'
 import { invoke } from '@tauri-apps/api/tauri'
-import { useNodecgStore } from '@/store/nodecg'
+import { useNodecgStore } from '@/store/nodecgStore'
 import { open } from '@tauri-apps/api/shell'
 import { type } from '@tauri-apps/api/os'
 
@@ -88,7 +87,7 @@ export default defineComponent({
         const versions = ref<string[]>([])
         const versionsError = ref<string | null>(null)
         const versionsLoading = ref(true)
-        const selectedVersion = ref('')
+        const selectedVersion = ref<string | undefined>('')
         const showInstallLog = ref(false)
         const hasConfigFile = ref(false)
         const configFileLoading = ref(true)
@@ -158,7 +157,7 @@ export default defineComponent({
             async setVersion () {
                 const logKey = 'change-bundle-version'
                 logStore.reset(logKey)
-                await logStore.listen(logKey)
+                await logStore.listen(logKey, true)
                 showInstallLog.value = true
                 const invocation = invoke('set_bundle_version', {
                     bundleName: props.bundle.name,

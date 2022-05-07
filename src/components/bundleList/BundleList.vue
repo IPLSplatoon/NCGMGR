@@ -3,7 +3,7 @@
         Loading...
     </div>
     <div v-else-if="bundles.length < 1" class="text-center m-b-8">
-        No bundles installed.
+        No bundles found.
     </div>
     <div v-else class="bundle-settings__wrapper">
         <div class="bundle-settings__header">
@@ -19,7 +19,7 @@
         >
             <div class="bundle-settings__item-content">
                 <div>{{ bundle.name }}</div>
-                <div>{{ bundle.version }}</div>
+                <div>{{ bundle.version ?? '---' }}</div>
                 <div class="layout horizontal end-horizontal">
                     <ipl-button
                         small
@@ -64,11 +64,11 @@ import { defineComponent } from '@vue/runtime-core'
 import { IplButton } from '@iplsplatoon/vue-components'
 import IplOverlay from '@/components/mgr/MgrOverlay.vue'
 import { computed, reactive } from 'vue'
-import { useConfigStore } from '@/store/config'
-import { useNodecgStore } from '@/store/nodecg'
+import { useConfigStore } from '@/store/configStore'
+import { useNodecgStore } from '@/store/nodecgStore'
 import { themeColors } from '@/styles/colors'
 import BundleConfig from '@/components/bundleList/BundleConfig.vue'
-import { removeBundle } from '@/service/nodecg'
+import { removeBundle } from '@/service/nodecgService'
 
 export default defineComponent({
     name: 'BundleList',

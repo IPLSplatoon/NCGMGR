@@ -1,6 +1,6 @@
 [package]
 name = "ncgmgr"
-version = "0.3.0"
+version = "0.4.0"
 description = "Helps manage NodeCG installations."
 authors = [ "inkfarer" ]
 license = ""
@@ -10,21 +10,21 @@ edition = "2018"
 build = "src/build.rs"
 
 [build-dependencies]
-tauri-build = { version = "1.0.0-rc.4", features = [] }
+tauri-build = { version = "1.0.0-rc.7", features = [] }
 
 [dependencies]
-serde_json = "1.0.79"
-serde = { version = "1.0.136", features = [ "derive" ] }
+serde_json = "1.0.80"
+serde = { version = "1.0.137", features = [ "derive" ] }
 git2 = "0.14.2"
 semver-parser = "0.10.2"
 itertools = "0.10.3"
 unwrap_or = "1.0.0"
-window-vibrancy = "0.1.0"
-os_info = { version = "3.2.0", default-features = false }
+window-vibrancy = "0.1.2"
+sysinfo = "0.23.11"
 rm_rf = "0.6.1"
 
 [dependencies.tauri]
-version = "1.0.0-rc.4"
+version = "1.0.0-rc.8"
 features = ["api-all", "macos-private-api", "process-command-api"]
 
 [features]

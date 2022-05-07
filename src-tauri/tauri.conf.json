@@ -1,7 +1,7 @@
 {
   "package": {
     "productName": "NCGMGR",
-    "version": "0.3.0"
+    "version": "0.4.0"
   },
   "build": {
     "distDir": "Set automatically by Vue CLI plugin",
@@ -29,12 +29,10 @@
       "shortDescription": "Helps manage NodeCG installations.",
       "longDescription": "",
       "deb": {
-        "depends": [],
-        "useBootstrapper": true
+        "depends": []
       },
       "macOS": {
-        "frameworks": [],
-        "useBootstrapper": true
+        "frameworks": []
       },
       "windows": {
         "certificateThumbprint": null,

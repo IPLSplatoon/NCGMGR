@@ -1,0 +1,27 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`LogOverlay matches snapshot 1`] = `
+<div class="mgr-overlay__wrapper layout horizontal center-horizontal center-vertical log-overlay">
+  <div class="mgr-overlay__content">
+    <div>
+      <ipl-dialog-title-stub title="Log Overlay" closingdisabled="false" class="m-b-8"></ipl-dialog-title-stub>
+      <div class="ipl-space color-dark" data-v-11cc5f1c="">
+        <div class="m-b-8">Please wait...</div>
+        <progress-display-stub logkey="log1"></progress-display-stub>
+      </div>
+      <div class="ipl-expansion-panel__content m-t-8 max-width" data-v-67856a23="">
+        <div class="ipl-expansion-panel__header" data-v-67856a23="">
+          <div class="ipl-expansion-panel__header-background" data-v-67856a23=""></div>
+          <div class="ipl-expansion-panel__title" data-v-67856a23="">More details</div><svg class="svg-inline--fa fa-chevron-left icon" aria-hidden="true" focusable="false" data-prefix="fas" data-icon="chevron-left" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512" data-v-67856a23="">
+            <path class="" fill="currentColor" d="M224 480c-8.188 0-16.38-3.125-22.62-9.375l-192-192c-12.5-12.5-12.5-32.75 0-45.25l192-192c12.5-12.5 32.75-12.5 45.25 0s12.5 32.75 0 45.25L77.25 256l169.4 169.4c12.5 12.5 12.5 32.75 0 45.25C240.4 476.9 232.2 480 224 480z"></path>
+          </svg>
+          <div class="header-extra" data-v-67856a23=""></div>
+        </div>
+        <div class="content" data-v-67856a23="" style="display: none;">
+          <div class="log-display m-t-8"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+`;

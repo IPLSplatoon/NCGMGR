@@ -20,16 +20,13 @@ module.exports = {
     overrides: [
         {
             files: [
-                '**/__tests__/*.{j,t}s?(x)',
-                '**/tests/unit/**/*.spec.{j,t}s?(x)'
+                '**/__tests__/*.{j,t}s?(x)'
             ],
             env: {
                 jest: true
-            }
-        },
-        {
-            files: ['*.test.ts'],
+            },
             rules: {
+                '@typescript-eslint/ban-ts-comment': 'off',
                 '@typescript-eslint/no-var-requires': 0,
                 'import/first': 'off'
             }

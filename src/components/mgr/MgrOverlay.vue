@@ -79,6 +79,7 @@ export default defineComponent({
     .mgr-overlay__content {
         max-width: 90%;
         max-height: 80%;
+        min-width: 400px;
         background-color: var(--background-primary);
         overflow-y: auto;
         overflow-x: hidden;
