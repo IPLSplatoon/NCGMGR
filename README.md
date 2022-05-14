@@ -1,5 +1,7 @@
 # NCGMGR
 
+[Documentation](http://ncgmgr.readthedocs.io/)
+
 NodeCG ManaGeR, built with [Tauri](https://tauri.studio/) and Vue.js.
 
 ## Commands
