@@ -1,0 +1,9 @@
+site_name: NCGMGR
+repo_url: https://github.com/IPLSplatoon/NCGMGR
+theme:
+  name: readthedocs
+extra_css: [docs.css]
+nav:
+  - Introduction: 'index.md'
+  - User's guide: 'users-guide.md'
+  - Development: 'development.md'
