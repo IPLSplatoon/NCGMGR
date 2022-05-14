@@ -33,3 +33,13 @@ Running `yarn test:ci` will create a test results file, useful for Continuous In
 
 NCGMGR uses ESLint to automatically enforce a consistent code style. ESLint is run automatically by GitHub Actions
 when new commits are pushed to the repository, and can be used manually by running `yarn lint`
+
+## Writing documentation
+
+NCGMGR's documentation is powered by [MkDocs](https://www.mkdocs.org/) and hosted on [Read the Docs.](https://readthedocs.org/)  
+Documentation pages are built automatically when a new pull request is created in the repository.
+
+To preview edits made to documentation before pushing them to GitHub, [install MkDocs locally](https://www.mkdocs.org/user-guide/installation/)
+and run the `mkdocs serve` command in the project root.  
+To create a new documentation page, create a new `.md` file in the `docs` directory and add a reference to it under the `nav` section in the `mkdocs.yml`
+configuration file.
