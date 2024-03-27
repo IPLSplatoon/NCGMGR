@@ -4,8 +4,22 @@
             v-for="(line, i) in log"
             :key="`log-line_${i}`"
             :class="`type-${line.type ?? 'unknown'}`"
-            v-html="line.message"
-        />
+        >
+            <template
+                v-for="(part, j) in line.messageParts"
+            >
+                <template v-if="!part.was_processed">
+                    {{ part.content }}
+                </template>
+                <span
+                    v-else
+                    :key="`log-line_${i}_${j}`"
+                    :class="classListFromLogLine(part)"
+                >
+                    {{ part.content }}
+                </span>
+            </template>
+        </span>
     </div>
 </template>
 
@@ -45,8 +59,23 @@ export default defineComponent({
         return {
             log: computed(() => {
                 const log = logStore.lines[props.logKey] ?? []
-                return log.map(line => ({ ...line, message: Anser.ansiToHtml(line.message, { use_classes: true }) }))
-            })
+                return log.map(line => ({
+                    ...line,
+                    messageParts: Anser.ansiToJson(line.message, { use_classes: true })
+                }))
+            }),
+            classListFromLogLine(line: Anser.AnserJsonEntry) {
+                const result = []
+
+                if (line.bg != null) {
+                    result.push(`${line.bg}-bg`)
+                }
+                if (line.fg != null) {
+                    result.push(`${line.fg}-fg`)
+                }
+
+                return result
+            }
         }
     }
 })
@@ -69,7 +98,7 @@ export default defineComponent({
     color: var(--text-color);
     background-color: var(--space-background);
 
-    span {
+    > span {
         margin-left: 6px;
         display: block;
         white-space: nowrap;
