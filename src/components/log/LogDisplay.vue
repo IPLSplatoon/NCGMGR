@@ -2,8 +2,8 @@
     <div class="log-display">
         <span
             v-for="(line, i) in log"
-            :class="`type-${line.type ?? 'unknown'}`"
             :key="`log-line_${i}`"
+            :class="`type-${line.type ?? 'unknown'}`"
             v-html="line.message"
         />
     </div>

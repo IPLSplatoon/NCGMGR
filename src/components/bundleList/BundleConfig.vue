@@ -1,9 +1,12 @@
 <template>
-    <ipl-space class="layout horizontal m-t-8 m-b-8" color="light">
+    <ipl-space
+        class="layout horizontal m-t-8 m-b-8"
+        color="light"
+    >
         <ipl-space class="max-width h-max-content">
             <ipl-message
-                type="error"
                 v-if="versionsError"
+                type="error"
                 class="m-b-8"
             >
                 {{ versionsError }}
@@ -55,7 +58,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent } from '@vue/runtime-core'
+import { defineComponent } from 'vue'
 import { computed, PropType, ref, watch } from 'vue'
 import { Bundle, configFileExists, createConfigFile, getBundleVersions, openConfigFile } from '@/service/nodecgService'
 import { IplButton, IplMessage, IplSelect, IplSpace } from '@iplsplatoon/vue-components'

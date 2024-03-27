@@ -5,15 +5,21 @@
             :key="key"
         >
             <div
+                :id="`status-bar-item_${key}`"
                 class="status-bar-item"
                 :class="{ highlighted: item.highlighted.value }"
                 @click="item.overlayVisible.value = true"
-                :id="`status-bar-item_${key}`"
             >
-                <font-awesome-icon :icon="item.icon" class="icon" />
+                <font-awesome-icon
+                    :icon="item.icon"
+                    class="icon"
+                />
                 <span class="text">{{ item.label }}</span>
             </div>
-            <mgr-overlay v-model:visible="item.overlayVisible.value" :id="`status-item-dialog_${key}`">
+            <mgr-overlay
+                :id="`status-item-dialog_${key}`"
+                v-model:visible="item.overlayVisible.value"
+            >
                 <ipl-dialog-title
                     :title="item.label"
                     @close="item.overlayVisible.value = false"
@@ -28,7 +34,7 @@
 
 <script lang="ts">
 import { computed, ref } from 'vue'
-import { defineComponent } from '@vue/runtime-core'
+import { defineComponent } from 'vue'
 import { IplDialogTitle, IplSpace } from '@iplsplatoon/vue-components'
 import { library } from '@fortawesome/fontawesome-svg-core'
 import { faWrench } from '@fortawesome/free-solid-svg-icons/faWrench'

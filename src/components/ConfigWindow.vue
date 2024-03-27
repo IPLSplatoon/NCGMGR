@@ -1,6 +1,8 @@
 <template>
     <ipl-space class="m-b-8">
-        <div class="bold m-b-6">Dependency status</div>
+        <div class="bold m-b-6">
+            Dependency status
+        </div>
         <dependency-checker />
     </ipl-space>
     <ipl-space>
@@ -13,14 +15,14 @@
 </template>
 
 <script lang="ts">
-import { defineComponent } from '@vue/runtime-core'
+import { defineComponent } from 'vue'
 import { IplLabel, IplSmallToggle, IplSpace } from '@iplsplatoon/vue-components'
 import { computed } from 'vue'
 import { useConfigStore } from '@/store/configStore'
 import DependencyChecker from '@/components/DependencyChecker.vue'
 
 export default defineComponent({
-    name: 'Configuration',
+    name: 'ConfigWindow',
 
     components: { DependencyChecker, IplLabel, IplSmallToggle, IplSpace },
 

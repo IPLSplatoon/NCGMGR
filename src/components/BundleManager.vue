@@ -1,15 +1,17 @@
 <template>
     <ipl-space class="no-padding">
         <div class="header layout horizontal center-vertical">
-            <div class="bold grow m-l-4">Bundles</div>
+            <div class="bold grow m-l-4">
+                Bundles
+            </div>
             <ipl-button
                 icon="sync"
                 small
                 tooltip="Refresh"
                 class="button"
-                @click="refreshBundles"
                 async
                 data-test="refresh-button"
+                @click="refreshBundles"
             />
             <ipl-button
                 icon="plus-circle"
@@ -21,7 +23,10 @@
                 @click="installingBundle = !installingBundle"
             />
         </div>
-        <bundle-installer v-show="installingBundle" class="m-b-8 m-x-8" />
+        <bundle-installer
+            v-show="installingBundle"
+            class="m-b-8 m-x-8"
+        />
         <bundle-list class="max-width" />
     </ipl-space>
 </template>

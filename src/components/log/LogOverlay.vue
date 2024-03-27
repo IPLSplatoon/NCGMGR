@@ -13,15 +13,20 @@
                 @close="modelVisible = false"
             />
             <ipl-space>
-                <div class="m-b-8">{{ progressMessage }}</div>
-                <progress-display :log-key="logKey"/>
+                <div class="m-b-8">
+                    {{ progressMessage }}
+                </div>
+                <progress-display :log-key="logKey" />
             </ipl-space>
             <ipl-expanding-space
                 v-model:expanded="moreDetailsShown"
                 title="More details"
                 class="m-t-8 max-width"
             >
-                <log-display :log-key="logKey" class="m-t-8" />
+                <log-display
+                    :log-key="logKey"
+                    class="m-t-8"
+                />
             </ipl-expanding-space>
         </div>
     </mgr-overlay>
@@ -39,8 +44,6 @@ import { ActionState } from '@/types/log'
 export default defineComponent({
     name: 'LogOverlay',
 
-    emits: ['update:visible'],
-
     components: { IplSpace, IplDialogTitle, IplExpandingSpace, ProgressDisplay, LogDisplay, MgrOverlay },
 
     props: {
@@ -57,6 +60,8 @@ export default defineComponent({
             required: true
         }
     },
+
+    emits: ['update:visible'],
 
     setup (props, { emit }) {
         const logStore = useLogStore()

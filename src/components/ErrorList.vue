@@ -19,19 +19,33 @@
                 :title="addDots(String(error.err))"
                 class="error-list-item"
             >
-                <ipl-data-row label="Info" :value="error.info" />
+                <ipl-data-row
+                    label="Info"
+                    :value="error.info"
+                />
                 <template v-if="error.component">
-                    <ipl-data-row label="Source component" :value="error.component.$.type.name" />
+                    <ipl-data-row
+                        label="Source component"
+                        :value="error.component.$.type.name"
+                    />
                 </template>
-                <ipl-data-row label="Full error" :value="String(error.err)" />
+                <ipl-data-row
+                    label="Full error"
+                    :value="String(error.err)"
+                />
             </ipl-expanding-space>
         </ipl-expanding-space-group>
-        <div v-else class="m-l-8 m-y-8 text-center">No errors yet!</div>
+        <div
+            v-else
+            class="m-l-8 m-y-8 text-center"
+        >
+            No errors yet!
+        </div>
     </ipl-space>
 </template>
 
 <script lang="ts">
-import { defineComponent } from '@vue/runtime-core'
+import { defineComponent } from 'vue'
 import { useErrorHandlerStore } from '@/store/errorHandlerStore'
 import { IplButton, IplDataRow, IplExpandingSpace, IplExpandingSpaceGroup, IplSpace } from '@iplsplatoon/vue-components'
 import { computed } from 'vue'
