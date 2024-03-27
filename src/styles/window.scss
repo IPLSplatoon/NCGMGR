@@ -11,10 +11,7 @@ body {
     font-family: 'Roboto', sans-serif;
     color: var(--text-color);
     padding: 12px 8px;
-
-    &.use-opaque-bg {
-        background-color: var(--solid-background);
-    }
+    background-color: var(--solid-background);
 }
 
 * {

@@ -5,10 +5,10 @@ import { type, version } from '@tauri-apps/api/os'
 import { setUpErrorHandler } from '@/store/errorHandlerStore'
 
 (async () => {
-    const useTransparentBg = await supportsTransparentBackground()
-    if (!useTransparentBg) {
-        document.body.classList.add('use-opaque-bg')
-    }
+    // const useTransparentBg = await supportsTransparentBackground()
+    // if (!useTransparentBg) {
+    //     document.body.classList.add('use-opaque-bg')
+    // }
 
     const app = createApp(App)
         .use(createPinia())
