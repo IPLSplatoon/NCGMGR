@@ -1,9 +1,9 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`ProgressDisplay matches snapshot when given key has progress 1`] = `<ipl-progress-bar-stub color="#6155BD" backgroundcolor="light" value="44.44444444444444"></ipl-progress-bar-stub>`;
+exports[`ProgressDisplay matches snapshot when given key has progress 1`] = `"<ipl-progress-bar-stub color="#6155BD" backgroundcolor="light" value="44.44444444444444"></ipl-progress-bar-stub>"`;
 
-exports[`ProgressDisplay matches snapshot when given key is completed successfully 1`] = `<ipl-progress-bar-stub color="#00A651" backgroundcolor="light" value="100"></ipl-progress-bar-stub>`;
+exports[`ProgressDisplay matches snapshot when given key is completed successfully 1`] = `"<ipl-progress-bar-stub color="#00A651" backgroundcolor="light" value="100"></ipl-progress-bar-stub>"`;
 
-exports[`ProgressDisplay matches snapshot when given key is completed with error 1`] = `<ipl-progress-bar-stub color="#e74e36" backgroundcolor="light" value="100"></ipl-progress-bar-stub>`;
+exports[`ProgressDisplay matches snapshot when given key is completed with error 1`] = `"<ipl-progress-bar-stub color="#e74e36" backgroundcolor="light" value="100"></ipl-progress-bar-stub>"`;
 
-exports[`ProgressDisplay matches snapshot when no progress entry is present for given key 1`] = `<ipl-progress-bar-stub color="#6155BD" backgroundcolor="light" value="0"></ipl-progress-bar-stub>`;
+exports[`ProgressDisplay matches snapshot when no progress entry is present for given key 1`] = `"<ipl-progress-bar-stub color="#6155BD" backgroundcolor="light" value="0"></ipl-progress-bar-stub>"`;

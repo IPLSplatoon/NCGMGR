@@ -1,7 +1,7 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`ErrorList matches snapshot 1`] = `
-<div class="ipl-space color-dark error-list" data-v-11cc5f1c="">
+"<div class="ipl-space color-dark error-list" data-v-11cc5f1c="">
   <div class="m-y-8 m-x-8 text-center">
     <div class="m-b-8"> Errors that have occurred in this application will be listed here.<br> It is most useful to developers for diagnosing issues. </div>
     <ipl-button-stub label="Clear" color="blue" disabled="false" async="false" progressmessage="Working..." successmessage="Done!" requiresconfirmation="false" shortconfirmationmessage="false" small="false" disableonsuccess="false" href=""></ipl-button-stub>
@@ -34,5 +34,5 @@ exports[`ErrorList matches snapshot 1`] = `
       </div>
     </div>
   </div>
-</div>
+</div>"
 `;

@@ -1,11 +1,11 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`ConfigWindow matches snapshot 1`] = `
-<div class="ipl-space color-dark m-b-8" data-v-11cc5f1c="">
+"<div class="ipl-space color-dark m-b-8" data-v-11cc5f1c="">
   <div class="bold m-b-6">Dependency status</div>
   <dependency-checker-stub></dependency-checker-stub>
 </div>
 <div class="ipl-space color-dark" data-v-11cc5f1c="">
   <ipl-small-toggle-stub label="Enable error log" modelvalue="false" disabled="false"></ipl-small-toggle-stub><label class="ipl-label" data-v-7e7be68d="">The error log is useful for diagnosing technical issues.</label>
-</div>
+</div>"
 `;

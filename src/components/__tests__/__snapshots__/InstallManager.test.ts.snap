@@ -1,7 +1,7 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`Installer matches snapshot 1`] = `
-<div class="ipl-space color-dark layout vertical" data-v-11cc5f1c="">
+"<div class="ipl-space color-dark layout vertical" data-v-11cc5f1c="">
   <div>Installation folder: /install/path</div>
   <status-row-stub color="gray" class="m-t-8"></status-row-stub>
   <div class="layout horizontal m-t-8">
@@ -23,11 +23,11 @@ exports[`Installer matches snapshot 1`] = `
     </div>
   </div>
 </div>
-<log-overlay-stub title="Installing..." logkey="install-nodecg" visible="false"></log-overlay-stub>
+<log-overlay-stub title="Installing..." logkey="install-nodecg" visible="false"></log-overlay-stub>"
 `;
 
 exports[`Installer matches snapshot when nodecg status is NOT_STARTED 1`] = `
-<div class="ipl-space color-dark layout vertical" data-v-11cc5f1c="">
+"<div class="ipl-space color-dark layout vertical" data-v-11cc5f1c="">
   <div>Installation folder: </div>
   <status-row-stub color="gray" class="m-t-8"></status-row-stub>
   <div class="layout horizontal m-t-8">
@@ -49,11 +49,11 @@ exports[`Installer matches snapshot when nodecg status is NOT_STARTED 1`] = `
     </div>
   </div>
 </div>
-<log-overlay-stub title="Installing..." logkey="install-nodecg" visible="false"></log-overlay-stub>
+<log-overlay-stub title="Installing..." logkey="install-nodecg" visible="false"></log-overlay-stub>"
 `;
 
 exports[`Installer matches snapshot when nodecg status is RUNNING 1`] = `
-<div class="ipl-space color-dark layout vertical" data-v-11cc5f1c="">
+"<div class="ipl-space color-dark layout vertical" data-v-11cc5f1c="">
   <div>Installation folder: </div>
   <status-row-stub color="gray" class="m-t-8"></status-row-stub>
   <div class="layout horizontal m-t-8">
@@ -75,11 +75,11 @@ exports[`Installer matches snapshot when nodecg status is RUNNING 1`] = `
     </div>
   </div>
 </div>
-<log-overlay-stub title="Installing..." logkey="install-nodecg" visible="false"></log-overlay-stub>
+<log-overlay-stub title="Installing..." logkey="install-nodecg" visible="false"></log-overlay-stub>"
 `;
 
 exports[`Installer matches snapshot when nodecg status is STOPPED 1`] = `
-<div class="ipl-space color-dark layout vertical" data-v-11cc5f1c="">
+"<div class="ipl-space color-dark layout vertical" data-v-11cc5f1c="">
   <div>Installation folder: </div>
   <status-row-stub color="gray" class="m-t-8"></status-row-stub>
   <div class="layout horizontal m-t-8">
@@ -101,5 +101,5 @@ exports[`Installer matches snapshot when nodecg status is STOPPED 1`] = `
     </div>
   </div>
 </div>
-<log-overlay-stub title="Installing..." logkey="install-nodecg" visible="false"></log-overlay-stub>
+<log-overlay-stub title="Installing..." logkey="install-nodecg" visible="false"></log-overlay-stub>"
 `;

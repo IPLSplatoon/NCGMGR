@@ -1,7 +1,7 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`BundleManager matches snapshot when installing a bundle 1`] = `
-<div class="ipl-space color-dark no-padding" data-v-11cc5f1c="">
+"<div class="ipl-space color-dark no-padding" data-v-11cc5f1c="">
   <div class="header layout horizontal center-vertical">
     <div class="bold grow m-l-4">Bundles</div>
     <ipl-button-stub icon="sync" color="blue" disabled="false" async="true" progressmessage="Working..." successmessage="Done!" requiresconfirmation="false" shortconfirmationmessage="false" small="true" disableonsuccess="false" href="" tooltip="Refresh" class="button" data-test="refresh-button"></ipl-button-stub>
@@ -9,11 +9,11 @@ exports[`BundleManager matches snapshot when installing a bundle 1`] = `
   </div>
   <bundle-installer-stub class="m-b-8 m-x-8" style="display: none;"></bundle-installer-stub>
   <div class="text-center m-b-8 max-width"> No bundles found. </div>
-</div>
+</div>"
 `;
 
 exports[`BundleManager matches snapshot with bundle data 1`] = `
-<div class="ipl-space color-dark no-padding" data-v-11cc5f1c="">
+"<div class="ipl-space color-dark no-padding" data-v-11cc5f1c="">
   <div class="header layout horizontal center-vertical">
     <div class="bold grow m-l-4">Bundles</div>
     <ipl-button-stub icon="sync" color="blue" disabled="false" async="true" progressmessage="Working..." successmessage="Done!" requiresconfirmation="false" shortconfirmationmessage="false" small="true" disableonsuccess="false" href="" tooltip="Refresh" class="button" data-test="refresh-button"></ipl-button-stub>
@@ -50,5 +50,5 @@ exports[`BundleManager matches snapshot with bundle data 1`] = `
     </div>
     <!--v-if-->
   </div>
-</div>
+</div>"
 `;

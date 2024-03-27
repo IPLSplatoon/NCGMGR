@@ -1,8 +1,13 @@
 module.exports = {
-    preset: '@vue/cli-plugin-unit-jest/presets/typescript-and-babel',
+    preset: 'ts-jest',
+    testEnvironment: 'jsdom',
+    testEnvironmentOptions: {
+        customExportConditions: ['node', 'node-addons']
+    },
     transformIgnorePatterns: ['/node_modules/(?!@tauri-apps)'],
     transform: {
-        '^.+\\.vue$': 'vue-jest'
+        '^.+\\.(ts|tsx)?$': 'ts-jest',
+        '.*\\.(vue)$': '@vue/vue3-jest'
     },
     moduleNameMapper: {
         '@/(.*)$': '<rootDir>/src/$1'

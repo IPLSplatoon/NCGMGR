@@ -1,7 +1,7 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`BundleSettings matches snapshot 1`] = `
-<div class="bundle-settings__wrapper">
+"<div class="bundle-settings__wrapper">
   <div class="bundle-settings__header">
     <div class="bold">Name</div>
     <div class="bold">Version</div>
@@ -41,9 +41,9 @@ exports[`BundleSettings matches snapshot 1`] = `
     <!--v-if-->
   </div>
   <!--v-if-->
-</div>
+</div>"
 `;
 
-exports[`BundleSettings matches snapshot when bundles are loading 1`] = `<div class="text-center m-b-8"> Loading... </div>`;
+exports[`BundleSettings matches snapshot when bundles are loading 1`] = `"<div class="text-center m-b-8"> Loading... </div>"`;
 
-exports[`BundleSettings matches snapshot when no bundles are present 1`] = `<div class="text-center m-b-8"> No bundles found. </div>`;
+exports[`BundleSettings matches snapshot when no bundles are present 1`] = `"<div class="text-center m-b-8"> No bundles found. </div>"`;

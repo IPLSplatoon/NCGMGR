@@ -1,7 +1,7 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`LogOverlay matches snapshot 1`] = `
-<div class="mgr-overlay__wrapper layout horizontal center-horizontal center-vertical log-overlay">
+"<div class="mgr-overlay__wrapper layout horizontal center-horizontal center-vertical log-overlay">
   <div class="mgr-overlay__content">
     <div>
       <ipl-dialog-title-stub title="Log Overlay" closingdisabled="false" class="m-b-8"></ipl-dialog-title-stub>
@@ -23,5 +23,5 @@ exports[`LogOverlay matches snapshot 1`] = `
       </div>
     </div>
   </div>
-</div>
+</div>"
 `;
