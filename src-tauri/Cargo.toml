@@ -19,7 +19,6 @@ git2 = "0.14.2"
 semver-parser = "0.10.2"
 itertools = "0.10.3"
 unwrap_or = "1.0.0"
-window-vibrancy = "0.5.0"
 sysinfo = "0.23.11"
 rm_rf = "0.6.1"
 

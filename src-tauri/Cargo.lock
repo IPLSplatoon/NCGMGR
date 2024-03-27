@@ -548,22 +548,6 @@ dependencies = [
 ]
 
 [[package]]
-name = "cocoa"
-version = "0.25.0"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "f6140449f97a6e97f9511815c5632d84c8aacf8ac271ad77c559218161a1373c"
-dependencies = [
- "bitflags 1.3.2",
- "block",
- "cocoa-foundation",
- "core-foundation",
- "core-graphics 0.23.1",
- "foreign-types 0.5.0",
- "libc",
- "objc",
-]
-
-[[package]]
 name = "cocoa-foundation"
 version = "0.1.2"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -2291,7 +2275,6 @@ dependencies = [
  "tauri",
  "tauri-build",
  "unwrap_or",
- "window-vibrancy",
 ]
 
 [[package]]
@@ -3090,12 +3073,6 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "f2ff9a1f06a88b01621b7ae906ef0211290d1c8a168a15542486a8f61c0833b9"
 
 [[package]]
-name = "raw-window-handle"
-version = "0.6.0"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "42a9830a0e1b9fb145ebb365b8bc4ccd75f290f98c0247deafbbe2c75cefb544"
-
-[[package]]
 name = "rayon"
 version = "1.10.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -3238,7 +3215,7 @@ dependencies = [
  "objc",
  "objc-foundation",
  "objc_id",
- "raw-window-handle 0.5.2",
+ "raw-window-handle",
  "wasm-bindgen",
  "wasm-bindgen-futures",
  "web-sys",
@@ -3837,7 +3814,7 @@ dependencies = [
  "bitflags 1.3.2",
  "cairo-rs",
  "cc",
- "cocoa 0.24.1",
+ "cocoa",
  "core-foundation",
  "core-graphics 0.22.3",
  "crossbeam-channel",
@@ -3864,7 +3841,7 @@ dependencies = [
  "once_cell",
  "parking_lot",
  "png",
- "raw-window-handle 0.5.2",
+ "raw-window-handle",
  "scopeguard",
  "serde",
  "tao-macros",
@@ -3911,7 +3888,7 @@ checksum = "f078117725e36d55d29fafcbb4b1e909073807ca328ae8deb8c0b3843aac0fed"
 dependencies = [
  "anyhow",
  "bytes",
- "cocoa 0.24.1",
+ "cocoa",
  "dirs-next",
  "dunce",
  "embed_plist",
@@ -3934,7 +3911,7 @@ dependencies = [
  "os_pipe",
  "percent-encoding",
  "rand 0.8.5",
- "raw-window-handle 0.5.2",
+ "raw-window-handle",
  "regex",
  "reqwest",
  "rfd",
@@ -4030,7 +4007,7 @@ dependencies = [
  "http",
  "http-range",
  "rand 0.8.5",
- "raw-window-handle 0.5.2",
+ "raw-window-handle",
  "serde",
  "serde_json",
  "tauri-utils",
@@ -4048,11 +4025,11 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "067c56fc153b3caf406d7cd6de4486c80d1d66c0f414f39e94cb2f5543f6445f"
 dependencies = [
  "arboard",
- "cocoa 0.24.1",
+ "cocoa",
  "gtk",
  "percent-encoding",
  "rand 0.8.5",
- "raw-window-handle 0.5.2",
+ "raw-window-handle",
  "tauri-runtime",
  "tauri-utils",
  "uuid",
@@ -4887,19 +4864,6 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "712e227841d057c1ee1cd2fb22fa7e5a5461ae8e48fa2ca79ec42cfc1931183f"
 
 [[package]]
-name = "window-vibrancy"
-version = "0.5.0"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "33082acd404763b315866e14a0d5193f3422c81086657583937a750cdd3ec340"
-dependencies = [
- "cocoa 0.25.0",
- "objc",
- "raw-window-handle 0.6.0",
- "windows-sys 0.52.0",
- "windows-version",
-]
-
-[[package]]
 name = "windows"
 version = "0.37.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -5343,7 +5307,7 @@ checksum = "6ad85d0e067359e409fcb88903c3eac817c392e5d638258abfb3da5ad8ba6fc4"
 dependencies = [
  "base64 0.13.1",
  "block",
- "cocoa 0.24.1",
+ "cocoa",
  "core-graphics 0.22.3",
  "crossbeam-channel",
  "dunce",

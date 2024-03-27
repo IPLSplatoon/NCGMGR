@@ -8,10 +8,6 @@ extern crate core;
 use tauri::{AboutMetadata, Manager, Menu, MenuItem, RunEvent, Submenu};
 use tauri::api::process::{CommandEvent};
 use tauri::async_runtime::{JoinHandle, Receiver};
-// #[cfg(target_os = "macos")]
-// use window_vibrancy::{apply_vibrancy, NSVisualEffectMaterial};
-// #[cfg(target_os = "windows")]
-// use window_vibrancy::{apply_mica};
 use crate::log::{err_to_string, format_error, LogEmitter};
 
 mod npm;
@@ -91,21 +87,6 @@ fn main() {
     let app = builder
         .build(tauri::generate_context!())
         .expect("error while building tauri application");
-
-    // let window = app.get_window("main").unwrap();
-    //
-    // #[cfg(target_os = "macos")]
-    // apply_vibrancy(&window, NSVisualEffectMaterial::ContentBackground, None, None).unwrap();
-    //
-    // if cfg!(target_os = "windows") {
-    //     let sys = System::new();
-    //     let build_no = sys.kernel_version().unwrap().parse::<i32>().unwrap();
-    //
-    //     if build_no >= 22000 {
-    //         #[cfg(target_os = "windows")]
-    //         apply_mica(&window).unwrap();
-    //     }
-    // }
 
     app.run(|handle, e| match e {
         RunEvent::ExitRequested { api, .. } => {
