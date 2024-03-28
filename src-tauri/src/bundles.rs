@@ -5,13 +5,46 @@ use unwrap_or::unwrap_ok_or;
 
 use crate::git;
 use crate::{format_error, log_npm_install, npm};
+use crate::error::MgrError;
 use crate::git::{get_tag_name_at_head, try_open_repository};
 use crate::log::LogEmitter;
 
+#[derive(PartialEq, Debug)]
+struct ParsedBundleUrl {
+    bundle_name: String,
+    bundle_url: String
+}
+
+fn parse_bundle_url(url: String) -> Result<ParsedBundleUrl, MgrError> {
+    let split_url = url.split("/").collect::<Vec<&str>>();
+    if split_url.len() <= 1 {
+        Err(MgrError::new("Invalid bundle URL provided."))
+    } else {
+        let bundle_name = split_url.last().unwrap().replace(".git", "");
+        let normalized_bundle_url = if !url.ends_with(".git") {
+            format!("https://github.com/{}.git", url)
+        } else {
+            url
+        };
+
+        Ok(ParsedBundleUrl {
+            bundle_name: bundle_name.to_string(),
+            bundle_url: normalized_bundle_url
+        })
+    }
+}
+
 #[tauri::command(async)]
-pub fn install_bundle(handle: tauri::AppHandle, bundle_name: String, bundle_url: String, nodecg_path: String) -> Result<(), String> {
+pub fn install_bundle(handle: tauri::AppHandle, bundle_url: String, nodecg_path: String) -> Result<(), String> {
     let logger = LogEmitter::with_progress(handle, "install-bundle", 5);
-    logger.emit(&format!("Installing {}...", bundle_name));
+    let parsed_url = match parse_bundle_url(bundle_url) {
+        Ok(url) => url,
+        Err(e) => {
+            return Err(e.description);
+        }
+    };
+
+    logger.emit(&format!("Installing {}...", parsed_url.bundle_name));
 
     let dir_bundles = format!("{}/bundles", nodecg_path);
     if !Path::new(&dir_bundles).exists() {
@@ -21,12 +54,12 @@ pub fn install_bundle(handle: tauri::AppHandle, bundle_name: String, bundle_url:
     logger.emit_progress(1);
 
     logger.emit("Fetching version list...");
-    let versions = unwrap_ok_or!(git::fetch_versions_for_url(&bundle_url), e, { return format_error("Failed to get version list", e) });
+    let versions = unwrap_ok_or!(git::fetch_versions_for_url(&parsed_url.bundle_url), e, { return format_error("Failed to get version list", e) });
     logger.emit_progress(2);
 
     logger.emit("Cloning repository...");
-    let bundle_path = format!("{}/bundles/{}", nodecg_path, bundle_name);
-    match Repository::clone(&bundle_url, bundle_path.clone()) {
+    let bundle_path = format!("{}/bundles/{}", nodecg_path, parsed_url.bundle_name);
+    match Repository::clone(&parsed_url.bundle_url, bundle_path.clone()) {
         Ok(repo) => {
             logger.emit_progress(3);
             if versions.len() > 1 {
@@ -36,7 +69,7 @@ pub fn install_bundle(handle: tauri::AppHandle, bundle_name: String, bundle_url:
                 unwrap_ok_or!(git::checkout_version(&repo, latest_version.to_string()), e, { return format_error("Failed to check out latest version", e) })
             }
         },
-        Err(e) => return format_error(&format!("Failed to clone bundle '{}'", bundle_name), e)
+        Err(e) => return format_error(&format!("Failed to clone bundle '{}'", parsed_url.bundle_name), e)
     }
     logger.emit_progress(4);
 
@@ -134,5 +167,34 @@ pub fn get_bundle_git_tag(bundle_name: String, nodecg_path: String) -> Result<Op
             }
         },
         Err(e) => return format_error(&format!("Failed to open git repository for bundle '{}'", bundle_name), e)
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn parse_bundle_url_name_repo_pair() {
+        assert_eq!(ParsedBundleUrl {
+            bundle_name: "test-bundle".to_string(),
+            bundle_url: "https://github.com/test-user/test-bundle.git".to_string()
+        }, parse_bundle_url("test-user/test-bundle".to_string()).unwrap());
+    }
+
+    #[test]
+    fn parse_bundle_url_https() {
+        assert_eq!(ParsedBundleUrl {
+            bundle_name: "NCGMGR".to_string(),
+            bundle_url: "https://github.com/IPLSplatoon/NCGMGR.git".to_string()
+        }, parse_bundle_url("https://github.com/IPLSplatoon/NCGMGR.git".to_string()).unwrap());
+    }
+
+    #[test]
+    fn parse_bundle_url_ssh() {
+        assert_eq!(ParsedBundleUrl {
+            bundle_name: "repo".to_string(),
+            bundle_url: "git@github.com:user/repo.git".to_string()
+        }, parse_bundle_url("git@github.com:user/repo.git".to_string()).unwrap());
     }
 }

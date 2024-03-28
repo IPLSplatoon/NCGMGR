@@ -22,7 +22,6 @@
     "anser": "^2.1.0",
     "lodash": "^4.17.21",
     "node-gyp": "^10.1.0",
-    "npm-package-arg": "11.0.1",
     "pinia": "^2.0.11",
     "vue": "^3.2.31"
   },
@@ -32,7 +31,6 @@
     "@types/jest": "^29.5.12",
     "@types/lodash": "^4.14.178",
     "@types/node": "^20.11.30",
-    "@types/npm-package-arg": "6.1.4",
     "@typescript-eslint/eslint-plugin": "^7.4.0",
     "@typescript-eslint/parser": "^7.4.0",
     "@vitejs/plugin-vue": "^5.0.4",

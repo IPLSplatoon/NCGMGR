@@ -6,8 +6,8 @@ impl<T: fmt::Display + fmt::Debug> MgrErrorCause for T {}
 
 #[derive(Debug)]
 pub struct MgrError {
-    description: String,
-    cause: Option<Box<dyn MgrErrorCause>>
+    pub description: String,
+    pub cause: Option<Box<dyn MgrErrorCause>>
 }
 
 impl MgrError {
