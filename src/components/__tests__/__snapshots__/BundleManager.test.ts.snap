@@ -3,7 +3,7 @@
 exports[`BundleManager matches snapshot when installing a bundle 1`] = `
 "<div class="ipl-space color-dark no-padding" data-v-11cc5f1c="">
   <div class="header layout horizontal center-vertical">
-    <div class="bold grow m-l-4">Bundles</div>
+    <div class="bold grow m-l-4"> Bundles </div>
     <ipl-button-stub icon="sync" color="blue" disabled="false" async="true" progressmessage="Working..." successmessage="Done!" requiresconfirmation="false" shortconfirmationmessage="false" small="true" disableonsuccess="false" href="" tooltip="Refresh" class="button" data-test="refresh-button"></ipl-button-stub>
     <ipl-button-stub icon="plus-circle" color="green" disabled="false" async="false" progressmessage="Working..." successmessage="Done!" requiresconfirmation="false" shortconfirmationmessage="false" small="true" disableonsuccess="false" href="" tooltip="Install new bundle" class="button m-l-4" data-test="install-new-bundle-button"></ipl-button-stub>
   </div>
@@ -15,15 +15,15 @@ exports[`BundleManager matches snapshot when installing a bundle 1`] = `
 exports[`BundleManager matches snapshot with bundle data 1`] = `
 "<div class="ipl-space color-dark no-padding" data-v-11cc5f1c="">
   <div class="header layout horizontal center-vertical">
-    <div class="bold grow m-l-4">Bundles</div>
+    <div class="bold grow m-l-4"> Bundles </div>
     <ipl-button-stub icon="sync" color="blue" disabled="false" async="true" progressmessage="Working..." successmessage="Done!" requiresconfirmation="false" shortconfirmationmessage="false" small="true" disableonsuccess="false" href="" tooltip="Refresh" class="button" data-test="refresh-button"></ipl-button-stub>
     <ipl-button-stub icon="plus-circle" color="green" disabled="false" async="false" progressmessage="Working..." successmessage="Done!" requiresconfirmation="false" shortconfirmationmessage="false" small="true" disableonsuccess="false" href="" tooltip="Install new bundle" class="button m-l-4" data-test="install-new-bundle-button"></ipl-button-stub>
   </div>
   <bundle-installer-stub class="m-b-8 m-x-8" style="display: none;"></bundle-installer-stub>
   <div class="bundle-settings__wrapper max-width">
     <div class="bundle-settings__header">
-      <div class="bold">Name</div>
-      <div class="bold">Version</div>
+      <div class="bold"> Name </div>
+      <div class="bold"> Version </div>
       <div class="max-width"></div>
     </div>
     <div data-test="bundle_Bundle One" class="bundle-settings__item">

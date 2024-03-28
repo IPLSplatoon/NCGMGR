@@ -3,8 +3,8 @@
 exports[`BundleSettings matches snapshot 1`] = `
 "<div class="bundle-settings__wrapper">
   <div class="bundle-settings__header">
-    <div class="bold">Name</div>
-    <div class="bold">Version</div>
+    <div class="bold"> Name </div>
+    <div class="bold"> Version </div>
     <div class="max-width"></div>
   </div>
   <div data-test="bundle_bundle-one" class="bundle-settings__item">
