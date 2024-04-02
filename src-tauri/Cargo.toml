@@ -21,10 +21,13 @@ itertools = "0.10.3"
 unwrap_or = "1.0.0"
 sysinfo = "0.23.11"
 rm_rf = "0.6.1"
+futures-util = "0.3.30"
+flate2 = "1.0.28"
+tar = "0.4.40"
 
 [dependencies.tauri]
 version = "1.6.1"
-features = ["api-all", "macos-private-api", "process-command-api"]
+features = ["api-all", "macos-private-api", "process-command-api", "http-api"]
 
 [features]
 default = [ "custom-protocol" ]

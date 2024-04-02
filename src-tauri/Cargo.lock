@@ -2265,6 +2265,8 @@ dependencies = [
 name = "ncgmgr"
 version = "0.5.0"
 dependencies = [
+ "flate2",
+ "futures-util",
  "git2",
  "itertools",
  "rm_rf",
@@ -2272,6 +2274,7 @@ dependencies = [
  "serde",
  "serde_json",
  "sysinfo",
+ "tar",
  "tauri",
  "tauri-build",
  "unwrap_or",
