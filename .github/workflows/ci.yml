@@ -47,13 +47,13 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        - platform: 'macos-latest'
-          args: '--target aarch64-apple-darwin'
-        - platform: 'macos-latest'
-          args: '--target x86_64-apple-darwin'
-        - platform: 'windows-latest'
-          args: ''
-    runs-on: ${{ matrix.platform }}
+        platform:
+          - name: 'macos-latest'
+            build-args: '--target aarch64-apple-darwin'
+          - name: 'macos-latest'
+            build-args: '--target x86_64-apple-darwin'
+          - name: 'windows-latest'
+    runs-on: ${{ matrix.platform.name }}
     steps:
       - name: Checkout this repository
         uses: actions/checkout@v4
@@ -81,4 +81,4 @@ jobs:
           releaseName: "NCGMGR v__VERSION__"
           releaseDraft: true
           prerelease: false
-          args: ${{ matrix.settings.args }}
+          args: ${{ matrix.settings.platform.build-args }}
