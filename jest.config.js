@@ -13,5 +13,6 @@ module.exports = {
         '@/(.*)$': '<rootDir>/src/$1'
     },
     resetMocks: true,
-    setupFilesAfterEnv: ['./src/__mocks__/tauri.ts']
+    setupFilesAfterEnv: ['./src/__mocks__/tauri.ts'],
+    reporters: [['github-actions', { silent: false }], 'summary']
 }

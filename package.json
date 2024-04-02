@@ -7,7 +7,6 @@
     "build": "vite build",
     "test:unit": "jest",
     "test:update": "jest -u",
-    "test:ci": "jest --json --outputFile=result.json --testLocationInResults",
     "tauri": "tauri",
     "lint": "eslint --ext .js,.vue,.ts ./src",
     "lint:fix": "eslint --fix --ext .js,.vue,.ts ./src"
