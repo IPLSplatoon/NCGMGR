@@ -131,13 +131,19 @@ pub async fn install_nodecg(handle: tauri::AppHandle, path: String) -> Result<()
                 entry.unpack(&unpack_path)?;
                 Ok(())
             })
-            .for_each(|x| {
-                if let Err(err) = x {
+    }) {
+        Ok(results) => {
+            let mut has_err = false;
+            results.for_each(|r| {
+                if let Err(err) = r {
                     logger.emit(&format!("Error unpacking file: {}", err.to_string()));
+                    has_err = true;
                 }
             });
-    }) {
-        Ok(_) => { },
+            if has_err {
+                return Err("Received one or more errors unpacking NodeCG archive".to_string())
+            }
+        },
         Err(e) => return format_error("Failed to unpack archive", e)
     }
     logger.emit_progress(3);
