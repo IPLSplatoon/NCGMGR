@@ -10,16 +10,16 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout this repository
-        uses: actions/checkout@v2
+        uses: actions/checkout@v4
         with:
           token: ${{ secrets['GITHUB_TOKEN'] }}
           ref: ${{ github.ref }}
           fetch-depth: 0
 
       - name: Set up Node.js
-        uses: actions/setup-node@v2
+        uses: actions/setup-node@v4
         with:
-          node-version: '16'
+          node-version: '20'
           cache: 'yarn'
 
       - name: Install dependencies
@@ -42,28 +42,36 @@ jobs:
     if: github.ref == 'refs/heads/master'
     timeout-minutes: 30
     needs: test
+    permissions:
+      contents: write
     strategy:
       fail-fast: false
       matrix:
-        platform: [ macos-latest, windows-latest ]
+        - platform: 'macos-latest'
+          args: '--target aarch64-apple-darwin'
+        - platform: 'macos-latest'
+          args: '--target x86_64-apple-darwin'
+        - platform: 'windows-latest'
+          args: ''
     runs-on: ${{ matrix.platform }}
     steps:
       - name: Checkout this repository
-        uses: actions/checkout@v2
+        uses: actions/checkout@v4
 
       - name: Set up Node.js
-        uses: actions/setup-node@v2
+        uses: actions/setup-node@v4
         with:
-          node-version: '16'
+          node-version: '20'
           cache: 'yarn'
 
       - name: install Rust stable
-        uses: actions-rs/toolchain@v1
+        uses: dtolnay/rust-toolchain@stable
         with:
           toolchain: stable
+          targets: ${{ matrix.settings.platform == 'macos-latest' && 'aarch64-apple-darwin,x86_64-apple-darwin' || '' }}
 
-      - name: install app dependencies and build it
-        run: yarn install && yarn tauri:build
+      - name: install frontend dependencies
+        run: yarn install
 
       - uses: tauri-apps/tauri-action@v0
         env:
@@ -72,3 +80,5 @@ jobs:
           tagName: ncgmgr-v__VERSION__
           releaseName: "NCGMGR v__VERSION__"
           releaseDraft: true
+          prerelease: false
+          args: ${{ matrix.settings.args }}
