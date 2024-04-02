@@ -19,7 +19,7 @@ export async function getNodecgStatus (directory: string): Promise<{ status: Ins
     if (dir.length < 1) {
         return {
             status: InstallStatus.READY_TO_INSTALL,
-            message: 'Directory is empty. Ready to install...?'
+            message: 'Directory is empty. Ready to install...'
         }
     } else {
         const packageFile = dir.find(entry => entry.name === 'package.json')
