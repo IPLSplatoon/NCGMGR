@@ -5,7 +5,7 @@ use tauri::async_runtime::Receiver;
 use unwrap_or::unwrap_ok_or;
 use std::path::{Path, PathBuf};
 use flate2::read::GzDecoder;
-use sysinfo::{Pid, PidExt, ProcessRefreshKind, RefreshKind, System, SystemExt};
+use sysinfo::{Pid, ProcessRefreshKind, RefreshKind, System};
 use tauri::api::http::{ClientBuilder, HttpRequestBuilder, ResponseType};
 use futures_util::TryFutureExt;
 use tar::Archive;
