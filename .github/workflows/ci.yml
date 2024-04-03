@@ -63,6 +63,10 @@ jobs:
           toolchain: stable
           targets: ${{ matrix.settings.platform == 'macos-latest' && 'aarch64-apple-darwin,x86_64-apple-darwin' || '' }}
 
+      - uses: Swatinem/rust-cache@v2
+        with:
+          workspaces: './src-tauri -> target'
+
       - name: install frontend dependencies
         run: yarn install
 
@@ -74,4 +78,4 @@ jobs:
           releaseName: "NCGMGR v__VERSION__"
           releaseDraft: true
           prerelease: false
-          args: ${{ matrix.settings.platform.build-args }}
+          args: ${{ matrix.platform.build-args }}
