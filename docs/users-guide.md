@@ -10,11 +10,10 @@ of the page. Under the "Assets" section, download the `.msi` installer file and 
 ### macOS
 
 Visit the [Releases page](https://github.com/IPLSplatoon/NCGMGR/releases) and find the latest version listed at the top
-of the page. Under the "Assets" section, download the `.dmg` installer and open it. Drag the `NCGMGR` application to the Applications folder.
+of the page. Under the "Assets" section, download the `.dmg` package and open it. Drag the `NCGMGR` application to the Applications folder.
 
 If you encounter a warning stating that the app "cannot be opened because the developer cannot be verified", close the
-prompt by selecting "Cancel", open System Preferences, select Security & Privacy and select "Open anyway" under the General
-section of the page. You will encounter a similar prompt with the option of opening the application.
+prompt by selecting "Cancel", control-click the `NCGMGR.app` file in Finder and select "Open" to open the app anyway.
 
 ### Linux
 
