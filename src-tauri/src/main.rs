@@ -51,6 +51,8 @@ fn open_path_in_terminal(path: String) -> Result<(), String> {
 }
 
 fn main() {
+    let _ = fix_path_env::fix();
+
     let mut builder = tauri::Builder::default()
         .invoke_handler(tauri::generate_handler![
             nodecg::install_nodecg,
