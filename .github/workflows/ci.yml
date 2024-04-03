@@ -74,4 +74,4 @@ jobs:
           releaseName: "NCGMGR v__VERSION__"
           releaseDraft: true
           prerelease: false
-          args: ${{ matrix.settings.platform.build-args }}
+          args: ${{ matrix.platform.build-args }}
