@@ -2,10 +2,13 @@
     <transition name="overlay">
         <div
             v-if="visible"
-            @click.self="close"
             class="mgr-overlay__wrapper layout horizontal center-horizontal center-vertical"
+            @click.self="close"
         >
-            <div class="mgr-overlay__content" :class="{ 'max-width': maxWidth }">
+            <div
+                class="mgr-overlay__content"
+                :class="{ 'max-width': maxWidth }"
+            >
                 <slot />
             </div>
         </div>
@@ -17,8 +20,6 @@ import { defineComponent } from 'vue'
 
 export default defineComponent({
     name: 'MgrOverlay',
-
-    emits: ['update:visible'],
 
     props: {
         visible: {
@@ -34,6 +35,8 @@ export default defineComponent({
             default: false
         }
     },
+
+    emits: ['update:visible'],
 
     setup (props, { emit }) {
         return {
@@ -56,7 +59,7 @@ export default defineComponent({
     transition: opacity $transition-duration-low ease-in;
 }
 
-.overlay-enter-active, {
+.overlay-enter-active {
     transition: opacity $transition-duration-low ease-out;
 }
 
@@ -80,7 +83,7 @@ export default defineComponent({
         max-width: 90%;
         max-height: 80%;
         min-width: 400px;
-        background-color: var(--background-primary);
+        background-color: var(--ipl-bg-primary);
         overflow-y: auto;
         overflow-x: hidden;
         padding: 8px;

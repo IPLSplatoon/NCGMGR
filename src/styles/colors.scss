@@ -23,32 +23,12 @@ $info-background-color: rgba(62, 98, 240, 0.1);
 $input-color: #737373;
 
 :root {
-    --solid-background: #202020;
-    --text-color: white;
-    --space-background: rgba(96, 96, 96, 0.075);
-    --space-background-secondary: rgba(173, 173, 173, 0.075);
-    --space-border: rgba(115, 115, 115, 0.5);
-    --background-primary: #262F40;
-    --background-secondary: #2F3A4F;
-    --background-tertiary: #181E29;
-    --input-color-active: white;
-    --disabled-button-bg: rgba(14, 20, 24, 0.6);
-
     --anser-black-text: rgb(255, 255, 255);
     --anser-yellow-text: rgb(187, 187, 0);
 }
 
 @media (prefers-color-scheme: light) {
     :root {
-        --solid-background: #FFF;
-        --text-color: #222;
-        --space-background: rgba(215, 215, 215, 0.1);
-        --space-background-secondary: rgba(215, 215, 215, 0.3);
-        --input-color-active: #222;
-        --background-primary: #EEE;
-        --background-tertiary: #CECECE;
-        --disabled-button-bg: rgba(220, 220, 220, 0.6);
-
         --anser-black-text: rgb(0, 0, 0);
         --anser-yellow-text: rgb(134, 131, 0);
     }
@@ -73,7 +53,7 @@ $input-color: #737373;
 @include anser-color('blue', rgb(0, 0, 187));
 @include anser-color('magenta', rgb(187, 0, 187));
 @include anser-color('cyan', rgb(0, 187, 187));
-@include anser-color('white', var(--text-color));
+@include anser-color('white', var(--ipl-body-text-color));
 
 @include anser-color('bright-black', rgb(85, 85, 85));
 @include anser-color('bright-red', rgb(255, 85, 85));
@@ -82,4 +62,4 @@ $input-color: #737373;
 @include anser-color('bright-blue', rgb(85, 85, 255));
 @include anser-color('bright-magenta', rgb(255, 85, 255));
 @include anser-color('bright-cyan', rgb(85, 255, 255));
-@include anser-color('bright-white', var(--text-color));
+@include anser-color('bright-white', var(--ipl-body-text-color));

@@ -24,7 +24,7 @@ pub fn try_open_repository<P: AsRef<Path>>(path: P) -> Result<Option<Repository>
 }
 
 pub fn fetch_versions_for_url(remote_url: &str) -> Result<Vec<String>, Box<dyn std::error::Error>> {
-    let remote = Remote::create_detached(&remote_url)?;
+    let remote = Remote::create_detached(&*remote_url)?;
     fetch_versions(remote)
 }
 

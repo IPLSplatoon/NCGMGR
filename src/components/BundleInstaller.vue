@@ -1,5 +1,5 @@
 <template>
-    <ipl-space color="light">
+    <ipl-space color="primary">
         <ipl-input
             v-model="bundlePath"
             name="bundleName"
@@ -10,7 +10,6 @@
             class="m-t-8"
             label="Install"
             color="green"
-            :disabled="!bundlePathValidator.isValid"
             data-test="install-button"
             @click="doInstall"
         />
@@ -25,13 +24,12 @@
 
 <script lang="ts">
 import { defineComponent, ref } from 'vue'
-import { IplButton, IplInput, IplSpace, provideValidators, notBlank, validator } from '@iplsplatoon/vue-components'
+import { IplButton, IplInput, IplSpace } from '@iplsplatoon/vue-components'
 import { invoke } from '@tauri-apps/api/tauri'
 import { useLogStore } from '@/store/logStore'
 import { useNodecgStore } from '@/store/nodecgStore'
 import { useConfigStore } from '@/store/configStore'
 import LogOverlay from '@/components/log/LogOverlay.vue'
-import { normalizeBundlePath } from '@/util/nodecg'
 import { library } from '@fortawesome/fontawesome-svg-core'
 import { faTrashAlt } from '@fortawesome/free-solid-svg-icons/faTrashAlt'
 import { faCog } from '@fortawesome/free-solid-svg-icons/faCog'
@@ -48,38 +46,18 @@ export default defineComponent({
         const nodecgStore = useNodecgStore()
         const configStore = useConfigStore()
 
-        let bundleUrl = ''
-        let bundleName = ''
         const showInstallLog = ref(false)
         const bundlePath = ref('')
-        const bundlePathValidator = validator(bundlePath, false, notBlank, (value: string) => {
-            const parsedPath = normalizeBundlePath(value)
-
-            if (parsedPath.isValid) {
-                bundleUrl = parsedPath.bundleUrl ?? ''
-                bundleName = parsedPath.bundleName ?? ''
-            }
-
-            return {
-                message: 'Must be a valid git repository URL or GitHub username/repo pair.',
-                isValid: parsedPath.isValid
-            }
-        })
-
-        provideValidators({
-            bundleName: bundlePathValidator
-        })
 
         return {
             showInstallLog,
             bundlePath,
-            bundlePathValidator,
             doInstall: async () => {
                 const logKey = 'install-bundle'
                 logStore.reset(logKey)
                 await logStore.listen(logKey, true)
                 showInstallLog.value = true
-                const invocation = invoke('install_bundle', { bundleName, bundleUrl, nodecgPath: configStore.installPath })
+                const invocation = invoke('install_bundle', { bundleUrl: bundlePath.value, nodecgPath: configStore.installPath })
                 logStore.logPromiseResult({ promise: invocation, key: logKey })
                 logStore.listenForProcessExit({ key: logKey, callback: () => nodecgStore.getBundleList() })
             }

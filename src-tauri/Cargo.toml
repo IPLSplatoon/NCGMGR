@@ -1,6 +1,6 @@
 [package]
 name = "ncgmgr"
-version = "0.5.0"
+version = "0.6.0"
 description = "Helps manage NodeCG installations."
 authors = [ "inkfarer" ]
 license = ""
@@ -10,7 +10,7 @@ edition = "2018"
 build = "src/build.rs"
 
 [build-dependencies]
-tauri-build = { version = "1.0.0-rc.7", features = [] }
+tauri-build = { version = "1.5.1", features = [] }
 
 [dependencies]
 serde_json = "1.0.80"
@@ -19,13 +19,15 @@ git2 = "0.14.2"
 semver-parser = "0.10.2"
 itertools = "0.10.3"
 unwrap_or = "1.0.0"
-window-vibrancy = "0.1.2"
-sysinfo = "0.23.11"
+sysinfo = "0.30.8"
 rm_rf = "0.6.1"
+futures-util = "0.3.30"
+flate2 = "1.0.28"
+tar = "0.4.40"
 
 [dependencies.tauri]
-version = "1.0.0-rc.8"
-features = ["api-all", "macos-private-api", "process-command-api"]
+version = "1.6.1"
+features = ["api-all", "macos-private-api", "process-command-api", "http-api"]
 
 [features]
 default = [ "custom-protocol" ]

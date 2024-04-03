@@ -1,35 +1,41 @@
 module.exports = {
-    root: true,
-    env: {
-        node: true
+    'env': {
+        'browser': true,
+        'es2021': true
     },
-    extends: [
-        'plugin:vue/vue3-essential',
-        '@vue/standard',
-        '@vue/typescript/recommended'
+    'extends': [
+        'eslint:recommended',
+        'plugin:@typescript-eslint/recommended',
+        'plugin:vue/vue3-recommended'
     ],
-    parserOptions: {
-        ecmaVersion: 2020
-    },
-    rules: {
-        'no-console': process.env.NODE_ENV === 'production' ? 'warn' : 'off',
-        'no-debugger': process.env.NODE_ENV === 'production' ? 'warn' : 'off',
-        indent: ['warn', 4, { SwitchCase: 1 }],
-        'symbol-description': 'off'
-    },
-    overrides: [
+    'overrides': [
         {
-            files: [
-                '**/__tests__/*.{j,t}s?(x)'
-            ],
-            env: {
-                jest: true
+            'env': {
+                'node': true
             },
-            rules: {
-                '@typescript-eslint/ban-ts-comment': 'off',
-                '@typescript-eslint/no-var-requires': 0,
-                'import/first': 'off'
+            'files': [
+                '.eslintrc.{js,cjs}'
+            ],
+            'parserOptions': {
+                'sourceType': 'script'
             }
         }
-    ]
+    ],
+    'parserOptions': {
+        'ecmaVersion': 'latest',
+        'parser': '@typescript-eslint/parser',
+        'sourceType': 'module'
+    },
+    'plugins': [
+        '@typescript-eslint',
+        'vue'
+    ],
+    'rules': {
+        'indent': ['error', 4, { 'SwitchCase': 1 }],
+        'linebreak-style': ['error', 'unix'],
+        'quotes': ['error', 'single'],
+        'semi': ['error', 'never'],
+        'vue/html-indent': ['error', 4],
+        '@typescript-eslint/ban-ts-comment': 'off'
+    }
 }

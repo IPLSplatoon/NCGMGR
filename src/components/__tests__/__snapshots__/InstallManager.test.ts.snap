@@ -1,105 +1,105 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`Installer matches snapshot 1`] = `
-<div class="ipl-space color-dark layout vertical" data-v-11cc5f1c="">
+"<div data-v-d255ffee="" class="ipl-space color-secondary layout vertical">
   <div>Installation folder: /install/path</div>
   <status-row-stub color="gray" class="m-t-8"></status-row-stub>
   <div class="layout horizontal m-t-8">
-    <ipl-button-stub label="Select folder" color="blue" disabled="false" async="false" progressmessage="Working..." successmessage="Done!" requiresconfirmation="false" shortconfirmationmessage="false" small="false" disableonsuccess="false" href="" data-test="install-directory-select-button"></ipl-button-stub>
-    <ipl-button-stub label="Install" color="green" disabled="true" async="false" progressmessage="Working..." successmessage="Done!" requiresconfirmation="false" shortconfirmationmessage="false" small="false" disableonsuccess="false" href="" data-test="install-button" class="m-l-8"></ipl-button-stub>
-    <ipl-button-stub label="Open dashboard" color="green" disabled="true" async="false" progressmessage="Working..." successmessage="Done!" requiresconfirmation="false" shortconfirmationmessage="false" small="false" disableonsuccess="false" href="" data-test="open-dashboard-button" class="m-l-8"></ipl-button-stub>
+    <ipl-button-stub label="Select folder" color="blue" disabled="false" async="false" progressmessage="Working..." successmessage="Done!" requiresconfirmation="false" shortconfirmationmessage="false" small="false" disableonsuccess="false" inline="false" data-test="install-directory-select-button"></ipl-button-stub>
+    <ipl-button-stub label="Install" color="green" disabled="true" async="false" progressmessage="Working..." successmessage="Done!" requiresconfirmation="false" shortconfirmationmessage="false" small="false" disableonsuccess="false" inline="false" data-test="install-button" class="m-l-8"></ipl-button-stub>
+    <ipl-button-stub label="Open dashboard" color="green" disabled="true" async="false" progressmessage="Working..." successmessage="Done!" requiresconfirmation="false" shortconfirmationmessage="false" small="false" disableonsuccess="false" inline="false" data-test="open-dashboard-button" class="m-l-8"></ipl-button-stub>
   </div>
 </div>
-<div class="ipl-expansion-panel__content m-t-8" data-test="nodecg-log-space" data-v-67856a23="" style="display: none;">
-  <div class="ipl-expansion-panel__header" data-v-67856a23="">
-    <div class="ipl-expansion-panel__header-background" data-v-67856a23=""></div>
-    <div class="ipl-expansion-panel__title" data-v-67856a23=""> NodeCG log <span class="badge badge-red">Stopped</span></div>
-    <font-awesome-icon-stub icon="chevron-left" border="false" fixedwidth="false" listitem="false" pulse="false" swapopacity="false" spin="false" symbol="false" inverse="false" class="icon content-expanded" data-v-67856a23=""></font-awesome-icon-stub>
-    <div class="header-extra" data-v-67856a23=""></div>
+<div data-v-a1f8a641="" class="ipl-expanding-space color-secondary m-t-8" data-test="nodecg-log-space" style="display: none;">
+  <div data-v-a1f8a641="" class="ipl-expanding-space__header">
+    <div data-v-a1f8a641="" class="ipl-expanding-space__header-background" tabindex="0"></div>
+    <div data-v-a1f8a641="" class="ipl-expanding-space__title"> NodeCG log <span class="badge badge-red">Stopped</span></div>
+    <font-awesome-icon-stub data-v-a1f8a641="" icon="[object Object]" border="false" fixedwidth="false" flip="false" listitem="false" pulse="false" swapopacity="false" spin="false" symbol="false" inverse="false" bounce="false" shake="false" beat="false" fade="false" beatfade="false" flash="false" spinpulse="false" spinreverse="false" class="icon content-expanded"></font-awesome-icon-stub>
+    <div data-v-a1f8a641="" class="header-extra"></div>
   </div>
-  <div class="content" data-v-67856a23="">
+  <div data-v-a1f8a641="" class="content">
     <div class="layout vertical center-horizontal">
       <log-display-stub logkey="run-nodecg" class="m-t-4"></log-display-stub>
     </div>
   </div>
 </div>
-<log-overlay-stub title="Installing..." logkey="install-nodecg" visible="false"></log-overlay-stub>
+<log-overlay-stub title="Installing..." logkey="install-nodecg" visible="false"></log-overlay-stub>"
 `;
 
 exports[`Installer matches snapshot when nodecg status is NOT_STARTED 1`] = `
-<div class="ipl-space color-dark layout vertical" data-v-11cc5f1c="">
+"<div data-v-d255ffee="" class="ipl-space color-secondary layout vertical">
   <div>Installation folder: </div>
   <status-row-stub color="gray" class="m-t-8"></status-row-stub>
   <div class="layout horizontal m-t-8">
-    <ipl-button-stub label="Select folder" color="blue" disabled="false" async="false" progressmessage="Working..." successmessage="Done!" requiresconfirmation="false" shortconfirmationmessage="false" small="false" disableonsuccess="false" href="" data-test="install-directory-select-button"></ipl-button-stub>
-    <ipl-button-stub label="Install" color="green" disabled="true" async="false" progressmessage="Working..." successmessage="Done!" requiresconfirmation="false" shortconfirmationmessage="false" small="false" disableonsuccess="false" href="" data-test="install-button" class="m-l-8"></ipl-button-stub>
-    <ipl-button-stub label="Open dashboard" color="green" disabled="true" async="false" progressmessage="Working..." successmessage="Done!" requiresconfirmation="false" shortconfirmationmessage="false" small="false" disableonsuccess="false" href="" data-test="open-dashboard-button" class="m-l-8"></ipl-button-stub>
+    <ipl-button-stub label="Select folder" color="blue" disabled="false" async="false" progressmessage="Working..." successmessage="Done!" requiresconfirmation="false" shortconfirmationmessage="false" small="false" disableonsuccess="false" inline="false" data-test="install-directory-select-button"></ipl-button-stub>
+    <ipl-button-stub label="Install" color="green" disabled="true" async="false" progressmessage="Working..." successmessage="Done!" requiresconfirmation="false" shortconfirmationmessage="false" small="false" disableonsuccess="false" inline="false" data-test="install-button" class="m-l-8"></ipl-button-stub>
+    <ipl-button-stub label="Open dashboard" color="green" disabled="true" async="false" progressmessage="Working..." successmessage="Done!" requiresconfirmation="false" shortconfirmationmessage="false" small="false" disableonsuccess="false" inline="false" data-test="open-dashboard-button" class="m-l-8"></ipl-button-stub>
   </div>
 </div>
-<div class="ipl-expansion-panel__content m-t-8" data-test="nodecg-log-space" data-v-67856a23="" style="display: none;">
-  <div class="ipl-expansion-panel__header" data-v-67856a23="">
-    <div class="ipl-expansion-panel__header-background" data-v-67856a23=""></div>
-    <div class="ipl-expansion-panel__title" data-v-67856a23=""> NodeCG log <span class="badge badge-red">Stopped</span></div>
-    <font-awesome-icon-stub icon="chevron-left" border="false" fixedwidth="false" listitem="false" pulse="false" swapopacity="false" spin="false" symbol="false" inverse="false" class="icon content-expanded" data-v-67856a23=""></font-awesome-icon-stub>
-    <div class="header-extra" data-v-67856a23=""></div>
+<div data-v-a1f8a641="" class="ipl-expanding-space color-secondary m-t-8" data-test="nodecg-log-space" style="display: none;">
+  <div data-v-a1f8a641="" class="ipl-expanding-space__header">
+    <div data-v-a1f8a641="" class="ipl-expanding-space__header-background" tabindex="0"></div>
+    <div data-v-a1f8a641="" class="ipl-expanding-space__title"> NodeCG log <span class="badge badge-red">Stopped</span></div>
+    <font-awesome-icon-stub data-v-a1f8a641="" icon="[object Object]" border="false" fixedwidth="false" flip="false" listitem="false" pulse="false" swapopacity="false" spin="false" symbol="false" inverse="false" bounce="false" shake="false" beat="false" fade="false" beatfade="false" flash="false" spinpulse="false" spinreverse="false" class="icon content-expanded"></font-awesome-icon-stub>
+    <div data-v-a1f8a641="" class="header-extra"></div>
   </div>
-  <div class="content" data-v-67856a23="">
+  <div data-v-a1f8a641="" class="content">
     <div class="layout vertical center-horizontal">
       <log-display-stub logkey="run-nodecg" class="m-t-4"></log-display-stub>
     </div>
   </div>
 </div>
-<log-overlay-stub title="Installing..." logkey="install-nodecg" visible="false"></log-overlay-stub>
+<log-overlay-stub title="Installing..." logkey="install-nodecg" visible="false"></log-overlay-stub>"
 `;
 
 exports[`Installer matches snapshot when nodecg status is RUNNING 1`] = `
-<div class="ipl-space color-dark layout vertical" data-v-11cc5f1c="">
+"<div data-v-d255ffee="" class="ipl-space color-secondary layout vertical">
   <div>Installation folder: </div>
   <status-row-stub color="gray" class="m-t-8"></status-row-stub>
   <div class="layout horizontal m-t-8">
-    <ipl-button-stub label="Select folder" color="blue" disabled="false" async="false" progressmessage="Working..." successmessage="Done!" requiresconfirmation="false" shortconfirmationmessage="false" small="false" disableonsuccess="false" href="" data-test="install-directory-select-button"></ipl-button-stub>
-    <ipl-button-stub label="Install" color="green" disabled="true" async="false" progressmessage="Working..." successmessage="Done!" requiresconfirmation="false" shortconfirmationmessage="false" small="false" disableonsuccess="false" href="" data-test="install-button" class="m-l-8"></ipl-button-stub>
-    <ipl-button-stub label="Open dashboard" color="green" disabled="false" async="false" progressmessage="Working..." successmessage="Done!" requiresconfirmation="false" shortconfirmationmessage="false" small="false" disableonsuccess="false" href="" data-test="open-dashboard-button" class="m-l-8"></ipl-button-stub>
+    <ipl-button-stub label="Select folder" color="blue" disabled="false" async="false" progressmessage="Working..." successmessage="Done!" requiresconfirmation="false" shortconfirmationmessage="false" small="false" disableonsuccess="false" inline="false" data-test="install-directory-select-button"></ipl-button-stub>
+    <ipl-button-stub label="Install" color="green" disabled="true" async="false" progressmessage="Working..." successmessage="Done!" requiresconfirmation="false" shortconfirmationmessage="false" small="false" disableonsuccess="false" inline="false" data-test="install-button" class="m-l-8"></ipl-button-stub>
+    <ipl-button-stub label="Open dashboard" color="green" disabled="false" async="false" progressmessage="Working..." successmessage="Done!" requiresconfirmation="false" shortconfirmationmessage="false" small="false" disableonsuccess="false" inline="false" data-test="open-dashboard-button" class="m-l-8"></ipl-button-stub>
   </div>
 </div>
-<div class="ipl-expansion-panel__content m-t-8" data-test="nodecg-log-space" data-v-67856a23="">
-  <div class="ipl-expansion-panel__header" data-v-67856a23="">
-    <div class="ipl-expansion-panel__header-background" data-v-67856a23=""></div>
-    <div class="ipl-expansion-panel__title" data-v-67856a23=""> NodeCG log <span class="badge badge-green">Running</span></div>
-    <font-awesome-icon-stub icon="chevron-left" border="false" fixedwidth="false" listitem="false" pulse="false" swapopacity="false" spin="false" symbol="false" inverse="false" class="icon content-expanded" data-v-67856a23=""></font-awesome-icon-stub>
-    <div class="header-extra" data-v-67856a23=""></div>
+<div data-v-a1f8a641="" class="ipl-expanding-space color-secondary m-t-8" data-test="nodecg-log-space">
+  <div data-v-a1f8a641="" class="ipl-expanding-space__header">
+    <div data-v-a1f8a641="" class="ipl-expanding-space__header-background" tabindex="0"></div>
+    <div data-v-a1f8a641="" class="ipl-expanding-space__title"> NodeCG log <span class="badge badge-green">Running</span></div>
+    <font-awesome-icon-stub data-v-a1f8a641="" icon="[object Object]" border="false" fixedwidth="false" flip="false" listitem="false" pulse="false" swapopacity="false" spin="false" symbol="false" inverse="false" bounce="false" shake="false" beat="false" fade="false" beatfade="false" flash="false" spinpulse="false" spinreverse="false" class="icon content-expanded"></font-awesome-icon-stub>
+    <div data-v-a1f8a641="" class="header-extra"></div>
   </div>
-  <div class="content" data-v-67856a23="">
+  <div data-v-a1f8a641="" class="content">
     <div class="layout vertical center-horizontal">
       <log-display-stub logkey="run-nodecg" class="m-t-4"></log-display-stub>
     </div>
   </div>
 </div>
-<log-overlay-stub title="Installing..." logkey="install-nodecg" visible="false"></log-overlay-stub>
+<log-overlay-stub title="Installing..." logkey="install-nodecg" visible="false"></log-overlay-stub>"
 `;
 
 exports[`Installer matches snapshot when nodecg status is STOPPED 1`] = `
-<div class="ipl-space color-dark layout vertical" data-v-11cc5f1c="">
+"<div data-v-d255ffee="" class="ipl-space color-secondary layout vertical">
   <div>Installation folder: </div>
   <status-row-stub color="gray" class="m-t-8"></status-row-stub>
   <div class="layout horizontal m-t-8">
-    <ipl-button-stub label="Select folder" color="blue" disabled="false" async="false" progressmessage="Working..." successmessage="Done!" requiresconfirmation="false" shortconfirmationmessage="false" small="false" disableonsuccess="false" href="" data-test="install-directory-select-button"></ipl-button-stub>
-    <ipl-button-stub label="Install" color="green" disabled="true" async="false" progressmessage="Working..." successmessage="Done!" requiresconfirmation="false" shortconfirmationmessage="false" small="false" disableonsuccess="false" href="" data-test="install-button" class="m-l-8"></ipl-button-stub>
-    <ipl-button-stub label="Open dashboard" color="green" disabled="true" async="false" progressmessage="Working..." successmessage="Done!" requiresconfirmation="false" shortconfirmationmessage="false" small="false" disableonsuccess="false" href="" data-test="open-dashboard-button" class="m-l-8"></ipl-button-stub>
+    <ipl-button-stub label="Select folder" color="blue" disabled="false" async="false" progressmessage="Working..." successmessage="Done!" requiresconfirmation="false" shortconfirmationmessage="false" small="false" disableonsuccess="false" inline="false" data-test="install-directory-select-button"></ipl-button-stub>
+    <ipl-button-stub label="Install" color="green" disabled="true" async="false" progressmessage="Working..." successmessage="Done!" requiresconfirmation="false" shortconfirmationmessage="false" small="false" disableonsuccess="false" inline="false" data-test="install-button" class="m-l-8"></ipl-button-stub>
+    <ipl-button-stub label="Open dashboard" color="green" disabled="true" async="false" progressmessage="Working..." successmessage="Done!" requiresconfirmation="false" shortconfirmationmessage="false" small="false" disableonsuccess="false" inline="false" data-test="open-dashboard-button" class="m-l-8"></ipl-button-stub>
   </div>
 </div>
-<div class="ipl-expansion-panel__content m-t-8" data-test="nodecg-log-space" data-v-67856a23="">
-  <div class="ipl-expansion-panel__header" data-v-67856a23="">
-    <div class="ipl-expansion-panel__header-background" data-v-67856a23=""></div>
-    <div class="ipl-expansion-panel__title" data-v-67856a23=""> NodeCG log <span class="badge badge-red">Stopped</span></div>
-    <font-awesome-icon-stub icon="chevron-left" border="false" fixedwidth="false" listitem="false" pulse="false" swapopacity="false" spin="false" symbol="false" inverse="false" class="icon content-expanded" data-v-67856a23=""></font-awesome-icon-stub>
-    <div class="header-extra" data-v-67856a23=""></div>
+<div data-v-a1f8a641="" class="ipl-expanding-space color-secondary m-t-8" data-test="nodecg-log-space">
+  <div data-v-a1f8a641="" class="ipl-expanding-space__header">
+    <div data-v-a1f8a641="" class="ipl-expanding-space__header-background" tabindex="0"></div>
+    <div data-v-a1f8a641="" class="ipl-expanding-space__title"> NodeCG log <span class="badge badge-red">Stopped</span></div>
+    <font-awesome-icon-stub data-v-a1f8a641="" icon="[object Object]" border="false" fixedwidth="false" flip="false" listitem="false" pulse="false" swapopacity="false" spin="false" symbol="false" inverse="false" bounce="false" shake="false" beat="false" fade="false" beatfade="false" flash="false" spinpulse="false" spinreverse="false" class="icon content-expanded"></font-awesome-icon-stub>
+    <div data-v-a1f8a641="" class="header-extra"></div>
   </div>
-  <div class="content" data-v-67856a23="">
+  <div data-v-a1f8a641="" class="content">
     <div class="layout vertical center-horizontal">
       <log-display-stub logkey="run-nodecg" class="m-t-4"></log-display-stub>
     </div>
   </div>
 </div>
-<log-overlay-stub title="Installing..." logkey="install-nodecg" visible="false"></log-overlay-stub>
+<log-overlay-stub title="Installing..." logkey="install-nodecg" visible="false"></log-overlay-stub>"
 `;

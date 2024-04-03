@@ -52,7 +52,7 @@ export const useNodecgStore = defineStore('nodecg', {
                     this.bundles = []
                 }
             } catch (e) {
-                this.status.message = e.toString()
+                this.status.message = String(e)
                 this.status.installStatus = InstallStatus.UNABLE_TO_INSTALL
                 this.bundles = []
             }

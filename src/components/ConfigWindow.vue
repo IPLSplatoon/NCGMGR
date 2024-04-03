@@ -1,26 +1,30 @@
 <template>
-    <ipl-space class="m-b-8">
-        <div class="bold m-b-6">Dependency status</div>
+    <ipl-space
+        class="m-b-8"
+        color="secondary"
+    >
+        <div class="bold m-b-6">
+            Dependency status
+        </div>
         <dependency-checker />
     </ipl-space>
-    <ipl-space>
-        <ipl-small-toggle
-            v-model="errorLogEnabled"
-            label="Enable error log"
-        />
-        <ipl-label>The error log is useful for diagnosing technical issues.</ipl-label>
+    <ipl-space color="secondary">
+        <ipl-small-toggle v-model="errorLogEnabled">
+            Enable error log<br>
+            <ipl-label>The error log is useful for diagnosing technical issues.</ipl-label>
+        </ipl-small-toggle>
     </ipl-space>
 </template>
 
 <script lang="ts">
-import { defineComponent } from '@vue/runtime-core'
+import { defineComponent } from 'vue'
 import { IplLabel, IplSmallToggle, IplSpace } from '@iplsplatoon/vue-components'
 import { computed } from 'vue'
 import { useConfigStore } from '@/store/configStore'
 import DependencyChecker from '@/components/DependencyChecker.vue'
 
 export default defineComponent({
-    name: 'Configuration',
+    name: 'ConfigWindow',
 
     components: { DependencyChecker, IplLabel, IplSmallToggle, IplSpace },
 

@@ -1,15 +1,12 @@
 import { mockTauri } from '@/__mocks__/tauri'
 import BundleInstaller from '@/components/BundleInstaller.vue'
 import { config, flushPromises, mount } from '@vue/test-utils'
-import { normalizeBundlePath } from '@/util/nodecg'
 import Mock = jest.Mock
 import { IplButton, IplInput } from '@iplsplatoon/vue-components'
 import { createTestingPinia, TestingPinia } from '@pinia/testing'
 import { useConfigStore } from '@/store/configStore'
 import { useLogStore } from '@/store/logStore'
 import { useNodecgStore } from '@/store/nodecgStore'
-
-jest.mock('@/util/nodecg')
 
 describe('BundleInstaller', () => {
     config.global.stubs = {
@@ -31,30 +28,7 @@ describe('BundleInstaller', () => {
         expect(wrapper.html()).toMatchSnapshot()
     })
 
-    it('disables install button if bundle path is invalid', async () => {
-        (normalizeBundlePath as Mock).mockReturnValue({ isValid: false })
-        const wrapper = mount(BundleInstaller)
-
-        wrapper.getComponent<typeof IplInput>('[data-test="bundle-path-input"]').vm.$emit('update:modelValue', 'git://new-path')
-        await flushPromises()
-
-        expect(wrapper.getComponent('[data-test="install-button"]').attributes().disabled).toEqual('true')
-        expect(normalizeBundlePath).toHaveBeenCalledTimes(1)
-    })
-
-    it('enables install button if bundle path is invalid', async () => {
-        (normalizeBundlePath as Mock).mockReturnValue({ isValid: true })
-        const wrapper = mount(BundleInstaller)
-
-        wrapper.getComponent<typeof IplInput>('[data-test="bundle-path-input"]').vm.$emit('update:modelValue', 'git://new-path')
-        await flushPromises()
-
-        expect(wrapper.getComponent('[data-test="install-button"]').attributes().disabled).toEqual('false')
-        expect(normalizeBundlePath).toHaveBeenCalledTimes(1)
-    })
-
     it('handles installation', async () => {
-        (normalizeBundlePath as Mock).mockReturnValue({ isValid: true, bundleUrl: 'git://bundle', bundleName: 'Cool Bundle' })
         const logStore = useLogStore()
         logStore.reset = jest.fn()
         logStore.logPromiseResult = jest.fn()
@@ -78,7 +52,7 @@ describe('BundleInstaller', () => {
 
         expect(logStore.reset).toHaveBeenCalledWith('install-bundle')
         expect(logStore.listen).toHaveBeenCalledWith('install-bundle', true)
-        expect(mockTauri.invoke).toHaveBeenCalledWith('install_bundle', { bundleName: 'Cool Bundle', bundleUrl: 'git://bundle', nodecgPath: '/install/path' })
+        expect(mockTauri.invoke).toHaveBeenCalledWith('install_bundle', { bundleUrl: 'git://new-path', nodecgPath: '/install/path' })
         expect(logStore.logPromiseResult).toHaveBeenCalledWith({ promise: expect.anything(), key: 'install-bundle' })
         expect(logStore.listenForProcessExit).toHaveBeenCalledWith({ callback: expect.anything(), key: 'install-bundle' });
         (logStore.listenForProcessExit as Mock).mock.calls[0][0].callback()

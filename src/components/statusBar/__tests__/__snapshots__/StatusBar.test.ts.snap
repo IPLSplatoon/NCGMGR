@@ -1,23 +1,23 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`StatusBar matches snapshot when error log is disabled 1`] = `
-<div class="ipl-space color-dark status-bar" data-v-11cc5f1c="">
-  <div class="status-bar-item highlighted" id="status-bar-item_dependencyCheck">
+"<div data-v-d255ffee="" class="ipl-space color-secondary status-bar">
+  <div id="status-bar-item_dependencyCheck" class="status-bar-item highlighted">
     <font-awesome-icon-stub icon="wrench" border="false" fixedwidth="false" listitem="false" pulse="false" swapopacity="false" spin="false" symbol="false" inverse="false" class="icon"></font-awesome-icon-stub><span class="text">Settings</span>
   </div>
   <!--v-if-->
-</div>
+</div>"
 `;
 
 exports[`StatusBar matches snapshot when error log is enabled 1`] = `
-<div class="ipl-space color-dark status-bar" data-v-11cc5f1c="">
-  <div class="status-bar-item highlighted" id="status-bar-item_dependencyCheck">
+"<div data-v-d255ffee="" class="ipl-space color-secondary status-bar">
+  <div id="status-bar-item_dependencyCheck" class="status-bar-item highlighted">
     <font-awesome-icon-stub icon="wrench" border="false" fixedwidth="false" listitem="false" pulse="false" swapopacity="false" spin="false" symbol="false" inverse="false" class="icon"></font-awesome-icon-stub><span class="text">Settings</span>
   </div>
   <!--v-if-->
-  <div class="status-bar-item" id="status-bar-item_errorLog">
+  <div id="status-bar-item_errorLog" class="status-bar-item">
     <font-awesome-icon-stub icon="exclamation-circle" border="false" fixedwidth="false" listitem="false" pulse="false" swapopacity="false" spin="false" symbol="false" inverse="false" class="icon"></font-awesome-icon-stub><span class="text">Error log</span>
   </div>
   <!--v-if-->
-</div>
+</div>"
 `;

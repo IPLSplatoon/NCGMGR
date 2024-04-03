@@ -1,10 +1,17 @@
 <template>
     <status-bar class="m-b-8" />
-    <ipl-message v-if="!dependencyStore.hasNodejs" type="error" data-test="missing-nodejs-message">
+    <ipl-message
+        v-if="!dependencyStore.hasNodejs"
+        type="error"
+        data-test="missing-nodejs-message"
+    >
         Please install Node.js to continue.
     </ipl-message>
     <install-manager v-if="dependencyStore.hasNodejs" />
-    <bundle-manager v-if="nodecgInstalled && dependencyStore.hasNodejs" class="m-t-8" />
+    <bundle-manager
+        v-if="nodecgInstalled && dependencyStore.hasNodejs"
+        class="m-t-8"
+    />
 </template>
 
 <script lang="ts">

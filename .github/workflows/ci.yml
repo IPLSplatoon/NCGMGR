@@ -10,16 +10,16 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout this repository
-        uses: actions/checkout@v2
+        uses: actions/checkout@v4
         with:
           token: ${{ secrets['GITHUB_TOKEN'] }}
           ref: ${{ github.ref }}
           fetch-depth: 0
 
       - name: Set up Node.js
-        uses: actions/setup-node@v2
+        uses: actions/setup-node@v4
         with:
-          node-version: '16'
+          node-version: '20'
           cache: 'yarn'
 
       - name: Install dependencies
@@ -29,41 +29,42 @@ jobs:
         run: yarn lint
 
       - name: Run tests
-        run: yarn test:ci
-
-      - name: Create test report
-        if: ${{ always() }}
-        uses: tanmen/jest-reporter@v1
-        with:
-          github-token: ${{ secrets['GITHUB_TOKEN'] }}
-          result-file: ./result.json
+        run: yarn test:unit
 
   build-publish:
     if: github.ref == 'refs/heads/master'
     timeout-minutes: 30
     needs: test
+    permissions:
+      contents: write
     strategy:
       fail-fast: false
       matrix:
-        platform: [ macos-latest, windows-latest ]
-    runs-on: ${{ matrix.platform }}
+        platform:
+          - name: 'macos-latest'
+            build-args: '--target aarch64-apple-darwin'
+          - name: 'macos-latest'
+            build-args: '--target x86_64-apple-darwin'
+          - name: 'windows-latest'
+    runs-on: ${{ matrix.platform.name }}
     steps:
       - name: Checkout this repository
-        uses: actions/checkout@v2
+        uses: actions/checkout@v4
 
       - name: Set up Node.js
-        uses: actions/setup-node@v2
+        uses: actions/setup-node@v4
         with:
-          node-version: '16'
+          node-version: '20'
           cache: 'yarn'
 
       - name: install Rust stable
-        uses: actions-rs/toolchain@v1
+        uses: dtolnay/rust-toolchain@stable
         with:
           toolchain: stable
+          targets: ${{ matrix.settings.platform == 'macos-latest' && 'aarch64-apple-darwin,x86_64-apple-darwin' || '' }}
 
-      - name: install app dependencies and build it
-        run: yarn install && yarn tauri:build
+      - name: install frontend dependencies
+        run: yarn install
 
       - uses: tauri-apps/tauri-action@v0
         env:
@@ -72,3 +73,5 @@ jobs:
           tagName: ncgmgr-v__VERSION__
           releaseName: "NCGMGR v__VERSION__"
           releaseDraft: true
+          prerelease: false
+          args: ${{ matrix.settings.platform.build-args }}

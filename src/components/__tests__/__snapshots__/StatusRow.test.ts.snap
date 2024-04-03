@@ -1,7 +1,7 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`StatusRow matches snapshot 1`] = `
-<div class="status-row layout horizontal center-vertical">
+"<div class="status-row layout horizontal center-vertical">
   <div class="status-row__status-light color-yellow"></div>
-</div>
+</div>"
 `;

@@ -27,7 +27,6 @@ NCGMGR has a suite of frontend tests running on the Jest framework.
 
 To run frontend tests, run `yarn test:unit`.  
 To run tests while updating snapshots, run `yarn test:update`.  
-Running `yarn test:ci` will create a test results file, useful for Continuous Integration systems.
 
 ## Code style
 

@@ -1,20 +1,30 @@
 <template>
-    <ipl-space class="status-bar">
+    <ipl-space
+        class="status-bar"
+        color="secondary"
+    >
         <template
             v-for="(item, key) in items"
             :key="key"
         >
             <div
+                :id="`status-bar-item_${key}`"
                 class="status-bar-item"
                 :class="{ highlighted: item.highlighted.value }"
                 @click="item.overlayVisible.value = true"
-                :id="`status-bar-item_${key}`"
             >
-                <font-awesome-icon :icon="item.icon" class="icon" />
+                <font-awesome-icon
+                    :icon="item.icon"
+                    class="icon"
+                />
                 <span class="text">{{ item.label }}</span>
             </div>
-            <mgr-overlay v-model:visible="item.overlayVisible.value" :id="`status-item-dialog_${key}`">
+            <mgr-overlay
+                :id="`status-item-dialog_${key}`"
+                v-model:visible="item.overlayVisible.value"
+            >
                 <ipl-dialog-title
+                    color="secondary"
                     :title="item.label"
                     @close="item.overlayVisible.value = false"
                 />
@@ -28,7 +38,7 @@
 
 <script lang="ts">
 import { computed, ref } from 'vue'
-import { defineComponent } from '@vue/runtime-core'
+import { defineComponent } from 'vue'
 import { IplDialogTitle, IplSpace } from '@iplsplatoon/vue-components'
 import { library } from '@fortawesome/fontawesome-svg-core'
 import { faWrench } from '@fortawesome/free-solid-svg-icons/faWrench'
@@ -85,8 +95,8 @@ export default defineComponent({
 @import 'src/styles/colors';
 
 @keyframes highlight {
-    0%  { color: var(--text-color) }
-    49% { color: var(--text-color) }
+    0%  { color: var(--ipl-body-text-color) }
+    49% { color: var(--ipl-body-text-color) }
     50% { color: $red }
     100% { color: $red }
 }
@@ -97,7 +107,7 @@ export default defineComponent({
     > .status-bar-item {
         padding: 2px 4px;
         cursor: pointer;
-        color: var(--text-color);
+        color: var(--ipl-body-text-color);
         display: flex;
         align-items: center;
 

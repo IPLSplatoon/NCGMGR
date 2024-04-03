@@ -7,7 +7,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent } from '@vue/runtime-core'
+import { defineComponent } from 'vue'
 import { useDependencyStore } from '@/store/dependencyStore'
 import { computed } from 'vue'
 import StatusRow from '@/components/StatusRow.vue'

@@ -2,12 +2,13 @@
 
 [Documentation](http://ncgmgr.readthedocs.io/)
 
-NodeCG ManaGeR, built with [Tauri](https://tauri.studio/) and Vue.js.
+NodeCG ManaGeR, built with [Tauri](https://tauri.app/) and Vue.js.
 
 ## Commands
 
-- `test:unit` - Run tests
-- `test:update` - Run tests and update snapshots
-- `lint` - Run linter to check for errors in JS
-- `tauri:build` - Build and bundle the application
-- `tauri:serve` - Run the application in a hot-reloading development server
+- `yarn test:unit` - Run tests
+- `yarn test:update` - Run tests and update snapshots
+- `yarn lint` - Run linter to check for errors in JS
+- `yarn lint:fix` - Fix automatically fixable linter errors
+- `yarn tauri build` - Build and bundle the application
+- `yarn tauri dev` - Run the application in a hot-reloading development server

@@ -1,19 +1,19 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`DependencyChecker matches snapshot when dependencies are loading 1`] = `
-<div>
+"<div>
   <status-row-stub color="yellow"></status-row-stub>
-</div>
+</div>"
 `;
 
 exports[`DependencyChecker matches snapshot when dependencies are present 1`] = `
-<div>
+"<div>
   <status-row-stub color="green"></status-row-stub>
-</div>
+</div>"
 `;
 
 exports[`DependencyChecker matches snapshot when node.js is missing 1`] = `
-<div>
+"<div>
   <status-row-stub color="red"></status-row-stub>
-</div>
+</div>"
 `;

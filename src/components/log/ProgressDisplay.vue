@@ -2,12 +2,12 @@
     <ipl-progress-bar
         :value="progress"
         :color="progressBarColor"
-        background-color="light"
+        background-color="primary"
     />
 </template>
 
 <script lang="ts">
-import { defineComponent } from '@vue/runtime-core'
+import { defineComponent } from 'vue'
 import { useLogStore } from '@/store/logStore'
 import { computed } from 'vue'
 import { IplProgressBar } from '@iplsplatoon/vue-components'

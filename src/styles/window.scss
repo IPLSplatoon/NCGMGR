@@ -1,5 +1,4 @@
 @import './colors';
-@import './overrides';
 @import './badges';
 
 @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700;900&display=swap');
@@ -9,17 +8,15 @@ body {
     -moz-osx-font-smoothing: grayscale;
 
     font-family: 'Roboto', sans-serif;
-    color: var(--text-color);
+    color: var(--ipl-body-text-color);
     padding: 12px 8px;
-
-    &.use-opaque-bg {
-        background-color: var(--solid-background);
-    }
+    background-color: var(--ipl-bg-primary);
+    overflow-y: scroll;
 }
 
 * {
     scrollbar-width: thin;
-    scrollbar-color: var(--background-tertiary) rgba(0, 0, 0, 0);
+    scrollbar-color: var(--ipl-bg-tertiary) rgba(0, 0, 0, 0);
 
     &::-webkit-scrollbar {
         width: 6px;
@@ -35,7 +32,7 @@ body {
     }
 
     &::-webkit-scrollbar-thumb {
-        background: var(--background-tertiary);
+        background: var(--ipl-bg-tertiary);
         border-radius: 3px;
     }
 }

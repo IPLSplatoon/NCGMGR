@@ -1,14 +1,27 @@
 <template>
-    <div v-if="loading" class="text-center m-b-8">
+    <div
+        v-if="loading"
+        class="status-text"
+    >
         Loading...
     </div>
-    <div v-else-if="bundles.length < 1" class="text-center m-b-8">
+    <div
+        v-else-if="bundles.length < 1"
+        class="status-text"
+    >
         No bundles found.
     </div>
-    <div v-else class="bundle-settings__wrapper">
+    <div
+        v-else
+        class="bundle-settings__wrapper"
+    >
         <div class="bundle-settings__header">
-            <div class="bold">Name</div>
-            <div class="bold">Version</div>
+            <div class="bold">
+                Name
+            </div>
+            <div class="bold">
+                Version
+            </div>
             <div class="max-width" />
         </div>
         <div
@@ -39,9 +52,16 @@
                     />
                 </div>
             </div>
-            <bundle-config v-if="visibleBundleConfigs[bundle.name]" :bundle="bundle" class="m-x-8" />
+            <bundle-config
+                v-if="visibleBundleConfigs[bundle.name]"
+                :bundle="bundle"
+                class="m-x-8"
+            />
         </div>
-        <ipl-overlay v-model:visible="uninstallOverlayProps.visible" data-test="uninstall-overlay">
+        <ipl-overlay
+            v-model:visible="uninstallOverlayProps.visible"
+            data-test="uninstall-overlay"
+        >
             <div class="text-center">
                 Are you sure you want to uninstall <span class="bold">{{ uninstallOverlayProps.bundleName }}</span>?
             </div>
@@ -53,14 +73,19 @@
                     data-test="confirm-uninstall-button"
                     @click="doUninstall"
                 />
-                <ipl-button label="Cancel" class="m-l-8" @click="cancelUninstall" data-test="cancel-uninstall-button" />
+                <ipl-button
+                    label="Cancel"
+                    class="m-l-8"
+                    data-test="cancel-uninstall-button"
+                    @click="cancelUninstall"
+                />
             </div>
         </ipl-overlay>
     </div>
 </template>
 
 <script lang="ts">
-import { defineComponent } from '@vue/runtime-core'
+import { defineComponent } from 'vue'
 import { IplButton } from '@iplsplatoon/vue-components'
 import IplOverlay from '@/components/mgr/MgrOverlay.vue'
 import { computed, reactive } from 'vue'
@@ -119,6 +144,11 @@ export default defineComponent({
 @import 'src/styles/text';
 @import 'src/styles/colors';
 
+.status-text {
+    padding-bottom: 8px;
+    text-align: center;
+}
+
 .bundle-settings__header {
     display: grid;
     align-items: center;
@@ -130,8 +160,8 @@ export default defineComponent({
 .bundle-settings__item {
     border-top: 1px solid $input-color;
 
-    &:nth-child(even) > .bundle-settings__item-content {
-        background-color: var(--space-background-secondary);
+    &:nth-child(even) {
+        background-color: var(--ipl-input-color-alpha);
     }
 
     > .bundle-settings__item-content {

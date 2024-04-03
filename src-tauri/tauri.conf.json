@@ -1,13 +1,13 @@
 {
   "package": {
     "productName": "NCGMGR",
-    "version": "0.5.0"
+    "version": "0.6.0"
   },
   "build": {
-    "distDir": "Set automatically by Vue CLI plugin",
-    "devPath": "Set automatically by Vue CLI plugin",
-    "beforeDevCommand": "",
-    "beforeBuildCommand": ""
+    "distDir": "../dist",
+    "devPath": "http://localhost:5173",
+    "beforeDevCommand": "yarn dev",
+    "beforeBuildCommand": "yarn build"
   },
   "tauri": {
     "macOSPrivateApi": true,
@@ -59,7 +59,7 @@
         "height": 600,
         "resizable": false,
         "fullscreen": false,
-        "transparent": true
+        "titleBarStyle": "Transparent"
       }
     ],
     "security": {

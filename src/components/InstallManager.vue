@@ -1,11 +1,21 @@
 <template>
-    <ipl-space class="layout vertical">
+    <ipl-space
+        class="layout vertical"
+        color="secondary"
+    >
         <div>Installation folder: {{ installFolder }}</div>
-        <status-row :color="nodecgStatusColor" class="m-t-8">
+        <status-row
+            :color="nodecgStatusColor"
+            class="m-t-8"
+        >
             {{ nodecgStatusMessage }}
         </status-row>
         <div class="layout horizontal m-t-8">
-            <ipl-button label="Select folder" @click="selectDirectory" data-test="install-directory-select-button" />
+            <ipl-button
+                label="Select folder"
+                data-test="install-directory-select-button"
+                @click="selectDirectory"
+            />
             <ipl-button
                 v-if="nodecgStatus === NodecgStatus.INSTALLED"
                 :label="runStatus === RunStatus.RUNNING ? 'Stop' : 'Start'"
@@ -19,17 +29,17 @@
                 label="Install"
                 :disabled="nodecgStatus !== NodecgStatus.READY_TO_INSTALL"
                 data-test="install-button"
-                @click="doInstall"
                 class="m-l-8"
                 color="green"
+                @click="doInstall"
             />
             <ipl-button
                 label="Open dashboard"
                 :disabled="runStatus !== RunStatus.RUNNING"
                 data-test="open-dashboard-button"
-                @click="openDashboard"
                 class="m-l-8"
                 color="green"
+                @click="openDashboard"
             />
         </div>
     </ipl-space>
@@ -37,6 +47,7 @@
         v-show="runStatus !== RunStatus.NOT_STARTED"
         class="m-t-8"
         expanded
+        color="secondary"
         data-test="nodecg-log-space"
     >
         <template #title>
@@ -50,7 +61,10 @@
         </template>
         <template #default>
             <div class="layout vertical center-horizontal">
-                <log-display log-key="run-nodecg" class="m-t-4" />
+                <log-display
+                    log-key="run-nodecg"
+                    class="m-t-4"
+                />
             </div>
         </template>
     </ipl-expanding-space>

@@ -1,17 +1,19 @@
+use std::fs;
 use std::sync::Mutex;
 use tauri::api::process::{Command, CommandChild, CommandEvent};
 use tauri::async_runtime::Receiver;
 use unwrap_or::unwrap_ok_or;
-use std::path::{PathBuf};
-use git2::Repository;
-use sysinfo::{Pid, PidExt, ProcessRefreshKind, RefreshKind, System, SystemExt};
+use std::path::{Path, PathBuf};
+use flate2::read::GzDecoder;
+use sysinfo::{Pid, ProcessRefreshKind, RefreshKind, System};
+use tauri::api::http::{ClientBuilder, HttpRequestBuilder, ResponseType};
+use futures_util::TryFutureExt;
+use tar::Archive;
 
 use crate::log::{format_error, emit_tauri_process_output, LogEmitter};
 use crate::{err_to_string, log_npm_install, npm};
 use crate::error::MgrError;
-
-const NODECG_GIT_PATH: &str = "https://github.com/nodecg/nodecg.git";
-const NODECG_TAG: &str = "v1.8.1";
+use crate::npm::NPMPackageMetadata;
 
 pub struct ManagedNodecg {
     process: Mutex<Option<CommandChild>>
@@ -59,38 +61,98 @@ impl ManagedNodecg {
     }
 }
 
-fn clone_nodecg(path: &str) -> Result<String, String> {
-    let repository = match Repository::clone(NODECG_GIT_PATH, path) {
-        Ok(repo) => repo,
-        Err(e) => return format_error("Failed to clone NodeCG", e)
-    };
-    let (object, reference) = match repository.revparse_ext(NODECG_TAG) {
-        Ok(parsed) => parsed,
-        Err(e) => return format_error("Could not parse revision", e)
-    };
-
-    unwrap_ok_or!(repository.checkout_tree(&object, None), e, { return format_error(&format!("Could not check out NodeCG {}", NODECG_TAG), e) });
-
-    match reference {
-        Some(gref) => repository.set_head(gref.name().unwrap()),
-        None => repository.set_head_detached(object.id())
-    }
-        .or_else(|e| return format_error("Failed to set HEAD", e))
-        .and_then(|_| return Ok("OK".to_string()))
-}
-
 #[tauri::command(async)]
-pub fn install_nodecg(handle: tauri::AppHandle, path: String) -> Result<(), String> {
-    let logger = LogEmitter::with_progress(handle, "install-nodecg", 2);
+pub async fn install_nodecg(handle: tauri::AppHandle, path: String) -> Result<(), String> {
+    let logger = LogEmitter::with_progress(handle, "install-nodecg", 4);
+
     logger.emit("Starting NodeCG install...");
-    match clone_nodecg(&path).and_then(|_result| {
-        logger.emit_progress(1);
-        npm::install_npm_dependencies(&path).and_then(|child| {
-            log_npm_install(logger, child);
-            Ok(())
+
+    logger.emit("Loading version list...");
+    let client = match ClientBuilder::new().build() {
+        Ok(client) => client,
+        Err(e) => return format_error("Failed to create HTTP client", e)
+    };
+    let package_info_request = HttpRequestBuilder::new("GET", "https://registry.npmjs.org/nodecg/")
+        .unwrap()
+        .response_type(ResponseType::Json);
+    let tarball_url_and_version = match client.send(package_info_request).and_then(|response| async move {
+        response.read().await.and_then(|data| {
+            Ok(serde_json::from_value::<NPMPackageMetadata>(data.data)?)
         })
+    }).await {
+        Ok(response) => {
+            // According to npm, this shouldn't happen...
+            // https://github.com/npm/registry/blob/master/docs/responses/package-metadata.md#full-metadata-format
+            if !response.dist_tags.contains_key("latest") {
+                return Err("Couldn't find latest version of NodeCG".to_string())
+            }
+
+            let latest_version = response.dist_tags.get("latest").unwrap();
+            if !response.versions.contains_key(latest_version) {
+                return Err(format!("Latest NodeCG version ({}) was not found in npm metadata", latest_version))
+            }
+            let latest_version_metadata = response.versions.get(latest_version).unwrap();
+            (latest_version_metadata.dist.tarball.clone(), latest_version.clone())
+        },
+        Err(e) => return format_error("Failed to get NodeCG version list", e)
+    };
+    logger.emit_progress(1);
+
+    logger.emit(&format!("Downloading NodeCG {}...", tarball_url_and_version.1));
+    let tarball_request = HttpRequestBuilder::new("GET", tarball_url_and_version.0)
+        .unwrap()
+        .response_type(ResponseType::Binary);
+    let tarball_response = match client.send(tarball_request).and_then(|response| async move {
+        response.bytes().await
+    }).await {
+        Ok(response) => response,
+        Err(e) => return format_error("Failed to download NodeCG", e)
+    };
+    logger.emit_progress(2);
+
+    logger.emit("Extracting archive...");
+    let gz = GzDecoder::new(tarball_response.data.as_slice());
+    let mut archive = Archive::new(gz);
+    let base_unpack_path = Path::new(&path);
+    match archive.entries().map(|entries| {
+        entries
+            .filter_map(|e| e.ok())
+            .map(|mut entry| -> Result<(), Box<dyn std::error::Error + '_>> {
+                // Skips the first directory of the archive.
+                let entry_path = entry.path()?.components().skip(1).collect::<PathBuf>();
+                let unpack_path = base_unpack_path.join(entry_path);
+                if entry.header().entry_type() != tar::EntryType::Directory {
+                    if let Some(p) = unpack_path.parent() {
+                        if !p.exists() {
+                            fs::create_dir_all(p)?;
+                        }
+                    }
+                }
+                entry.unpack(&unpack_path)?;
+                Ok(())
+            })
     }) {
-        Err(e) => format_error("Failed to install NodeCG", e),
+        Ok(results) => {
+            let mut has_err = false;
+            results.for_each(|r| {
+                if let Err(err) = r {
+                    logger.emit(&format!("Error unpacking file: {}", err.to_string()));
+                    has_err = true;
+                }
+            });
+            if has_err {
+                return Err("Received one or more errors unpacking NodeCG archive".to_string())
+            }
+        },
+        Err(e) => return format_error("Failed to unpack archive", e)
+    }
+    logger.emit_progress(3);
+
+    match npm::install_npm_dependencies(&path).and_then(|child| {
+        log_npm_install(logger, child);
+        Ok(())
+    }) {
+        Err(e) => format_error("Failed to install NodeCG dependencies", e),
         Ok(_) => Ok(())
     }
 }

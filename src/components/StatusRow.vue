@@ -1,6 +1,9 @@
 <template>
     <div class="status-row layout horizontal center-vertical">
-        <div class="status-row__status-light" :class="`color-${color}`"></div>
+        <div
+            class="status-row__status-light"
+            :class="`color-${color}`"
+        />
         <slot />
     </div>
 </template>

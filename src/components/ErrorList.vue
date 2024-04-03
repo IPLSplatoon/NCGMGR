@@ -1,5 +1,8 @@
 <template>
-    <ipl-space class="error-list">
+    <ipl-space
+        class="error-list"
+        color="secondary"
+    >
         <div class="m-y-8 m-x-8 text-center">
             <div class="m-b-8">
                 Errors that have occurred in this application will be listed here.<br>
@@ -17,21 +20,35 @@
                 v-for="(error, key) in errorHandlerStore.recentErrors"
                 :key="key"
                 :title="addDots(String(error.err))"
-                class="error-list-item"
+                class="error-list-item m-t-8"
             >
-                <ipl-data-row label="Info" :value="error.info" />
+                <ipl-data-row
+                    label="Info"
+                    :value="error.info"
+                />
                 <template v-if="error.component">
-                    <ipl-data-row label="Source component" :value="error.component.$.type.name" />
+                    <ipl-data-row
+                        label="Source component"
+                        :value="error.component.$.type.name"
+                    />
                 </template>
-                <ipl-data-row label="Full error" :value="String(error.err)" />
+                <ipl-data-row
+                    label="Full error"
+                    :value="String(error.err)"
+                />
             </ipl-expanding-space>
         </ipl-expanding-space-group>
-        <div v-else class="m-l-8 m-y-8 text-center">No errors yet!</div>
+        <div
+            v-else
+            class="m-l-8 m-y-8 text-center"
+        >
+            No errors yet!
+        </div>
     </ipl-space>
 </template>
 
 <script lang="ts">
-import { defineComponent } from '@vue/runtime-core'
+import { defineComponent } from 'vue'
 import { useErrorHandlerStore } from '@/store/errorHandlerStore'
 import { IplButton, IplDataRow, IplExpandingSpace, IplExpandingSpaceGroup, IplSpace } from '@iplsplatoon/vue-components'
 import { computed } from 'vue'
@@ -53,15 +70,3 @@ export default defineComponent({
     }
 })
 </script>
-
-<style lang="scss" scoped>
-.error-list {
-    padding: 0;
-}
-
-.error-list-item {
-    border-radius: 0;
-    border: 0;
-    border-top: 1px solid var(--space-border);
-}
-</style>

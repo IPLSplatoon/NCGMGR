@@ -1,11 +1,29 @@
+use std::collections::HashMap;
 use std::path::PathBuf;
 use tauri::api::process::{Command, CommandEvent};
 use tauri::async_runtime::Receiver;
 
+#[derive(serde::Deserialize)]
+pub struct NPMPackageMetadata {
+    #[serde(rename = "dist-tags")]
+    pub dist_tags: HashMap<String, String>,
+    pub versions: HashMap<String, NPMPackageVersion>,
+}
+
+#[derive(serde::Deserialize)]
+pub struct NPMPackageVersion {
+    pub dist: NPMPackageVersionDist,
+}
+
+#[derive(serde::Deserialize)]
+pub struct NPMPackageVersionDist {
+    pub tarball: String,
+}
+
 #[cfg(target_os = "windows")]
 pub fn install_npm_dependencies(path: &str) -> Result<Receiver<CommandEvent>, String> {
     let command = Command::new("cmd")
-        .args(["/c", "npm", "ci", "--production", "--no-progress"])
+        .args(["/c", "npm", "i", "--omit=dev", "--no-progress"])
         .current_dir(PathBuf::from(path))
         .spawn();
     match command {
@@ -17,7 +35,7 @@ pub fn install_npm_dependencies(path: &str) -> Result<Receiver<CommandEvent>, St
 #[cfg(not(target_os = "windows"))]
 pub fn install_npm_dependencies(path: &str) -> Result<Receiver<CommandEvent>, String> {
     let command = Command::new("npm")
-        .args(["ci", "--production", "--no-progress"])
+        .args(["i", "--omit=dev", "--no-progress"])
         .current_dir(PathBuf::from(path))
         .spawn();
     match command {
