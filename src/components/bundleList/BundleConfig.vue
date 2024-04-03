@@ -1,7 +1,7 @@
 <template>
-    <ipl-space
-        class="layout horizontal m-t-8 m-b-8"
-        color="light"
+    <div
+        class="layout horizontal"
+        style="padding: 8px 0;"
     >
         <ipl-space class="max-width h-max-content">
             <ipl-message
@@ -54,7 +54,7 @@
                 @click="openOrCreateConfigFile"
             />
         </ipl-space>
-    </ipl-space>
+    </div>
 </template>
 
 <script lang="ts">

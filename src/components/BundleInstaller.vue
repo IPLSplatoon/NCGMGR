@@ -1,5 +1,5 @@
 <template>
-    <ipl-space color="light">
+    <ipl-space color="primary">
         <ipl-input
             v-model="bundlePath"
             name="bundleName"

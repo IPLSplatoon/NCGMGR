@@ -2,7 +2,7 @@
     <ipl-progress-bar
         :value="progress"
         :color="progressBarColor"
-        background-color="light"
+        background-color="primary"
     />
 </template>
 

@@ -10,14 +10,17 @@ span.badge {
     transform: translate(0, -1px);
 
     &.badge-blue {
-        background-color: $blue
+        background-color: $blue;
+        color: white;
     }
 
     &.badge-green {
-        background-color: $green
+        background-color: $green;
+        color: white;
     }
 
     &.badge-red {
         background-color: $red;
+        color: white;
     }
 }

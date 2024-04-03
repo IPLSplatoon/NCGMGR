@@ -59,7 +59,7 @@ export default defineComponent({
     transition: opacity $transition-duration-low ease-in;
 }
 
-.overlay-enter-active, {
+.overlay-enter-active {
     transition: opacity $transition-duration-low ease-out;
 }
 
@@ -83,7 +83,7 @@ export default defineComponent({
         max-width: 90%;
         max-height: 80%;
         min-width: 400px;
-        background-color: var(--background-primary);
+        background-color: var(--ipl-bg-primary);
         overflow-y: auto;
         overflow-x: hidden;
         padding: 8px;

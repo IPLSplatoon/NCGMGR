@@ -1,5 +1,8 @@
 <template>
-    <ipl-space class="layout vertical">
+    <ipl-space
+        class="layout vertical"
+        color="secondary"
+    >
         <div>Installation folder: {{ installFolder }}</div>
         <status-row
             :color="nodecgStatusColor"
@@ -44,6 +47,7 @@
         v-show="runStatus !== RunStatus.NOT_STARTED"
         class="m-t-8"
         expanded
+        color="secondary"
         data-test="nodecg-log-space"
     >
         <template #title>

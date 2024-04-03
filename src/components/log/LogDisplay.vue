@@ -95,8 +95,8 @@ export default defineComponent({
     padding: 4px 2px;
     min-height: 64px;
     overflow: scroll;
-    color: var(--text-color);
-    background-color: var(--space-background);
+    color: var(--ipl-body-text-color);
+    background-color: var(--ipl-bg-primary);
 
     > span {
         margin-left: 6px;

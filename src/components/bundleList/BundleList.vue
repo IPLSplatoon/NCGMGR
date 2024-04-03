@@ -1,13 +1,13 @@
 <template>
     <div
         v-if="loading"
-        class="text-center m-b-8"
+        class="status-text"
     >
         Loading...
     </div>
     <div
         v-else-if="bundles.length < 1"
-        class="text-center m-b-8"
+        class="status-text"
     >
         No bundles found.
     </div>
@@ -144,6 +144,11 @@ export default defineComponent({
 @import 'src/styles/text';
 @import 'src/styles/colors';
 
+.status-text {
+    padding-bottom: 8px;
+    text-align: center;
+}
+
 .bundle-settings__header {
     display: grid;
     align-items: center;
@@ -155,8 +160,8 @@ export default defineComponent({
 .bundle-settings__item {
     border-top: 1px solid $input-color;
 
-    &:nth-child(even) > .bundle-settings__item-content {
-        background-color: var(--space-background-secondary);
+    &:nth-child(even) {
+        background-color: var(--ipl-input-color-alpha);
     }
 
     > .bundle-settings__item-content {

@@ -7,12 +7,13 @@
     >
         <div>
             <ipl-dialog-title
+                color="secondary"
                 :title="title"
                 class="m-b-8"
                 :closing-disabled="!completed"
                 @close="modelVisible = false"
             />
-            <ipl-space>
+            <ipl-space color="secondary">
                 <div class="m-b-8">
                     {{ progressMessage }}
                 </div>
@@ -22,6 +23,7 @@
                 v-model:expanded="moreDetailsShown"
                 title="More details"
                 class="m-t-8 max-width"
+                color="secondary"
             >
                 <log-display
                     :log-key="logKey"

@@ -58,7 +58,8 @@
         "width": 600,
         "height": 600,
         "resizable": false,
-        "fullscreen": false
+        "fullscreen": false,
+        "titleBarStyle": "Transparent"
       }
     ],
     "security": {

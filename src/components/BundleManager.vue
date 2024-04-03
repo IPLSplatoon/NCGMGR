@@ -1,5 +1,8 @@
 <template>
-    <ipl-space class="no-padding">
+    <ipl-space
+        class="no-padding"
+        color="secondary"
+    >
         <div class="header layout horizontal center-vertical">
             <div class="bold grow m-l-4">
                 Bundles

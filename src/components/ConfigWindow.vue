@@ -1,16 +1,18 @@
 <template>
-    <ipl-space class="m-b-8">
+    <ipl-space
+        class="m-b-8"
+        color="secondary"
+    >
         <div class="bold m-b-6">
             Dependency status
         </div>
         <dependency-checker />
     </ipl-space>
-    <ipl-space>
-        <ipl-small-toggle
-            v-model="errorLogEnabled"
-            label="Enable error log"
-        />
-        <ipl-label>The error log is useful for diagnosing technical issues.</ipl-label>
+    <ipl-space color="secondary">
+        <ipl-small-toggle v-model="errorLogEnabled">
+            Enable error log<br>
+            <ipl-label>The error log is useful for diagnosing technical issues.</ipl-label>
+        </ipl-small-toggle>
     </ipl-space>
 </template>
 

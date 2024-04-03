@@ -1,5 +1,8 @@
 <template>
-    <ipl-space class="status-bar">
+    <ipl-space
+        class="status-bar"
+        color="secondary"
+    >
         <template
             v-for="(item, key) in items"
             :key="key"
@@ -21,6 +24,7 @@
                 v-model:visible="item.overlayVisible.value"
             >
                 <ipl-dialog-title
+                    color="secondary"
                     :title="item.label"
                     @close="item.overlayVisible.value = false"
                 />
@@ -91,8 +95,8 @@ export default defineComponent({
 @import 'src/styles/colors';
 
 @keyframes highlight {
-    0%  { color: var(--text-color) }
-    49% { color: var(--text-color) }
+    0%  { color: var(--ipl-body-text-color) }
+    49% { color: var(--ipl-body-text-color) }
     50% { color: $red }
     100% { color: $red }
 }
@@ -103,7 +107,7 @@ export default defineComponent({
     > .status-bar-item {
         padding: 2px 4px;
         cursor: pointer;
-        color: var(--text-color);
+        color: var(--ipl-body-text-color);
         display: flex;
         align-items: center;
 

@@ -1,5 +1,8 @@
 <template>
-    <ipl-space class="error-list">
+    <ipl-space
+        class="error-list"
+        color="secondary"
+    >
         <div class="m-y-8 m-x-8 text-center">
             <div class="m-b-8">
                 Errors that have occurred in this application will be listed here.<br>
@@ -17,7 +20,7 @@
                 v-for="(error, key) in errorHandlerStore.recentErrors"
                 :key="key"
                 :title="addDots(String(error.err))"
-                class="error-list-item"
+                class="error-list-item m-t-8"
             >
                 <ipl-data-row
                     label="Info"
@@ -67,15 +70,3 @@ export default defineComponent({
     }
 })
 </script>
-
-<style lang="scss" scoped>
-.error-list {
-    padding: 0;
-}
-
-.error-list-item {
-    border-radius: 0;
-    border: 0;
-    border-top: 1px solid var(--space-border);
-}
-</style>
