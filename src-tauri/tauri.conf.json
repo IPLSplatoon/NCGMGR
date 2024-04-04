@@ -26,8 +26,8 @@
       "externalBin": [],
       "copyright": "© inkfarer (inkfarer@inkfarer.com)",
       "category": "Utility",
-      "shortDescription": "Helps manage NodeCG installations.",
-      "longDescription": "",
+      "shortDescription": "NCGMGR",
+      "longDescription": "Helps manage NodeCG installations.",
       "deb": {
         "depends": []
       },
