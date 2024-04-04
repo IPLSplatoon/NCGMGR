@@ -4,14 +4,19 @@ import App from './App.vue'
 import { createPinia } from 'pinia'
 import { setUpErrorHandler } from '@/store/errorHandlerStore'
 
+function setColorTheme(useLightMode: boolean) {
+    if (useLightMode) {
+        document.documentElement.classList.add('light')
+    } else {
+        document.documentElement.classList.remove('light')
+    }
+}
+
 (async () => {
     const lightModePreference = window.matchMedia('(prefers-color-scheme: light)')
+    setColorTheme(lightModePreference.matches)
     lightModePreference.addEventListener('change', e => {
-        if (e.matches) {
-            document.documentElement.classList.add('light')
-        } else {
-            document.documentElement.classList.remove('light')
-        }
+        setColorTheme(e.matches)
     })
 
     const app = createApp(App)
