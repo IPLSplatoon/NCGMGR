@@ -1,7 +1,7 @@
 use std::{fmt};
-use tauri::api::process::{CommandEvent, TerminatedPayload};
+use tauri_plugin_shell::process::{CommandEvent, TerminatedPayload};
 use tauri::async_runtime::{JoinHandle, Receiver, spawn};
-use tauri::{Manager};
+use tauri::Manager;
 
 #[derive(Clone)]
 pub struct LogEmitter {
@@ -11,7 +11,7 @@ pub struct LogEmitter {
 }
 
 impl LogEmitter {
-    pub fn new(handle: tauri::AppHandle, key: &str) -> LogEmitter {
+    pub fn new(handle: &tauri::AppHandle, key: &str) -> LogEmitter {
         LogEmitter {
             handle: handle.clone(),
             key: key.to_string(),
@@ -19,7 +19,7 @@ impl LogEmitter {
         }
     }
 
-    pub fn with_progress(handle: tauri::AppHandle, key: &str, max_progress_step: u32) -> LogEmitter {
+    pub fn with_progress(handle: &tauri::AppHandle, key: &str, max_progress_step: u32) -> LogEmitter {
         let mut emitter = LogEmitter::new(handle, key);
         emitter.max_progress_step = Some(max_progress_step);
         emitter.emit_progress(0);
@@ -27,7 +27,7 @@ impl LogEmitter {
     }
 
     pub fn emit(&self, msg: &str) -> () {
-        self.handle.emit_all(
+        self.handle.emit(
             &format!("log:{}", self.key),
             LogPayload { message: msg.to_string() }
         ).expect("Failed to emit log message");
@@ -35,7 +35,7 @@ impl LogEmitter {
 
     pub fn emit_progress(&self, step: u32) -> () {
         if self.max_progress_step.is_some() {
-            self.handle.emit_all(
+            self.handle.emit(
                 &format!("progress:{}", self.key),
                 ProgressPayload { step, max_step: self.max_progress_step.unwrap() }
             ).expect("Failed to emit log message");
@@ -43,7 +43,7 @@ impl LogEmitter {
     }
 
     pub fn emit_process_closure(&self, payload: &TerminatedPayload) -> () {
-        self.handle.emit_all(
+        self.handle.emit(
             &format!("process-exit:{}", self.key),
             ProcessClosurePayload { code: payload.code, success: is_process_termination_successful(payload) }
         ).expect("Failed to emit log message for process closure");
@@ -77,8 +77,8 @@ pub fn emit_tauri_process_output(logger: LogEmitter, mut receiver: Receiver<Comm
         let mut exit_code: Option<i32> = None;
         while let Some(item) = receiver.recv().await {
             logger.emit(&*match item {
-                CommandEvent::Stderr(msg) => msg,
-                CommandEvent::Stdout(msg) => msg,
+                CommandEvent::Stderr(msg) => String::from_utf8(msg).unwrap_or_else(|e| format!("Failed to decode output: {}", e.to_string())),
+                CommandEvent::Stdout(msg) => String::from_utf8(msg).unwrap_or_else(|e| format!("Failed to decode output: {}", e.to_string())),
                 CommandEvent::Error(msg) => msg,
                 CommandEvent::Terminated(payload) => {
                     logger.emit_process_closure(&payload);

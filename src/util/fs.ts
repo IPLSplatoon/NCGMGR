@@ -1,4 +1,4 @@
-import { readDir, readTextFile } from '@tauri-apps/api/fs'
+import { readDir, readTextFile } from '@tauri-apps/plugin-fs'
 
 export async function folderExists (path: string): Promise<boolean> {
     try {

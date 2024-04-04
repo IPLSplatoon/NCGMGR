@@ -1,7 +1,10 @@
 use std::collections::HashMap;
 use std::path::PathBuf;
-use tauri::api::process::{Command, CommandEvent};
+use tauri_plugin_shell::process::CommandEvent;
 use tauri::async_runtime::Receiver;
+use tauri::Wry;
+use tauri_plugin_shell::Shell;
+use crate::error::Error;
 
 #[derive(serde::Deserialize)]
 pub struct NPMPackageMetadata {
@@ -21,25 +24,25 @@ pub struct NPMPackageVersionDist {
 }
 
 #[cfg(target_os = "windows")]
-pub fn install_npm_dependencies(path: &str) -> Result<Receiver<CommandEvent>, String> {
-    let command = Command::new("cmd")
+pub fn install_npm_dependencies(shell: &Shell<Wry>, path: &str) -> Result<Receiver<CommandEvent>, Error> {
+    let command = shell.command("cmd")
         .args(["/c", "npm", "i", "--omit=dev", "--no-progress"])
         .current_dir(PathBuf::from(path))
         .spawn();
     match command {
         Ok(cmd) => Ok(cmd.0),
-        Err(e) => Err(format!("Failed to spawn npm process: {}", e.to_string()))
+        Err(e) => Err(Error::NPMInstall(e.to_string()))
     }
 }
 
 #[cfg(not(target_os = "windows"))]
-pub fn install_npm_dependencies(path: &str) -> Result<Receiver<CommandEvent>, String> {
-    let command = Command::new("npm")
+pub fn install_npm_dependencies(shell: &Shell<Wry>, path: &str) -> Result<Receiver<CommandEvent>, Error> {
+    let command = shell.command("npm")
         .args(["i", "--omit=dev", "--no-progress"])
         .current_dir(PathBuf::from(path))
         .spawn();
     match command {
         Ok(cmd) => Ok(cmd.0),
-        Err(e) => Err(format!("Failed to spawn npm process: {}", e.to_string()))
+        Err(e) => Err(Error::NPMInstall(e.to_string()))
     }
 }

@@ -65,10 +65,10 @@ import { IplButton, IplMessage, IplSelect, IplSpace } from '@iplsplatoon/vue-com
 import { useConfigStore } from '@/store/configStore'
 import LogOverlay from '@/components/log/LogOverlay.vue'
 import { useLogStore } from '@/store/logStore'
-import { invoke } from '@tauri-apps/api/tauri'
+import { invoke } from '@tauri-apps/api/core'
 import { useNodecgStore } from '@/store/nodecgStore'
-import { open } from '@tauri-apps/api/shell'
-import { type } from '@tauri-apps/api/os'
+import { open } from '@tauri-apps/plugin-shell'
+import { type } from '@tauri-apps/plugin-os'
 
 export default defineComponent({
     name: 'BundleConfig',
@@ -97,7 +97,7 @@ export default defineComponent({
         const enableOpenTerminal = ref(false)
 
         type().then(type => {
-            enableOpenTerminal.value = type === 'Darwin' || type === 'Windows_NT'
+            enableOpenTerminal.value = type === 'macos' || type === 'windows'
         })
 
         watch(showInstallLog, newValue => {

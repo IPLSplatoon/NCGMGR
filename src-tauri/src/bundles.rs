@@ -1,6 +1,7 @@
 use std::path::Path;
 use std::{fs};
 use git2::{AutotagOption, FetchOptions, Repository};
+use tauri_plugin_shell::ShellExt;
 use unwrap_or::unwrap_ok_or;
 
 use crate::git;
@@ -36,7 +37,7 @@ fn parse_bundle_url(url: String) -> Result<ParsedBundleUrl, MgrError> {
 
 #[tauri::command(async)]
 pub fn install_bundle(handle: tauri::AppHandle, bundle_url: String, nodecg_path: String) -> Result<(), String> {
-    let logger = LogEmitter::with_progress(handle, "install-bundle", 5);
+    let logger = LogEmitter::with_progress(&handle, "install-bundle", 5);
     let parsed_url = match parse_bundle_url(bundle_url) {
         Ok(url) => url,
         Err(e) => {
@@ -73,7 +74,8 @@ pub fn install_bundle(handle: tauri::AppHandle, bundle_url: String, nodecg_path:
     }
     logger.emit_progress(4);
 
-    match npm::install_npm_dependencies(&bundle_path).and_then(|child| {
+    let shell = handle.shell();
+    match npm::install_npm_dependencies(shell, &bundle_path).and_then(|child| {
         log_npm_install(logger, child);
         Ok(())
     }) {
@@ -108,7 +110,7 @@ pub fn fetch_bundle_versions(bundle_name: String, nodecg_path: String) -> Result
 
 #[tauri::command(async)]
 pub fn set_bundle_version(handle: tauri::AppHandle, bundle_name: String, version: String, nodecg_path: String) -> Result<(), String> {
-    let logger = LogEmitter::with_progress(handle, "change-bundle-version", 4);
+    let logger = LogEmitter::with_progress(&handle, "change-bundle-version", 4);
     let bundle_dir = format!("{}/bundles/{}", nodecg_path, bundle_name);
     let path = Path::new(&bundle_dir);
 
@@ -129,7 +131,8 @@ pub fn set_bundle_version(handle: tauri::AppHandle, bundle_name: String, version
         Err(e) => return format_error(&format!("Failed to open git repository for bundle '{}'", bundle_name), e)
     }
 
-    match npm::install_npm_dependencies(&bundle_dir).and_then(|child| {
+    let shell = handle.shell();
+    match npm::install_npm_dependencies(shell, &bundle_dir).and_then(|child| {
         log_npm_install(logger, child);
         Ok(())
     }) {

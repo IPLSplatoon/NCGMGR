@@ -1,8 +1,27 @@
-use std::error::Error;
-use std::fmt;
+use std::{fmt, io};
+use serde::Serializer;
+use tauri_plugin_http::reqwest;
 
 pub trait MgrErrorCause: fmt::Display + fmt::Debug {}
 impl<T: fmt::Display + fmt::Debug> MgrErrorCause for T {}
+
+#[derive(Debug, thiserror::Error)]
+pub enum Error {
+    #[error(transparent)]
+    Request(#[from] reqwest::Error),
+    #[error(transparent)]
+    Io(#[from] io::Error),
+    #[error("Error installing NodeCG: {0}")]
+    NodeCGInstall(String),
+    #[error("Error installing npm dependencies: {0}")]
+    NPMInstall(String),
+}
+
+impl serde::Serialize for Error {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error> where S: Serializer {
+        serializer.serialize_str(self.to_string().as_ref())
+    }
+}
 
 #[derive(Debug)]
 pub struct MgrError {
@@ -13,10 +32,6 @@ pub struct MgrError {
 impl MgrError {
     pub fn new(msg: &str) -> MgrError {
         MgrError { description: msg.to_string(), cause: None }
-    }
-
-    pub fn with_cause<T: 'static + MgrErrorCause>(msg: &str, cause: T) -> MgrError {
-        MgrError { description: msg.to_string(), cause: Some(Box::new(cause)) }
     }
 
     pub fn boxed(self) -> Box<MgrError> {
@@ -34,6 +49,6 @@ impl fmt::Display for MgrError {
     }
 }
 
-impl Error for MgrError {
+impl std::error::Error for MgrError {
 
 }

@@ -1,55 +1,48 @@
 {
-  "package": {
-    "productName": "NCGMGR",
-    "version": "0.7.0"
-  },
-  "build": {
-    "distDir": "../dist",
-    "devPath": "http://localhost:5173",
-    "beforeDevCommand": "yarn dev",
-    "beforeBuildCommand": "yarn build"
-  },
-  "tauri": {
-    "macOSPrivateApi": true,
-    "bundle": {
-      "active": true,
-      "targets": "all",
-      "identifier": "com.inkfarer.ncgmgr",
-      "icon": [
-        "icons/32x32.png",
-        "icons/128x128.png",
-        "icons/128x128@2x.png",
-        "icons/icon.icns",
-        "icons/icon.ico"
-      ],
-      "resources": [],
-      "externalBin": [],
-      "copyright": "© inkfarer (inkfarer@inkfarer.com)",
-      "category": "Utility",
-      "shortDescription": "NCGMGR",
-      "longDescription": "Helps manage NodeCG installations.",
+  "bundle": {
+    "active": true,
+    "targets": "all",
+    "windows": {
+      "certificateThumbprint": null,
+      "digestAlgorithm": "sha256",
+      "timestampUrl": ""
+    },
+    "icon": [
+      "icons/32x32.png",
+      "icons/128x128.png",
+      "icons/128x128@2x.png",
+      "icons/icon.icns",
+      "icons/icon.ico"
+    ],
+    "resources": [],
+    "externalBin": [],
+    "copyright": "© inkfarer (inkfarer@inkfarer.com)",
+    "category": "Utility",
+    "shortDescription": "NCGMGR",
+    "longDescription": "Helps manage NodeCG installations.",
+    "macOS": {
+      "frameworks": []
+    },
+    "linux": {
       "deb": {
         "depends": []
-      },
-      "macOS": {
-        "frameworks": []
-      },
-      "windows": {
-        "certificateThumbprint": null,
-        "digestAlgorithm": "sha256",
-        "timestampUrl": ""
       }
-    },
-    "updater": {
-      "active": false
-    },
-    "allowlist": {
-      "all": true,
-      "fs": {
-        "scope": [
-          "$HOME/**/*"
-        ]
-      }
+    }
+  },
+  "build": {
+    "beforeBuildCommand": "yarn build",
+    "frontendDist": "../dist",
+    "beforeDevCommand": "yarn dev",
+    "devUrl": "http://localhost:5173"
+  },
+  "productName": "NCGMGR",
+  "version": "0.7.0",
+  "identifier": "com.inkfarer.ncgmgr",
+  "plugins": {},
+  "app": {
+    "macOSPrivateApi": true,
+    "security": {
+      "csp": "default-src blob: data: filesystem: ws: wss: http: https: tauri: 'unsafe-eval' 'unsafe-inline' 'self' img-src: 'self'; connect-src ipc: http://ipc.localhost"
     },
     "windows": [
       {
@@ -61,9 +54,6 @@
         "fullscreen": false,
         "titleBarStyle": "Transparent"
       }
-    ],
-    "security": {
-      "csp": "default-src blob: data: filesystem: ws: wss: http: https: tauri: 'unsafe-eval' 'unsafe-inline' 'self' img-src: 'self'"
-    }
+    ]
   }
 }

@@ -78,9 +78,9 @@
 <script lang="ts">
 import { computed, defineComponent, onMounted, ref } from 'vue'
 import isEmpty from 'lodash/isEmpty'
-import { invoke } from '@tauri-apps/api/tauri'
+import { invoke } from '@tauri-apps/api/core'
 import { useConfigStore } from '@/store/configStore'
-import { open } from '@tauri-apps/api/dialog'
+import { open } from '@tauri-apps/plugin-dialog'
 import LogOverlay from '@/components/log/LogOverlay.vue'
 import { useLogStore } from '@/store/logStore'
 import { IplButton, IplExpandingSpace, IplSpace } from '@iplsplatoon/vue-components'

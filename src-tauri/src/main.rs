@@ -3,10 +3,8 @@ all(not(debug_assertions), target_os = "windows"),
 windows_subsystem = "windows"
 )]
 
-extern crate core;
-
-use tauri::{AboutMetadata, Manager, Menu, MenuItem, RunEvent, Submenu};
-use tauri::api::process::{CommandEvent};
+use tauri::{Manager, RunEvent};
+use tauri_plugin_shell::process::CommandEvent;
 use tauri::async_runtime::{JoinHandle, Receiver};
 use crate::log::{err_to_string, format_error, LogEmitter};
 
@@ -53,7 +51,17 @@ fn open_path_in_terminal(path: String) -> Result<(), String> {
 fn main() {
     let _ = fix_path_env::fix();
 
-    let mut builder = tauri::Builder::default()
+    let builder = tauri::Builder::default()
+        .plugin(tauri_plugin_http::init())
+        .plugin(tauri_plugin_shell::init())
+        .plugin(tauri_plugin_fs::init())
+        .plugin(tauri_plugin_os::init())
+        .plugin(tauri_plugin_dialog::init())
+        .setup(|app| {
+            app.manage(ManagedNodecg::new(app.handle().clone()));
+
+            Ok(())
+        })
         .invoke_handler(tauri::generate_handler![
             nodecg::install_nodecg,
             nodecg::start_nodecg,
@@ -65,26 +73,25 @@ fn main() {
             bundles::uninstall_bundle,
             bundles::get_bundle_git_tag,
             dependencies::get_nodejs_version
-        ])
-        .manage(ManagedNodecg::new());
+        ]);
 
-    if cfg!(target_os = "macos") {
-        let menu_app = Menu::new()
-            .add_native_item(MenuItem::About("NCGMGR".to_string(), AboutMetadata::new()))
-            .add_native_item(MenuItem::Quit);
-
-        let menu_edit = Menu::new()
-            .add_native_item(MenuItem::Cut)
-            .add_native_item(MenuItem::Copy)
-            .add_native_item(MenuItem::Paste)
-            .add_native_item(MenuItem::SelectAll)
-            .add_native_item(MenuItem::Undo)
-            .add_native_item(MenuItem::Redo);
-
-        builder = builder.menu(Menu::new()
-            .add_submenu(Submenu::new("NCGMGR", menu_app))
-            .add_submenu(Submenu::new("Edit", menu_edit)));
-    }
+    // if cfg!(target_os = "macos") {
+        // let menu_app = Menu::new()
+        //     .add_native_item(MenuItem::About("NCGMGR".to_string(), AboutMetadata::new()))
+        //     .add_native_item(MenuItem::Quit);
+        // 
+        // let menu_edit = Menu::new()
+        //     .add_native_item(MenuItem::Cut)
+        //     .add_native_item(MenuItem::Copy)
+        //     .add_native_item(MenuItem::Paste)
+        //     .add_native_item(MenuItem::SelectAll)
+        //     .add_native_item(MenuItem::Undo)
+        //     .add_native_item(MenuItem::Redo);
+        // 
+        // builder = builder.menu(Menu::new()
+        //     .add_submenu(Submenu::new("NCGMGR", menu_app))
+        //     .add_submenu(Submenu::new("Edit", menu_edit)));
+    // }
 
     let app = builder
         .build(tauri::generate_context!())
@@ -96,7 +103,7 @@ fn main() {
             match managed_nodecg.stop() {
                 Ok(_) => {}
                 Err(e) => {
-                    let logger = LogEmitter::new(handle.clone(), "run-nodecg");
+                    let logger = LogEmitter::new(&handle, "run-nodecg");
                     logger.emit(&err_to_string("Failed to shut down NodeCG", e));
                     api.prevent_exit();
                 }

@@ -229,7 +229,7 @@ describe('BundleConfig', () => {
     })
 
     it('disables opening bundle in terminal if system is linux', async () => {
-        mockTauriOs.type.mockResolvedValue('Linux')
+        mockTauriOs.type.mockResolvedValue('linux')
         const wrapper = mount(BundleConfig, {
             props: {
                 bundle: {
@@ -243,7 +243,7 @@ describe('BundleConfig', () => {
         expect(wrapper.getComponent<typeof IplButton>('[data-test="open-in-terminal-button"]').vm.$props.disabled).toEqual(true)
     })
 
-    it.each(['Windows_NT', 'Darwin'])('enables opening bundle in terminal if system is %s', async (type) => {
+    it.each(['windows', 'macos'])('enables opening bundle in terminal if system is %s', async (type) => {
         mockTauriOs.type.mockResolvedValue(type)
         const wrapper = mount(BundleConfig, {
             props: {

@@ -1,10 +1,10 @@
-import { createDir, readDir, readTextFile, removeFile, writeFile } from '@tauri-apps/api/fs'
+import { mkdir, readDir, readTextFile, remove, writeFile } from '@tauri-apps/plugin-fs'
 import { PackageSchema } from '@/types/package'
 import isEmpty from 'lodash/isEmpty'
 import { InstallStatus } from '@/store/nodecgStore'
-import { invoke } from '@tauri-apps/api/tauri'
+import { invoke } from '@tauri-apps/api/core'
 import { fileExists, folderExists } from '@/util/fs'
-import { open } from '@tauri-apps/api/shell'
+import { open } from '@tauri-apps/plugin-shell'
 import { NodecgConfiguration } from '@/types/nodecg'
 
 export async function getNodecgStatus (directory: string): Promise<{ status: InstallStatus, message: string }> {
@@ -24,7 +24,7 @@ export async function getNodecgStatus (directory: string): Promise<{ status: Ins
     } else {
         const packageFile = dir.find(entry => entry.name === 'package.json')
         if (packageFile) {
-            const packageJson: PackageSchema = JSON.parse(await readTextFile(packageFile.path))
+            const packageJson: PackageSchema = JSON.parse(await readTextFile(`${directory}/package.json`))
             if (packageJson.name === 'nodecg') {
                 return {
                     status: InstallStatus.INSTALLED,
@@ -55,25 +55,25 @@ export async function getBundles (directory: string): Promise<Bundle[]> {
         throw new Error('No bundle directory provided.')
     }
 
-    const bundlesDir = await readDir(directory + '/bundles', { recursive: true })
+    const bundlesDir = await readDir(directory + '/bundles')
     return Promise.all(
         bundlesDir
-            .filter(entry => entry.children?.some(child => child.name === 'package.json'))
-            .map(async (dir) => {
-                const packageFile = dir.children?.find(child => child.name === 'package.json')?.path
-                if (!packageFile) {
-                    throw new Error(`Missing package.json in directory ${dir.name}`)
-                }
-
-                const packageJson = JSON.parse(await readTextFile(packageFile)) as PackageSchema
-
-                return {
-                    name: packageJson.name,
-                    version: packageJson.version == null || packageJson.version.trim() === '0.0.0'
-                        ? await getBundleGitTag(packageJson.name, directory)
-                        : packageJson.version
+            .filter(entry => entry.isDirectory)
+            .map(async (dir): Promise<Bundle | null> => {
+                try {
+                    const packageJson = JSON.parse(await readTextFile(`${directory}/bundles/${dir.name}/package.json`)) as PackageSchema
+                    return {
+                        name: packageJson.name,
+                        version: packageJson.version == null || packageJson.version.trim() === '0.0.0'
+                            ? await getBundleGitTag(packageJson.name, directory)
+                            : packageJson.version
+                    }
+                } catch (e) {
+                    console.error('Failed to read package.json in bundle directory', e)
+                    return null
                 }
             }))
+        .then((bundles) => bundles.filter(bundle => bundle != null) as Bundle[])
 }
 
 export async function getBundleVersions (bundleName: string, nodecgPath: string): Promise<string[]> {
@@ -89,7 +89,7 @@ export async function removeBundle (bundleName: string, nodecgPath: string): Pro
         invoke<string>('uninstall_bundle', { nodecgPath, bundleName }),
         (async () => {
             if (await configFileExists(bundleName, nodecgPath)) {
-                return removeFile(`${nodecgPath}/cfg/${bundleName}.json`)
+                return remove(`${nodecgPath}/cfg/${bundleName}.json`)
             }
         })()
     ])
@@ -101,10 +101,11 @@ export async function openConfigFile (bundleName: string, nodecgPath: string): P
 
 export async function createConfigFile (bundleName: string, nodecgPath: string): Promise<void> {
     if (!await folderExists(`${nodecgPath}/cfg`)) {
-        await createDir(`${nodecgPath}/cfg`)
+        await mkdir(`${nodecgPath}/cfg`)
     }
 
-    return writeFile({ path: `${nodecgPath}/cfg/${bundleName}.json`, contents: '{\n\n}' })
+    const encoder = new TextEncoder()
+    return writeFile(`${nodecgPath}/cfg/${bundleName}.json`, encoder.encode('{\n\n}'))
 }
 
 export async function getNodecgConfig (nodecgPath: string): Promise<NodecgConfiguration | null> {

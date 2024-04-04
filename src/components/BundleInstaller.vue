@@ -25,7 +25,7 @@
 <script lang="ts">
 import { defineComponent, ref } from 'vue'
 import { IplButton, IplInput, IplSpace } from '@iplsplatoon/vue-components'
-import { invoke } from '@tauri-apps/api/tauri'
+import { invoke } from '@tauri-apps/api/core'
 import { useLogStore } from '@/store/logStore'
 import { useNodecgStore } from '@/store/nodecgStore'
 import { useConfigStore } from '@/store/configStore'
