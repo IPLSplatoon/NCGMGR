@@ -2272,7 +2272,7 @@ dependencies = [
 
 [[package]]
 name = "ncgmgr"
-version = "0.6.0"
+version = "0.7.0"
 dependencies = [
  "fix-path-env",
  "flate2",
