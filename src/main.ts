@@ -4,6 +4,7 @@ import App from './App.vue'
 import { createPinia } from 'pinia'
 import { setUpErrorHandler } from '@/store/errorHandlerStore'
 import { useConfigStore } from '@/store/configStore'
+import { useDependencyStore } from '@/store/dependencyStore'
 
 function setColorTheme(useLightMode: boolean) {
     if (useLightMode) {
@@ -25,6 +26,8 @@ function setColorTheme(useLightMode: boolean) {
 
     const configStore = useConfigStore()
     await configStore.init()
+    const dependencyStore = useDependencyStore()
+    await dependencyStore.checkVersions()
 
     setUpErrorHandler(app)
 

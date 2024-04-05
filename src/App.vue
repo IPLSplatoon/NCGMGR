@@ -32,8 +32,6 @@ export default defineComponent({
         const nodecgStore = useNodecgStore()
         const dependencyStore = useDependencyStore()
 
-        dependencyStore.checkVersions()
-
         return {
             nodecgInstalled: computed(() => nodecgStore.status.installStatus === InstallStatus.INSTALLED),
             dependencyStore
