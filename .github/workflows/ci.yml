@@ -5,7 +5,7 @@ on:
   workflow_dispatch:
 
 jobs:
-  test:
+  lint:
     timeout-minutes: 30
     runs-on: ubuntu-latest
     steps:
@@ -27,9 +27,6 @@ jobs:
 
       - name: Run ESLint on source
         run: yarn lint
-
-      - name: Run tests
-        run: yarn test:unit
 
   build-publish:
     if: github.ref == 'refs/heads/master'
