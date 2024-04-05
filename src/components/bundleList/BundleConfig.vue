@@ -16,33 +16,28 @@
                 :disabled="disableVersionChange"
                 :options="versionOptions"
                 label="Version"
-                data-test="version-selector"
             />
             <ipl-button
                 label="Change version"
                 :disabled="disableVersionChange || bundle.version === selectedVersion"
                 class="m-t-8"
-                data-test="set-version-button"
                 @click="setVersion"
             />
             <log-overlay
                 v-model:visible="showInstallLog"
                 title="Installing..."
-                data-test="bundle-log-overlay"
                 log-key="change-bundle-version"
             />
         </ipl-space>
         <ipl-space class="max-width m-l-8 h-max-content">
             <ipl-button
                 label="Open folder"
-                data-test="open-folder-button"
                 @click="openBundleFolder"
             />
             <ipl-button
                 label="Open in terminal"
                 :disabled="!enableOpenTerminal"
                 class="m-t-8"
-                data-test="open-in-terminal-button"
                 @click="openBundleInTerminal"
             />
             <ipl-button
@@ -50,7 +45,6 @@
                 :color="hasConfigFile ? 'blue' : 'green'"
                 :disabled="configFileLoading"
                 class="m-t-8"
-                data-test="open-config-file-button"
                 @click="openOrCreateConfigFile"
             />
         </ipl-space>

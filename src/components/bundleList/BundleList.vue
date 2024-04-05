@@ -27,7 +27,6 @@
         <div
             v-for="bundle in bundles"
             :key="`bundle_${bundle.name}`"
-            :data-test="`bundle_${bundle.name}`"
             class="bundle-settings__item"
         >
             <div class="bundle-settings__item-content">
@@ -38,7 +37,6 @@
                         small
                         icon="cog"
                         :color="visibleBundleConfigs[bundle.name] ? themeColors.backgroundTertiary : 'blue'"
-                        data-test="configure-button"
                         @click="toggleConfiguration(bundle.name)"
                     />
                     <ipl-button
@@ -47,7 +45,6 @@
                         small
                         tooltip="Uninstall"
                         class="uninstall-button m-l-4"
-                        data-test="uninstall-button"
                         @click="initiateUninstall(bundle.name)"
                     />
                 </div>
@@ -58,10 +55,7 @@
                 class="m-x-8"
             />
         </div>
-        <ipl-overlay
-            v-model:visible="uninstallOverlayProps.visible"
-            data-test="uninstall-overlay"
-        >
+        <ipl-overlay v-model:visible="uninstallOverlayProps.visible">
             <div class="text-center">
                 Are you sure you want to uninstall <span class="bold">{{ uninstallOverlayProps.bundleName }}</span>?
             </div>
@@ -70,13 +64,11 @@
                     label="Uninstall"
                     color="red"
                     async
-                    data-test="confirm-uninstall-button"
                     @click="doUninstall"
                 />
                 <ipl-button
                     label="Cancel"
                     class="m-l-8"
-                    data-test="cancel-uninstall-button"
                     @click="cancelUninstall"
                 />
             </div>

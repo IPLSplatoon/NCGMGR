@@ -4,19 +4,16 @@
             v-model="bundlePath"
             name="bundleName"
             label="Bundle Repository Path"
-            data-test="bundle-path-input"
         />
         <ipl-button
             class="m-t-8"
             label="Install"
             color="green"
-            data-test="install-button"
             @click="doInstall"
         />
         <log-overlay
             v-model:visible="showInstallLog"
             title="Installing..."
-            data-test="bundle-log-overlay"
             log-key="install-bundle"
         />
     </ipl-space>

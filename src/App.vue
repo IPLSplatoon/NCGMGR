@@ -3,7 +3,6 @@
     <ipl-message
         v-if="!dependencyStore.hasNodejs"
         type="error"
-        data-test="missing-nodejs-message"
     >
         Please install Node.js to continue.
     </ipl-message>

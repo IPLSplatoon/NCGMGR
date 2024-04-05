@@ -13,7 +13,6 @@
                 tooltip="Refresh"
                 class="button"
                 async
-                data-test="refresh-button"
                 @click="refreshBundles"
             />
             <ipl-button
@@ -22,7 +21,6 @@
                 small
                 tooltip="Install new bundle"
                 class="button m-l-4"
-                data-test="install-new-bundle-button"
                 @click="installingBundle = !installingBundle"
             />
         </div>

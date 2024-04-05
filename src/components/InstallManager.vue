@@ -13,7 +13,6 @@
         <div class="layout horizontal m-t-8">
             <ipl-button
                 label="Select folder"
-                data-test="install-directory-select-button"
                 @click="selectDirectory"
             />
             <ipl-button
@@ -21,14 +20,12 @@
                 :label="runStatus === RunStatus.RUNNING ? 'Stop' : 'Start'"
                 class="m-l-8"
                 :color="runStatus === RunStatus.RUNNING ? 'red' : 'green'"
-                data-test="start-stop-toggle-button"
                 @click="toggleStartStop"
             />
             <ipl-button
                 v-else
                 label="Install"
                 :disabled="nodecgStatus !== NodecgStatus.READY_TO_INSTALL"
-                data-test="install-button"
                 class="m-l-8"
                 color="green"
                 @click="doInstall"
@@ -36,7 +33,6 @@
             <ipl-button
                 label="Open dashboard"
                 :disabled="runStatus !== RunStatus.RUNNING"
-                data-test="open-dashboard-button"
                 class="m-l-8"
                 color="green"
                 @click="openDashboard"
@@ -48,7 +44,6 @@
         class="m-t-8"
         expanded
         color="secondary"
-        data-test="nodecg-log-space"
     >
         <template #title>
             NodeCG log
