@@ -3,22 +3,10 @@
         class="layout vertical"
         color="secondary"
     >
-        <div>Installation folder: {{ installFolder }}</div>
-        <status-row
-            :color="nodecgStatusColor"
-            class="m-t-8"
-        >
-            {{ nodecgStatusMessage }}
-        </status-row>
-        <div class="layout horizontal m-t-8">
-            <ipl-button
-                label="Select folder"
-                @click="selectDirectory"
-            />
+        <div class="layout horizontal">
             <ipl-button
                 v-if="nodecgStatus === NodecgStatus.INSTALLED"
-                :label="runStatus === RunStatus.RUNNING ? 'Stop' : 'Start'"
-                class="m-l-8"
+                :label="runStatus === RunStatus.RUNNING ? 'Stop NodeCG' : 'Start NodeCG'"
                 :color="runStatus === RunStatus.RUNNING ? 'red' : 'green'"
                 @click="toggleStartStop"
             />
@@ -72,14 +60,11 @@
 
 <script lang="ts">
 import { computed, defineComponent, onMounted, ref } from 'vue'
-import isEmpty from 'lodash/isEmpty'
 import { invoke } from '@tauri-apps/api/core'
 import { useConfigStore } from '@/store/configStore'
-import { open } from '@tauri-apps/plugin-dialog'
 import LogOverlay from '@/components/log/LogOverlay.vue'
 import { useLogStore } from '@/store/logStore'
 import { IplButton, IplExpandingSpace, IplSpace } from '@iplsplatoon/vue-components'
-import StatusRow from '@/components/StatusRow.vue'
 import { InstallStatus, RunStatus, useNodecgStore } from '@/store/nodecgStore'
 import LogDisplay from '@/components/log/LogDisplay.vue'
 import { openDashboard } from '@/service/nodecgService'
@@ -87,7 +72,7 @@ import { openDashboard } from '@/service/nodecgService'
 export default defineComponent({
     name: 'InstallManager',
 
-    components: { IplExpandingSpace, LogDisplay, StatusRow, IplSpace, IplButton, LogOverlay },
+    components: { IplExpandingSpace, LogDisplay, IplSpace, IplButton, LogOverlay },
 
     setup () {
         const config = useConfigStore()
@@ -95,9 +80,7 @@ export default defineComponent({
         const nodecgStore = useNodecgStore()
 
         const showLog = ref(false)
-
         const installFolder = computed(() => config.userConfig.nodecgInstallPath)
-
         const nodecgStatus = computed<InstallStatus>(() => nodecgStore.status.installStatus)
 
         onMounted(() => {
@@ -105,36 +88,11 @@ export default defineComponent({
         })
 
         return {
-            installDisabled: computed(() => isEmpty(installFolder.value)),
+            installDisabled: computed(() => installFolder.value == null),
             installFolder,
             showLog,
             nodecgStatus,
             NodecgStatus: InstallStatus,
-            nodecgStatusColor: computed(() => {
-                switch (nodecgStatus.value) {
-                    case InstallStatus.READY_TO_INSTALL:
-                        return 'yellow'
-                    case InstallStatus.INSTALLED:
-                        return 'green'
-                    case InstallStatus.UNABLE_TO_INSTALL:
-                        return 'red'
-                    default:
-                        return 'gray'
-                }
-            }),
-            nodecgStatusMessage: computed(() => nodecgStore.status.message),
-            async selectDirectory () {
-                const path = await open({ directory: true })
-
-                if (!path) return
-
-                // todo: add a new command to check the given folder before allowing the update
-                const newInstallFolder = Array.isArray(path) ? path[0] : path
-                await config.patch({
-                    nodecgInstallPath: newInstallFolder
-                })
-                await nodecgStore.checkNodecgStatus()
-            },
             async doInstall () {
                 const logKey = 'install-nodecg'
                 logStore.reset(logKey)

@@ -4,6 +4,15 @@
         color="secondary"
     >
         <div class="bold m-b-6">
+            NodeCG status
+        </div>
+        <install-folder-config />
+    </ipl-space>
+    <ipl-space
+        class="m-b-8"
+        color="secondary"
+    >
+        <div class="bold m-b-6">
             Dependency status
         </div>
         <dependency-checker />
@@ -25,11 +34,12 @@ import { defineComponent, ref } from 'vue'
 import { IplLabel, IplSmallToggle, IplSpace } from '@iplsplatoon/vue-components'
 import { useConfigStore } from '@/store/configStore'
 import DependencyChecker from '@/components/DependencyChecker.vue'
+import InstallFolderConfig from '@/components/InstallFolderConfig.vue'
 
 export default defineComponent({
     name: 'ConfigWindow',
 
-    components: { DependencyChecker, IplLabel, IplSmallToggle, IplSpace },
+    components: { InstallFolderConfig, DependencyChecker, IplLabel, IplSmallToggle, IplSpace },
 
     setup () {
         const configStore = useConfigStore()
