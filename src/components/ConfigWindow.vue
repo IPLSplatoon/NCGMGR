@@ -23,7 +23,6 @@
 <script lang="ts">
 import { defineComponent, ref } from 'vue'
 import { IplLabel, IplSmallToggle, IplSpace } from '@iplsplatoon/vue-components'
-import { computed } from 'vue'
 import { useConfigStore } from '@/store/configStore'
 import DependencyChecker from '@/components/DependencyChecker.vue'
 

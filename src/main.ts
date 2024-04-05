@@ -3,7 +3,7 @@ import { createApp } from 'vue'
 import App from './App.vue'
 import { createPinia } from 'pinia'
 import { setUpErrorHandler } from '@/store/errorHandlerStore'
-import { useConfigStore } from '@/store/configStore';
+import { useConfigStore } from '@/store/configStore'
 
 function setColorTheme(useLightMode: boolean) {
     if (useLightMode) {

@@ -1,8 +1,8 @@
 import { defineStore } from 'pinia'
-import { appConfigDir } from '@tauri-apps/api/path';
-import { Store } from '@tauri-apps/plugin-store';
-import { readonly, ref } from 'vue';
-import { invoke } from '@tauri-apps/api/core';
+import { appConfigDir } from '@tauri-apps/api/path'
+import { Store } from '@tauri-apps/plugin-store'
+import { readonly, ref } from 'vue'
+import { invoke } from '@tauri-apps/api/core'
 
 export const LOCAL_STORAGE_CONFIG_KEY = 'config'
 const STORE_CONFIG_KEY = 'config'
