@@ -21,8 +21,8 @@ pub enum Error {
   NodeCGInstall(String),
   #[error("Error launching NodeCG: {0}")]
   NodeCGLaunch(String),
-  #[error("NodeCG install path is not configured")]
-  MissingInstallPath,
+  #[error("NodeCG install directory is not configured")]
+  MissingInstallDir,
   #[error("Bundle {0} is not installed.")]
   MissingBundle(String),
   #[error("Failed to uninstall bundle {0}: {1}")]

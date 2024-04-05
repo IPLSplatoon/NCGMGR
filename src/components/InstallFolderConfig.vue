@@ -1,5 +1,5 @@
 <template>
-    <div>Installation folder: {{ configStore.userConfig.nodecgInstallPath }}</div>
+    <div>Installation folder: {{ configStore.userConfig.nodecgInstallDir }}</div>
     <status-row
         :color="statusColor"
         class="m-t-6"
@@ -62,23 +62,22 @@ async function changeInstallFolder() {
 
     if (!path) return
 
-    // todo: add a new command to check the given folder before allowing the update
     const newInstallFolder = Array.isArray(path) ? path[0] : path
     await configStore.patch({
-        nodecgInstallPath: newInstallFolder
+        nodecgInstallDir: newInstallFolder
     })
     await nodecgStore.checkNodecgStatus()
 }
 
 function openInstallFolder() {
-    if (configStore.userConfig.nodecgInstallPath != null) {
-        openShell(configStore.userConfig.nodecgInstallPath)
+    if (configStore.userConfig.nodecgInstallDir != null) {
+        openShell(configStore.userConfig.nodecgInstallDir)
     }
 }
 
 async function openInstallFolderInTerminal() {
-    if (configStore.userConfig.nodecgInstallPath != null) {
-        await invoke('open_path_in_terminal', { path: configStore.userConfig.nodecgInstallPath })
+    if (configStore.userConfig.nodecgInstallDir != null) {
+        await invoke('open_path_in_terminal', { path: configStore.userConfig.nodecgInstallDir })
     }
 }
 </script>

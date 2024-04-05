@@ -118,7 +118,7 @@ export default defineComponent({
         async function checkConfigFile (bundleName: string): Promise<void> {
             configFileLoading.value = true
             hasConfigFile.value = false
-            configFileExists(bundleName, configStore.userConfig.nodecgInstallPath).then(result => {
+            configFileExists(bundleName, configStore.userConfig.nodecgInstallDir).then(result => {
                 hasConfigFile.value = result
             }).catch(e => {
                 hasConfigFile.value = false
@@ -129,7 +129,7 @@ export default defineComponent({
         }
 
         function getBundlePath () {
-            return `${configStore.userConfig.nodecgInstallPath}/bundles/${props.bundle.name}`
+            return `${configStore.userConfig.nodecgInstallDir}/bundles/${props.bundle.name}`
         }
 
         return {
@@ -168,11 +168,11 @@ export default defineComponent({
             },
             async openOrCreateConfigFile () {
                 if (!hasConfigFile.value) {
-                    await createConfigFile(props.bundle.name, configStore.userConfig.nodecgInstallPath)
+                    await createConfigFile(props.bundle.name, configStore.userConfig.nodecgInstallDir)
                     checkConfigFile(props.bundle.name)
                 }
 
-                await openConfigFile(props.bundle.name, configStore.userConfig.nodecgInstallPath)
+                await openConfigFile(props.bundle.name, configStore.userConfig.nodecgInstallDir)
             },
             async openBundleInTerminal () {
                 await invoke('open_path_in_terminal', { path: getBundlePath() })

@@ -41,9 +41,9 @@ pub fn install_bundle(handle: tauri::AppHandle, bundle_url: String) -> Result<()
 
   logger.emit(&format!("Installing {}...", parsed_url.bundle_name));
 
-  let install_path = config::with_config(handle.clone(), |c| Ok(c.nodecg_install_path))?
-    .ok_or(Error::MissingInstallPath)?;
-  let dir_bundles = format!("{}/bundles", install_path);
+  let install_dir = config::with_config(handle.clone(), |c| Ok(c.nodecg_install_dir))?
+    .ok_or(Error::MissingInstallDir)?;
+  let dir_bundles = format!("{}/bundles", install_dir);
   if !Path::new(&dir_bundles).exists() {
     logger.emit("Creating missing bundles directory");
     fs::create_dir(dir_bundles)?;
@@ -55,7 +55,7 @@ pub fn install_bundle(handle: tauri::AppHandle, bundle_url: String) -> Result<()
   logger.emit_progress(2);
 
   logger.emit("Cloning repository...");
-  let bundle_path = format!("{}/bundles/{}", install_path, parsed_url.bundle_name);
+  let bundle_path = format!("{}/bundles/{}", install_dir, parsed_url.bundle_name);
   let repo = Repository::clone(&parsed_url.bundle_url, bundle_path.clone())?;
   logger.emit_progress(3);
   if versions.len() > 1 {
@@ -77,9 +77,9 @@ pub fn fetch_bundle_versions(
   handle: tauri::AppHandle,
   bundle_name: String,
 ) -> Result<Vec<String>, Error> {
-  let install_path = config::with_config(handle.clone(), |c| Ok(c.nodecg_install_path))?
-    .ok_or(Error::MissingInstallPath)?;
-  let bundle_dir = format!("{}/bundles/{}", install_path, bundle_name);
+  let install_dir = config::with_config(handle.clone(), |c| Ok(c.nodecg_install_dir))?
+    .ok_or(Error::MissingInstallDir)?;
+  let bundle_dir = format!("{}/bundles/{}", install_dir, bundle_name);
   let path = Path::new(&bundle_dir);
 
   if !path.exists() {
@@ -104,10 +104,10 @@ pub fn set_bundle_version(
   bundle_name: String,
   version: String,
 ) -> Result<(), Error> {
-  let install_path = config::with_config(handle.clone(), |c| Ok(c.nodecg_install_path))?
-    .ok_or(Error::MissingInstallPath)?;
+  let install_dir = config::with_config(handle.clone(), |c| Ok(c.nodecg_install_dir))?
+    .ok_or(Error::MissingInstallDir)?;
   let logger = LogEmitter::with_progress(&handle, "change-bundle-version", 4);
-  let bundle_dir = format!("{}/bundles/{}", install_path, bundle_name);
+  let bundle_dir = format!("{}/bundles/{}", install_dir, bundle_name);
   let path = Path::new(&bundle_dir);
 
   if !path.exists() {
@@ -135,10 +135,10 @@ pub fn set_bundle_version(
 
 #[tauri::command(async)]
 pub fn uninstall_bundle(handle: tauri::AppHandle, bundle_name: String) -> Result<(), Error> {
-  let install_path = config::with_config(handle.clone(), |c| Ok(c.nodecg_install_path))?
-    .ok_or(Error::MissingInstallPath)?;
+  let install_dir = config::with_config(handle.clone(), |c| Ok(c.nodecg_install_dir))?
+    .ok_or(Error::MissingInstallDir)?;
 
-  rm_rf::remove(format!("{}/bundles/{}", install_path, bundle_name))
+  rm_rf::remove(format!("{}/bundles/{}", install_dir, bundle_name))
     .map_err(|e| Error::BundleUninstall(bundle_name, e.to_string()))?;
   Ok(())
 }
@@ -148,9 +148,9 @@ pub fn get_bundle_git_tag(
   handle: tauri::AppHandle,
   bundle_name: String,
 ) -> Result<Option<String>, Error> {
-  let install_path = config::with_config(handle.clone(), |c| Ok(c.nodecg_install_path))?
-    .ok_or(Error::MissingInstallPath)?;
-  let bundle_dir = format!("{}/bundles/{}", install_path, bundle_name);
+  let install_dir = config::with_config(handle.clone(), |c| Ok(c.nodecg_install_dir))?
+    .ok_or(Error::MissingInstallDir)?;
+  let bundle_dir = format!("{}/bundles/{}", install_dir, bundle_name);
   let path = Path::new(&bundle_dir);
 
   if !path.exists() {

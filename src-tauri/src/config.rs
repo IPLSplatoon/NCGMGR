@@ -8,14 +8,14 @@ static STORE_CONFIG_KEY: &str = "config";
 #[derive(serde::Deserialize, serde::Serialize)]
 #[serde(rename_all = "camelCase")]
 pub struct UserConfig {
-  pub nodecg_install_path: Option<String>,
+  pub nodecg_install_dir: Option<String>,
   pub enable_error_log: bool,
 }
 
 impl Default for UserConfig {
   fn default() -> Self {
     UserConfig {
-      nodecg_install_path: None,
+      nodecg_install_dir: None,
       enable_error_log: false,
     }
   }

@@ -117,7 +117,7 @@ export default defineComponent({
             },
             doUninstall: async () => {
                 try {
-                    await removeBundle(uninstallOverlayProps.bundleName, configStore.userConfig.nodecgInstallPath)
+                    await removeBundle(uninstallOverlayProps.bundleName, configStore.userConfig.nodecgInstallDir)
                     uninstallOverlayProps.visible = false
                 } finally {
                     nodecgStore.getBundleList()

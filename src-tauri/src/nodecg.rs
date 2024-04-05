@@ -117,24 +117,23 @@ pub async fn install_nodecg(handle: AppHandle) -> Result<(), Error> {
   logger.emit("Extracting archive...");
   let gz = GzDecoder::new(tarball.iter().as_slice());
   let mut archive = Archive::new(gz);
-  let install_path = config::with_config(handle.clone(), |c| Ok(c.nodecg_install_path))?
-    .ok_or(Error::MissingInstallPath)?;
-  let base_unpack_path = Path::new(&install_path);
+  let install_dir = config::with_config(handle.clone(), |c| Ok(c.nodecg_install_dir))?
+    .ok_or(Error::MissingInstallDir)?;
   match archive.entries().map(|entries| {
     entries
       .filter_map(|e| e.ok())
       .map(|mut entry| -> Result<(), Box<dyn std::error::Error + '_>> {
         // Skips the first directory of the archive.
         let entry_path = entry.path()?.components().skip(1).collect::<PathBuf>();
-        let unpack_path = base_unpack_path.join(entry_path);
+        let unpack_dir = Path::new(&install_dir).join(entry_path);
         if entry.header().entry_type() != tar::EntryType::Directory {
-          if let Some(p) = unpack_path.parent() {
+          if let Some(p) = unpack_dir.parent() {
             if !p.exists() {
               fs::create_dir_all(p)?;
             }
           }
         }
-        entry.unpack(&unpack_path)?;
+        entry.unpack(&unpack_dir)?;
         Ok(())
       })
   }) {
@@ -157,7 +156,7 @@ pub async fn install_nodecg(handle: AppHandle) -> Result<(), Error> {
   logger.emit_progress(3);
 
   let shell = handle.shell();
-  npm::install_npm_dependencies(shell, &install_path).and_then(|child| {
+  npm::install_npm_dependencies(shell, &install_dir).and_then(|child| {
     log_npm_install(logger, child);
     Ok(())
   })
@@ -169,9 +168,9 @@ pub fn start_nodecg(
   nodecg: tauri::State<'_, ManagedNodecg>,
 ) -> Result<String, Error> {
   let logger = LogEmitter::new(&handle, "run-nodecg");
-  let install_path = config::with_config(handle.clone(), |c| Ok(c.nodecg_install_path))?
-    .ok_or(Error::MissingInstallPath)?;
-  let output = nodecg.start(&install_path)?;
+  let install_dir = config::with_config(handle.clone(), |c| Ok(c.nodecg_install_dir))?
+    .ok_or(Error::MissingInstallDir)?;
+  let output = nodecg.start(&install_dir)?;
   emit_tauri_process_output(logger, output);
 
   Ok("Started successfully".to_string())

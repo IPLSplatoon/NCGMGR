@@ -80,7 +80,7 @@ export default defineComponent({
         const nodecgStore = useNodecgStore()
 
         const showLog = ref(false)
-        const installFolder = computed(() => config.userConfig.nodecgInstallPath)
+        const installFolder = computed(() => config.userConfig.nodecgInstallDir)
         const nodecgStatus = computed<InstallStatus>(() => nodecgStore.status.installStatus)
 
         onMounted(() => {
