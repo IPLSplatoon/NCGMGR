@@ -43,7 +43,7 @@ export const useNodecgStore = defineStore('nodecg', {
             this.status.message = 'Checking status...'
 
             try {
-                const { status, message } = await getNodecgStatus(configStore.installPath)
+                const { status, message } = await getNodecgStatus(configStore.userConfig.nodecgInstallPath)
                 this.status.message = message
                 this.status.installStatus = status
                 if (status === InstallStatus.INSTALLED) {
@@ -61,7 +61,7 @@ export const useNodecgStore = defineStore('nodecg', {
             const configStore = useConfigStore()
             this.status.bundlesLoading = true
             try {
-                this.bundles = await getBundles(configStore.installPath)
+                this.bundles = await getBundles(configStore.userConfig.nodecgInstallPath)
             } finally {
                 this.status.bundlesLoading = false
             }

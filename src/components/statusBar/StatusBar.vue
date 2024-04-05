@@ -84,7 +84,7 @@ export default defineComponent({
         return {
             items: computed(() => pick(items, [
                 'dependencyCheck',
-                ...(configStore.enableErrorLog ? ['errorLog'] : [])
+                ...(configStore.userConfig.enableErrorLog ? ['errorLog'] : [])
             ]))
         }
     }

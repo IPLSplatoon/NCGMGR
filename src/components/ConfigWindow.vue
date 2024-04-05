@@ -9,7 +9,11 @@
         <dependency-checker />
     </ipl-space>
     <ipl-space color="secondary">
-        <ipl-small-toggle v-model="errorLogEnabled">
+        <ipl-small-toggle
+            :model-value="configStore.userConfig.enableErrorLog"
+            :disabled="errorLogToggleDisabled"
+            @update:model-value="onErrorLogToggleChange"
+        >
             Enable error log<br>
             <ipl-label>The error log is useful for diagnosing technical issues.</ipl-label>
         </ipl-small-toggle>
@@ -17,7 +21,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent } from 'vue'
+import { defineComponent, ref } from 'vue'
 import { IplLabel, IplSmallToggle, IplSpace } from '@iplsplatoon/vue-components'
 import { computed } from 'vue'
 import { useConfigStore } from '@/store/configStore'
@@ -30,17 +34,21 @@ export default defineComponent({
 
     setup () {
         const configStore = useConfigStore()
+        const errorLogToggleDisabled = ref(false)
 
         return {
-            errorLogEnabled: computed({
-                get () {
-                    return configStore.enableErrorLog
-                },
-                set (value: boolean) {
-                    configStore.enableErrorLog = value
-                    configStore.persist()
+            configStore,
+            errorLogToggleDisabled,
+            async onErrorLogToggleChange(newValue: boolean) {
+                errorLogToggleDisabled.value = true
+                try {
+                    await configStore.patch({
+                        enableErrorLog: newValue
+                    })
+                } finally {
+                    errorLogToggleDisabled.value = false
                 }
-            })
+            }
         }
     }
 })

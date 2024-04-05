@@ -7,8 +7,8 @@ import { fileExists, folderExists } from '@/util/fs'
 import { open } from '@tauri-apps/plugin-shell'
 import { NodecgConfiguration } from '@/types/nodecg'
 
-export async function getNodecgStatus (directory: string): Promise<{ status: InstallStatus, message: string }> {
-    if (isEmpty(directory?.trim())) {
+export async function getNodecgStatus (directory: string | null): Promise<{ status: InstallStatus, message: string }> {
+    if (directory == null || isEmpty(directory?.trim())) {
         return {
             status: InstallStatus.UNABLE_TO_INSTALL,
             message: 'Please select an installation directory.'
@@ -50,8 +50,8 @@ export interface Bundle {
     version?: string
 }
 
-export async function getBundles (directory: string): Promise<Bundle[]> {
-    if (isEmpty(directory.trim())) {
+export async function getBundles (directory: string | null): Promise<Bundle[]> {
+    if (directory == null || isEmpty(directory.trim())) {
         throw new Error('No bundle directory provided.')
     }
 
@@ -76,17 +76,20 @@ export async function getBundles (directory: string): Promise<Bundle[]> {
         .then((bundles) => bundles.filter(bundle => bundle != null) as Bundle[])
 }
 
-export async function getBundleVersions (bundleName: string, nodecgPath: string): Promise<string[]> {
-    return invoke('fetch_bundle_versions', { bundleName, nodecgPath })
+export async function getBundleVersions (bundleName: string): Promise<string[]> {
+    return invoke('fetch_bundle_versions', { bundleName })
 }
 
-export async function configFileExists (bundleName: string, nodecgPath: string): Promise<boolean> {
+export async function configFileExists (bundleName: string, nodecgPath: string | null): Promise<boolean> {
+    if (nodecgPath == null) {
+        return false
+    }
     return fileExists(`${nodecgPath}/cfg/${bundleName}.json`)
 }
 
-export async function removeBundle (bundleName: string, nodecgPath: string): Promise<[string, void]> {
+export async function removeBundle (bundleName: string, nodecgPath: string | null): Promise<[string, void]> {
     return Promise.all([
-        invoke<string>('uninstall_bundle', { nodecgPath, bundleName }),
+        invoke<string>('uninstall_bundle', { bundleName }),
         (async () => {
             if (await configFileExists(bundleName, nodecgPath)) {
                 return remove(`${nodecgPath}/cfg/${bundleName}.json`)
@@ -95,11 +98,19 @@ export async function removeBundle (bundleName: string, nodecgPath: string): Pro
     ])
 }
 
-export async function openConfigFile (bundleName: string, nodecgPath: string): Promise<void> {
+export async function openConfigFile (bundleName: string, nodecgPath: string | null): Promise<void> {
+    if (nodecgPath == null) {
+        return
+    }
+
     return open(`${nodecgPath}/cfg/${bundleName}.json`)
 }
 
-export async function createConfigFile (bundleName: string, nodecgPath: string): Promise<void> {
+export async function createConfigFile (bundleName: string, nodecgPath: string | null): Promise<void> {
+    if (nodecgPath == null) {
+        return
+    }
+
     if (!await folderExists(`${nodecgPath}/cfg`)) {
         await mkdir(`${nodecgPath}/cfg`)
     }

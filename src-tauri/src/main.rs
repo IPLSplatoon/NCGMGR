@@ -15,6 +15,7 @@ mod git;
 mod log;
 mod nodecg;
 mod npm;
+mod config;
 
 use nodecg::ManagedNodecg;
 
@@ -65,6 +66,7 @@ fn main() {
     .plugin(tauri_plugin_dialog::init())
     .setup(|app| {
       app.manage(ManagedNodecg::new(app.handle().clone()));
+      config::check_config(app.handle().clone())?;
 
       Ok(())
     })
@@ -78,7 +80,8 @@ fn main() {
       bundles::set_bundle_version,
       bundles::uninstall_bundle,
       bundles::get_bundle_git_tag,
-      dependencies::get_nodejs_version
+      dependencies::get_nodejs_version,
+      config::update_config,
     ]);
 
   let app = builder

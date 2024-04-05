@@ -101,12 +101,7 @@ export default defineComponent({
 
         const showLog = ref(false)
 
-        const installFolder = computed({
-            get: () => config.installPath,
-            set: (newValue: string) => {
-                config.installPath = newValue
-            }
-        })
+        const installFolder = computed(() => config.userConfig.nodecgInstallPath)
 
         const nodecgStatus = computed<InstallStatus>(() => nodecgStore.status.installStatus)
 
@@ -138,13 +133,12 @@ export default defineComponent({
 
                 if (!path) return
 
-                if (Array.isArray(path)) {
-                    installFolder.value = path[0]
-                } else {
-                    installFolder.value = path
-                }
-                config.persist()
-                nodecgStore.checkNodecgStatus()
+                // todo: add a new command to check the given folder before allowing the update
+                const newInstallFolder = Array.isArray(path) ? path[0] : path
+                await config.patch({
+                    nodecgInstallPath: newInstallFolder
+                })
+                await nodecgStore.checkNodecgStatus()
             },
             async doInstall () {
                 const logKey = 'install-nodecg'
@@ -175,7 +169,9 @@ export default defineComponent({
                 }
             },
             openDashboard () {
-                openDashboard(installFolder.value)
+                if (installFolder.value != null) {
+                    openDashboard(installFolder.value)
+                }
             }
         }
     }

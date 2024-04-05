@@ -44,7 +44,6 @@ export default defineComponent({
     setup () {
         const logStore = useLogStore()
         const nodecgStore = useNodecgStore()
-        const configStore = useConfigStore()
 
         const showInstallLog = ref(false)
         const bundlePath = ref('')
@@ -57,7 +56,7 @@ export default defineComponent({
                 logStore.reset(logKey)
                 await logStore.listen(logKey, true)
                 showInstallLog.value = true
-                const invocation = invoke('install_bundle', { bundleUrl: bundlePath.value, nodecgPath: configStore.installPath })
+                const invocation = invoke('install_bundle', { bundleUrl: bundlePath.value })
                 logStore.logPromiseResult({ promise: invocation, key: logKey })
                 logStore.listenForProcessExit({ key: logKey, callback: () => nodecgStore.getBundleList() })
             }

@@ -31,11 +31,9 @@ export default defineComponent({
 
     setup () {
         const nodecgStore = useNodecgStore()
-        const configStore = useConfigStore()
         const dependencyStore = useDependencyStore()
 
         dependencyStore.checkVersions()
-        configStore.load()
 
         return {
             nodecgInstalled: computed(() => nodecgStore.status.installStatus === InstallStatus.INSTALLED),

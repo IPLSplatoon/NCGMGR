@@ -23,12 +23,12 @@ pub fn try_open_repository<P: AsRef<Path>>(path: P) -> Result<Option<Repository>
   }
 }
 
-pub fn fetch_versions_for_url(remote_url: &str) -> Result<Vec<String>, Box<dyn std::error::Error>> {
+pub fn fetch_versions_for_url(remote_url: &str) -> Result<Vec<String>, git2::Error> {
   let remote = Remote::create_detached(&*remote_url)?;
   fetch_versions(remote)
 }
 
-pub fn fetch_versions(mut remote: Remote) -> Result<Vec<String>, Box<dyn std::error::Error>> {
+pub fn fetch_versions(mut remote: Remote) -> Result<Vec<String>, git2::Error> {
   let connection = remote.connect_auth(Direction::Fetch, None, None)?;
 
   Ok(
@@ -54,7 +54,7 @@ pub fn fetch_versions(mut remote: Remote) -> Result<Vec<String>, Box<dyn std::er
 pub fn checkout_version(
   repo: &Repository,
   version: String,
-) -> Result<(), Box<dyn std::error::Error>> {
+) -> Result<(), git2::Error> {
   let (object, reference) = repo.revparse_ext(&version)?;
   repo.checkout_tree(&object, None)?;
   match reference {
@@ -65,7 +65,7 @@ pub fn checkout_version(
   Ok(())
 }
 
-pub fn get_remote(repo: &Repository) -> Result<Remote, Box<dyn std::error::Error>> {
+pub fn get_remote(repo: &Repository) -> Result<Remote, git2::Error> {
   let remotes = repo.remotes()?;
   let remote_name = remotes
     .iter()
@@ -81,7 +81,7 @@ pub fn get_remote(repo: &Repository) -> Result<Remote, Box<dyn std::error::Error
 
 pub fn get_tag_name_at_head(
   repo: &Repository,
-) -> Result<Option<String>, Box<dyn std::error::Error>> {
+) -> Result<Option<String>, git2::Error> {
   let tag_names = repo.tag_names(None)?;
 
   let tag_and_refs = tag_names.iter().flat_map(|name| name).flat_map(|name| {

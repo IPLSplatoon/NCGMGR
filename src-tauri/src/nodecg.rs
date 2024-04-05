@@ -11,10 +11,10 @@ use tauri_plugin_shell::process::{CommandChild, CommandEvent};
 use tauri_plugin_shell::ShellExt;
 use unwrap_or::unwrap_ok_or;
 
-use crate::error::{Error, MgrError};
+use crate::error::{Error};
 use crate::log::{emit_tauri_process_output, format_error, LogEmitter};
 use crate::npm::NPMPackageMetadata;
-use crate::{err_to_string, log_npm_install, npm};
+use crate::{config, err_to_string, log_npm_install, npm};
 
 pub struct ManagedNodecg {
   process: Mutex<Option<CommandChild>>,
@@ -32,14 +32,15 @@ impl ManagedNodecg {
   pub fn start(
     &self,
     nodecg_path: &str,
-  ) -> Result<Receiver<CommandEvent>, Box<dyn std::error::Error + '_>> {
-    let mut lock = self.process.lock()?;
+  ) -> Result<Receiver<CommandEvent>, Error> {
+    let mut lock = self.process.lock()
+        .map_err(|e| Error::NodeCGLaunch(e.to_string()))?;
     let process = lock.take();
     let sys =
       System::new_with_specifics(RefreshKind::new().with_processes(ProcessRefreshKind::new()));
 
     if process.is_some() && sys.process(Pid::from_u32(process.unwrap().pid())).is_some() {
-      return Err(MgrError::new("NodeCG is already running.").boxed());
+      return Err(Error::NodeCGLaunch("NodeCG is already running.".to_string()));
     }
 
     let shell = self.app_handle.shell();
@@ -73,7 +74,7 @@ impl ManagedNodecg {
 }
 
 #[tauri::command(async)]
-pub async fn install_nodecg(handle: AppHandle, path: String) -> Result<(), Error> {
+pub async fn install_nodecg(handle: AppHandle) -> Result<(), Error> {
   let logger = LogEmitter::with_progress(&handle, "install-nodecg", 4);
 
   logger.emit("Starting NodeCG install...");
@@ -115,7 +116,8 @@ pub async fn install_nodecg(handle: AppHandle, path: String) -> Result<(), Error
   logger.emit("Extracting archive...");
   let gz = GzDecoder::new(tarball.iter().as_slice());
   let mut archive = Archive::new(gz);
-  let base_unpack_path = Path::new(&path);
+  let install_path = config::with_config(handle.clone(), |c| Ok(c.nodecg_install_path))?.ok_or(Error::MissingInstallPath)?;
+  let base_unpack_path = Path::new(&install_path);
   match archive.entries().map(|entries| {
     entries
       .filter_map(|e| e.ok())
@@ -153,7 +155,7 @@ pub async fn install_nodecg(handle: AppHandle, path: String) -> Result<(), Error
   logger.emit_progress(3);
 
   let shell = handle.shell();
-  npm::install_npm_dependencies(shell, &path).and_then(|child| {
+  npm::install_npm_dependencies(shell, &install_path).and_then(|child| {
     log_npm_install(logger, child);
     Ok(())
   })
@@ -162,13 +164,11 @@ pub async fn install_nodecg(handle: AppHandle, path: String) -> Result<(), Error
 #[tauri::command(async)]
 pub fn start_nodecg(
   handle: AppHandle,
-  nodecg: tauri::State<'_, ManagedNodecg>,
-  path: String,
-) -> Result<String, String> {
+  nodecg: tauri::State<'_, ManagedNodecg>
+) -> Result<String, Error> {
   let logger = LogEmitter::new(&handle, "run-nodecg");
-  let output = unwrap_ok_or!(nodecg.start(&path), e, {
-    return format_error("Failed to start NodeCG", e);
-  });
+  let install_path = config::with_config(handle.clone(), |c| Ok(c.nodecg_install_path))?.ok_or(Error::MissingInstallPath)?;
+  let output = nodecg.start(&install_path)?;
   emit_tauri_process_output(logger, output);
 
   Ok("Started successfully".to_string())

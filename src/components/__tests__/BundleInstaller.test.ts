@@ -35,7 +35,7 @@ describe('BundleInstaller', () => {
         logStore.listenForProcessExit = jest.fn()
         logStore.listen = jest.fn()
         const configStore = useConfigStore()
-        configStore.installPath = '/install/path'
+        configStore.nodecgInstallPath = '/install/path'
         const nodecgStore = useNodecgStore()
         nodecgStore.getBundleList = jest.fn()
         mockTauri.invoke.mockResolvedValue({})

@@ -123,12 +123,13 @@ export default defineComponent({
                 uninstallOverlayProps.visible = false
                 uninstallOverlayProps.bundleName = ''
             },
-            doUninstall: () => {
-                return removeBundle(uninstallOverlayProps.bundleName, configStore.installPath).then(() => {
+            doUninstall: async () => {
+                try {
+                    await removeBundle(uninstallOverlayProps.bundleName, configStore.userConfig.nodecgInstallPath);
                     uninstallOverlayProps.visible = false
-                }).finally(() => {
+                } finally {
                     nodecgStore.getBundleList()
-                })
+                }
             },
             visibleBundleConfigs,
             toggleConfiguration: (name: string) => {

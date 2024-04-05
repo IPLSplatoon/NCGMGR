@@ -107,7 +107,7 @@ export default defineComponent({
         })
 
         watch(() => props.bundle.name, newValue => {
-            getBundleVersions(newValue, configStore.installPath).then(result => {
+            getBundleVersions(newValue).then(result => {
                 versions.value = result
                 if (result.length > 0) {
                     selectedVersion.value = props.bundle.version
@@ -124,7 +124,7 @@ export default defineComponent({
         async function checkConfigFile (bundleName: string): Promise<void> {
             configFileLoading.value = true
             hasConfigFile.value = false
-            configFileExists(bundleName, useConfigStore().installPath).then(result => {
+            configFileExists(bundleName, configStore.userConfig.nodecgInstallPath).then(result => {
                 hasConfigFile.value = result
             }).catch(e => {
                 hasConfigFile.value = false
@@ -135,7 +135,7 @@ export default defineComponent({
         }
 
         function getBundlePath () {
-            return `${useConfigStore().installPath}/bundles/${props.bundle.name}`
+            return `${configStore.userConfig.nodecgInstallPath}/bundles/${props.bundle.name}`
         }
 
         return {
@@ -164,8 +164,7 @@ export default defineComponent({
                 showInstallLog.value = true
                 const invocation = invoke('set_bundle_version', {
                     bundleName: props.bundle.name,
-                    version: selectedVersion.value,
-                    nodecgPath: configStore.installPath
+                    version: selectedVersion.value
                 })
                 logStore.logPromiseResult({ promise: invocation, key: logKey })
                 logStore.listenForProcessExit({ key: logKey })
@@ -174,13 +173,12 @@ export default defineComponent({
                 await open(getBundlePath())
             },
             async openOrCreateConfigFile () {
-                const configStore = useConfigStore()
                 if (!hasConfigFile.value) {
-                    await createConfigFile(props.bundle.name, configStore.installPath)
+                    await createConfigFile(props.bundle.name, configStore.userConfig.nodecgInstallPath)
                     checkConfigFile(props.bundle.name)
                 }
 
-                await openConfigFile(props.bundle.name, configStore.installPath)
+                await openConfigFile(props.bundle.name, configStore.userConfig.nodecgInstallPath)
             },
             async openBundleInTerminal () {
                 await invoke('open_path_in_terminal', { path: getBundlePath() })
