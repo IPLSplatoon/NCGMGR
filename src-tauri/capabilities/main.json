@@ -24,10 +24,13 @@
         {
           "name": "node-version",
           "cmd": "node",
-          "args": ["-v"],
+          "args": [
+            "-v"
+          ],
           "sidecar": false
         }
       ]
-    }
+    },
+    "store:default"
   ]
 }
