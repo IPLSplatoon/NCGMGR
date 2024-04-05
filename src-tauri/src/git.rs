@@ -51,10 +51,7 @@ pub fn fetch_versions(mut remote: Remote) -> Result<Vec<String>, git2::Error> {
   )
 }
 
-pub fn checkout_version(
-  repo: &Repository,
-  version: String,
-) -> Result<(), git2::Error> {
+pub fn checkout_version(repo: &Repository, version: String) -> Result<(), git2::Error> {
   let (object, reference) = repo.revparse_ext(&version)?;
   repo.checkout_tree(&object, None)?;
   match reference {
@@ -79,9 +76,7 @@ pub fn get_remote(repo: &Repository) -> Result<Remote, git2::Error> {
   Ok(remote)
 }
 
-pub fn get_tag_name_at_head(
-  repo: &Repository,
-) -> Result<Option<String>, git2::Error> {
+pub fn get_tag_name_at_head(repo: &Repository) -> Result<Option<String>, git2::Error> {
   let tag_names = repo.tag_names(None)?;
 
   let tag_and_refs = tag_names.iter().flat_map(|name| name).flat_map(|name| {

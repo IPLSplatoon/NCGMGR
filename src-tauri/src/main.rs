@@ -9,13 +9,13 @@ use tauri::{Manager, RunEvent};
 use tauri_plugin_shell::process::CommandEvent;
 
 mod bundles;
+mod config;
 mod dependencies;
 mod error;
 mod git;
 mod log;
 mod nodecg;
 mod npm;
-mod config;
 
 use nodecg::ManagedNodecg;
 

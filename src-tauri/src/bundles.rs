@@ -3,10 +3,10 @@ use std::fs;
 use std::path::Path;
 use tauri_plugin_shell::ShellExt;
 
-use crate::error::{Error};
-use crate::{config, git};
+use crate::error::Error;
 use crate::git::{get_tag_name_at_head, try_open_repository};
 use crate::log::LogEmitter;
+use crate::{config, git};
 use crate::{log_npm_install, npm};
 
 #[derive(PartialEq, Debug)]
@@ -35,16 +35,14 @@ fn parse_bundle_url(url: String) -> Result<ParsedBundleUrl, Error> {
 }
 
 #[tauri::command(async)]
-pub fn install_bundle(
-  handle: tauri::AppHandle,
-  bundle_url: String,
-) -> Result<(), Error> {
+pub fn install_bundle(handle: tauri::AppHandle, bundle_url: String) -> Result<(), Error> {
   let logger = LogEmitter::with_progress(&handle, "install-bundle", 5);
   let parsed_url = parse_bundle_url(bundle_url)?;
 
   logger.emit(&format!("Installing {}...", parsed_url.bundle_name));
 
-  let install_path = config::with_config(handle.clone(), |c| Ok(c.nodecg_install_path))?.ok_or(Error::MissingInstallPath)?;
+  let install_path = config::with_config(handle.clone(), |c| Ok(c.nodecg_install_path))?
+    .ok_or(Error::MissingInstallPath)?;
   let dir_bundles = format!("{}/bundles", install_path);
   if !Path::new(&dir_bundles).exists() {
     logger.emit("Creating missing bundles directory");
@@ -79,7 +77,8 @@ pub fn fetch_bundle_versions(
   handle: tauri::AppHandle,
   bundle_name: String,
 ) -> Result<Vec<String>, Error> {
-  let install_path = config::with_config(handle.clone(), |c| Ok(c.nodecg_install_path))?.ok_or(Error::MissingInstallPath)?;
+  let install_path = config::with_config(handle.clone(), |c| Ok(c.nodecg_install_path))?
+    .ok_or(Error::MissingInstallPath)?;
   let bundle_dir = format!("{}/bundles/{}", install_path, bundle_name);
   let path = Path::new(&bundle_dir);
 
@@ -105,7 +104,8 @@ pub fn set_bundle_version(
   bundle_name: String,
   version: String,
 ) -> Result<(), Error> {
-  let install_path = config::with_config(handle.clone(), |c| Ok(c.nodecg_install_path))?.ok_or(Error::MissingInstallPath)?;
+  let install_path = config::with_config(handle.clone(), |c| Ok(c.nodecg_install_path))?
+    .ok_or(Error::MissingInstallPath)?;
   let logger = LogEmitter::with_progress(&handle, "change-bundle-version", 4);
   let bundle_dir = format!("{}/bundles/{}", install_path, bundle_name);
   let path = Path::new(&bundle_dir);
@@ -122,7 +122,7 @@ pub fn set_bundle_version(
   remote.fetch(
     &[""],
     Some(FetchOptions::new().download_tags(AutotagOption::All)),
-    None
+    None,
   )?;
   git::checkout_version(&repo, version.clone())?;
   logger.emit_progress(3);
@@ -135,9 +135,11 @@ pub fn set_bundle_version(
 
 #[tauri::command(async)]
 pub fn uninstall_bundle(handle: tauri::AppHandle, bundle_name: String) -> Result<(), Error> {
-  let install_path = config::with_config(handle.clone(), |c| Ok(c.nodecg_install_path))?.ok_or(Error::MissingInstallPath)?;
+  let install_path = config::with_config(handle.clone(), |c| Ok(c.nodecg_install_path))?
+    .ok_or(Error::MissingInstallPath)?;
 
-  rm_rf::remove(format!("{}/bundles/{}", install_path, bundle_name)).map_err(|e| Error::BundleUninstall(bundle_name, e.to_string()))?;
+  rm_rf::remove(format!("{}/bundles/{}", install_path, bundle_name))
+    .map_err(|e| Error::BundleUninstall(bundle_name, e.to_string()))?;
   Ok(())
 }
 
@@ -146,7 +148,8 @@ pub fn get_bundle_git_tag(
   handle: tauri::AppHandle,
   bundle_name: String,
 ) -> Result<Option<String>, Error> {
-  let install_path = config::with_config(handle.clone(), |c| Ok(c.nodecg_install_path))?.ok_or(Error::MissingInstallPath)?;
+  let install_path = config::with_config(handle.clone(), |c| Ok(c.nodecg_install_path))?
+    .ok_or(Error::MissingInstallPath)?;
   let bundle_dir = format!("{}/bundles/{}", install_path, bundle_name);
   let path = Path::new(&bundle_dir);
 
@@ -156,9 +159,7 @@ pub fn get_bundle_git_tag(
 
   let repo = try_open_repository(path)?;
   match repo {
-    Some(repo) => {
-      get_tag_name_at_head(&repo).map_err(|e| Error::Git(e))
-    },
+    Some(repo) => get_tag_name_at_head(&repo).map_err(|e| Error::Git(e)),
     None => Ok(None),
   }
 }
