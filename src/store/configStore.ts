@@ -3,6 +3,7 @@ import { appConfigDir } from '@tauri-apps/api/path'
 import { Store } from '@tauri-apps/plugin-store'
 import { readonly, ref } from 'vue'
 import { invoke } from '@tauri-apps/api/core'
+import { type } from '@tauri-apps/plugin-os'
 
 const STORE_CONFIG_KEY = 'config'
 
@@ -16,6 +17,7 @@ export const useConfigStore = defineStore('config', () => {
         nodecgInstallDir: null,
         enableErrorLog: false
     })
+    const allowOpenInTerminal = ref(false)
     let store: Store
 
     async function init() {
@@ -32,6 +34,10 @@ export const useConfigStore = defineStore('config', () => {
                 userConfig.value = newValue
             }
         })
+
+        await type().then(type => {
+            allowOpenInTerminal.value = type === 'macos' || type === 'windows'
+        })
     }
 
     async function patch(values: Partial<Configuration>) {
@@ -45,6 +51,7 @@ export const useConfigStore = defineStore('config', () => {
 
     return {
         userConfig: readonly(userConfig),
+        allowOpenInTerminal: readonly(allowOpenInTerminal),
         init,
         patch
     }

@@ -36,7 +36,7 @@
             />
             <ipl-button
                 label="Open in terminal"
-                :disabled="!enableOpenTerminal"
+                :disabled="!configStore.allowOpenInTerminal"
                 class="m-t-8"
                 @click="openBundleInTerminal"
             />
@@ -62,7 +62,6 @@ import { useLogStore } from '@/store/logStore'
 import { invoke } from '@tauri-apps/api/core'
 import { useNodecgStore } from '@/store/nodecgStore'
 import { open } from '@tauri-apps/plugin-shell'
-import { type } from '@tauri-apps/plugin-os'
 
 export default defineComponent({
     name: 'BundleConfig',
@@ -88,11 +87,6 @@ export default defineComponent({
         const showInstallLog = ref(false)
         const hasConfigFile = ref(false)
         const configFileLoading = ref(true)
-        const enableOpenTerminal = ref(false)
-
-        type().then(type => {
-            enableOpenTerminal.value = type === 'macos' || type === 'windows'
-        })
 
         watch(showInstallLog, newValue => {
             if (!newValue) {
@@ -133,7 +127,7 @@ export default defineComponent({
         }
 
         return {
-            enableOpenTerminal,
+            configStore,
             hasConfigFile,
             configFileLoading,
             showInstallLog,
