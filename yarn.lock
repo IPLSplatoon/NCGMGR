@@ -683,13 +683,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/hosted-git-info@npm:2.7.0":
-  version: 2.7.0
-  resolution: "@types/hosted-git-info@npm:2.7.0"
-  checksum: 155fdb80bdb5fb7c0ae767bcdbdc9477a27c92d7e6b59ddcb24d72174e7d94d3e1e4845e875374de223d4336683e590e152009475a987bc716601a071179f434
-  languageName: node
-  linkType: hard
-
 "@types/json-schema@npm:^7.0.12":
   version: 7.0.15
   resolution: "@types/json-schema@npm:7.0.15"
@@ -2283,7 +2276,6 @@ __metadata:
     "@tauri-apps/plugin-os": 2.0.0-beta.2
     "@tauri-apps/plugin-shell": 2.0.0-beta.2
     "@tauri-apps/plugin-store": ^2.0.0-beta.2
-    "@types/hosted-git-info": 2.7.0
     "@types/lodash": ^4.14.178
     "@types/node": ^20.11.30
     "@typescript-eslint/eslint-plugin": ^7.4.0
