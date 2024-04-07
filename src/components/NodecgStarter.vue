@@ -5,18 +5,9 @@
     >
         <div class="layout horizontal">
             <ipl-button
-                v-if="nodecgStatus === NodecgStatus.INSTALLED"
                 :label="runStatus === RunStatus.RUNNING ? 'Stop NodeCG' : 'Start NodeCG'"
                 :color="runStatus === RunStatus.RUNNING ? 'red' : 'green'"
                 @click="toggleStartStop"
-            />
-            <ipl-button
-                v-else
-                label="Install"
-                :disabled="nodecgStatus !== NodecgStatus.READY_TO_INSTALL"
-                class="m-l-8"
-                color="green"
-                @click="doInstall"
             />
             <ipl-button
                 label="Open dashboard"
@@ -51,18 +42,12 @@
             </div>
         </template>
     </ipl-expanding-space>
-    <log-overlay
-        v-model:visible="showLog"
-        title="Installing..."
-        log-key="install-nodecg"
-    />
 </template>
 
 <script lang="ts">
-import { computed, defineComponent, onMounted, ref } from 'vue'
+import { computed, defineComponent, ref } from 'vue'
 import { invoke } from '@tauri-apps/api/core'
 import { useConfigStore } from '@/store/configStore'
-import LogOverlay from '@/components/log/LogOverlay.vue'
 import { useLogStore } from '@/store/logStore'
 import { IplButton, IplExpandingSpace, IplSpace } from '@iplsplatoon/vue-components'
 import { InstallStatus, RunStatus, useNodecgStore } from '@/store/nodecgStore'
@@ -72,7 +57,7 @@ import { openDashboard } from '@/service/nodecgService'
 export default defineComponent({
     name: 'InstallManager',
 
-    components: { IplExpandingSpace, LogDisplay, IplSpace, IplButton, LogOverlay },
+    components: { IplExpandingSpace, LogDisplay, IplSpace, IplButton },
 
     setup () {
         const config = useConfigStore()
@@ -83,30 +68,11 @@ export default defineComponent({
         const installFolder = computed(() => config.userConfig.nodecgInstallDir)
         const nodecgStatus = computed<InstallStatus>(() => nodecgStore.status.installStatus)
 
-        onMounted(() => {
-            nodecgStore.checkNodecgStatus()
-        })
-
         return {
-            installDisabled: computed(() => installFolder.value == null),
             installFolder,
             showLog,
             nodecgStatus,
             NodecgStatus: InstallStatus,
-            async doInstall () {
-                const logKey = 'install-nodecg'
-                logStore.reset(logKey)
-                await logStore.listen(logKey, true)
-                showLog.value = true
-                const invocation = invoke('install_nodecg', { path: installFolder.value })
-                logStore.logPromiseResult({ promise: invocation, key: logKey })
-                logStore.listenForProcessExit({
-                    key: logKey,
-                    callback: () => {
-                        nodecgStore.checkNodecgStatus()
-                    }
-                })
-            },
 
             runStatus: computed(() => nodecgStore.status.runStatus),
             RunStatus,
@@ -115,7 +81,7 @@ export default defineComponent({
                     await invoke('stop_nodecg')
                 } else {
                     logStore.reset('run-nodecg')
-                    const invocation = invoke('start_nodecg', { path: installFolder.value })
+                    const invocation = invoke('start_nodecg')
                     logStore.logPromiseResult({ promise: invocation, key: 'run-nodecg' })
                     await invocation
                     nodecgStore.status.runStatus = RunStatus.RUNNING

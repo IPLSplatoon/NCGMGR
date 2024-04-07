@@ -1,48 +1,51 @@
 <template>
-    <div>Installation folder: {{ configStore.userConfig.nodecgInstallDir }}</div>
+    <ipl-label>Current install folder</ipl-label>
+    <div>{{ configStore.userConfig.nodecgInstallDir ?? 'N/A' }}</div>
     <status-row
         :color="statusColor"
         class="m-t-6"
     >
         {{ nodecgStore.status.message }}
     </status-row>
-    <ipl-button
-        class="m-t-8"
-        color="blue"
-        label="Change folder"
-        @click="changeInstallFolder"
-    />
-    <div class="layout horizontal m-t-8">
+    <template v-if="configStore.userConfig.nodecgInstallDir != null">
+        <div class="layout horizontal m-t-8">
+            <ipl-button
+                color="blue"
+                label="Open folder"
+                @click="openInstallFolder"
+            />
+            <ipl-button
+                class="m-l-8"
+                color="blue"
+                label="Open in Terminal"
+                :disabled="!configStore.allowOpenInTerminal"
+                @click="openInstallFolderInTerminal"
+            />
+        </div>
         <ipl-button
-            color="blue"
-            label="Open folder"
-            @click="openInstallFolder"
+            color="red"
+            class="m-t-8"
+            label="Reset install folder"
+            @click="unsetInstallDir"
         />
-        <ipl-button
-            class="m-l-8"
-            color="blue"
-            label="Open in Terminal"
-            @click="openInstallFolderInTerminal"
-        />
-    </div>
+    </template>
 </template>
 
 <script setup lang="ts">
-import { computed, onMounted } from 'vue'
+import { computed } from 'vue'
 import { InstallStatus, useNodecgStore } from '@/store/nodecgStore'
 import { useConfigStore } from '@/store/configStore'
 import StatusRow from '@/components/StatusRow.vue'
-import { IplButton } from '@iplsplatoon/vue-components'
+import { IplButton, IplLabel } from '@iplsplatoon/vue-components'
 import { invoke } from '@tauri-apps/api/core'
-import { open as openDialog } from '@tauri-apps/plugin-dialog'
 import { open as openShell } from '@tauri-apps/plugin-shell'
+
+const emit = defineEmits<{
+    close: []
+}>()
 
 const configStore = useConfigStore()
 const nodecgStore = useNodecgStore()
-
-onMounted(() => {
-    nodecgStore.checkNodecgStatus()
-})
 
 const statusColor = computed(() => {
     switch (nodecgStore.status.installStatus) {
@@ -57,18 +60,6 @@ const statusColor = computed(() => {
     }
 })
 
-async function changeInstallFolder() {
-    const path = await openDialog({ directory: true })
-
-    if (!path) return
-
-    const newInstallFolder = Array.isArray(path) ? path[0] : path
-    await configStore.patch({
-        nodecgInstallDir: newInstallFolder
-    })
-    await nodecgStore.checkNodecgStatus()
-}
-
 function openInstallFolder() {
     if (configStore.userConfig.nodecgInstallDir != null) {
         openShell(configStore.userConfig.nodecgInstallDir)
@@ -79,5 +70,13 @@ async function openInstallFolderInTerminal() {
     if (configStore.userConfig.nodecgInstallDir != null) {
         await invoke('open_path_in_terminal', { path: configStore.userConfig.nodecgInstallDir })
     }
+}
+
+async function unsetInstallDir() {
+    await configStore.patch({
+        nodecgInstallDir: null
+    })
+    await nodecgStore.checkNodecgStatus()
+    emit('close')
 }
 </script>

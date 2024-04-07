@@ -62,6 +62,12 @@ pub fn with_config<R: Runtime, T, F: FnOnce(UserConfig) -> tauri_plugin_store::R
   })
 }
 
+pub fn update_install_dir(app: AppHandle, install_dir: String) -> Result<(), Error> {
+  let mut config = with_config(app.clone(), |c| Ok(c))?;
+  config.nodecg_install_dir = Some(install_dir);
+  update_config(app, config)
+}
+
 #[tauri::command]
 pub fn update_config(app: AppHandle, config: UserConfig) -> Result<(), Error> {
   with_config_store(app, |store| {

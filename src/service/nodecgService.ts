@@ -6,11 +6,16 @@ import { invoke } from '@tauri-apps/api/core'
 import { fileExists, folderExists } from '@/util/fs'
 import { open } from '@tauri-apps/plugin-shell'
 import { NodecgConfiguration } from '@/types/nodecg'
+import { appLocalDataDir } from '@tauri-apps/api/path'
+
+export async function getDefaultInstallDir (): Promise<string> {
+    return `${await appLocalDataDir()}/nodecg`
+}
 
 export async function getNodecgStatus (directory: string | null): Promise<{ status: InstallStatus, message: string }> {
     if (directory == null || isEmpty(directory?.trim())) {
         return {
-            status: InstallStatus.UNABLE_TO_INSTALL,
+            status: InstallStatus.MISSING_INSTALL_DIRECTORY,
             message: 'Please select an installation directory.'
         }
     }
@@ -32,14 +37,14 @@ export async function getNodecgStatus (directory: string | null): Promise<{ stat
                 }
             } else {
                 return {
-                    status: InstallStatus.UNABLE_TO_INSTALL,
+                    status: InstallStatus.BAD_INSTALL_DIRECTORY,
                     message: `Found unknown package "${packageJson.name}".`
                 }
             }
         } else {
             return {
-                status: InstallStatus.UNABLE_TO_INSTALL,
-                message: 'Could not find package.json.'
+                status: InstallStatus.BAD_INSTALL_DIRECTORY,
+                message: 'Selected install directory is not empty, but NodeCG is not installed here.'
             }
         }
     }
@@ -65,7 +70,7 @@ export async function getBundles (directory: string | null): Promise<Bundle[]> {
                     return {
                         name: packageJson.name,
                         version: packageJson.version == null || packageJson.version.trim() === '0.0.0'
-                            ? await getBundleGitTag(packageJson.name, directory)
+                            ? await getBundleGitTag(packageJson.name)
                             : packageJson.version
                     }
                 } catch (e) {
@@ -132,6 +137,6 @@ export async function openDashboard (nodecgPath: string): Promise<void> {
     return open(`http://localhost:${config?.port ?? '9090'}/dashboard`)
 }
 
-export async function getBundleGitTag (bundleName: string, nodecgPath: string): Promise<string> {
-    return invoke('get_bundle_git_tag', { bundleName, nodecgPath })
+export async function getBundleGitTag (bundleName: string): Promise<string> {
+    return invoke('get_bundle_git_tag', { bundleName })
 }

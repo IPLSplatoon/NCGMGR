@@ -5,6 +5,7 @@ import { createPinia } from 'pinia'
 import { setUpErrorHandler } from '@/store/errorHandlerStore'
 import { useConfigStore } from '@/store/configStore'
 import { useDependencyStore } from '@/store/dependencyStore'
+import { useNodecgStore } from '@/store/nodecgStore'
 
 function setColorTheme(useLightMode: boolean) {
     if (useLightMode) {
@@ -28,6 +29,8 @@ function setColorTheme(useLightMode: boolean) {
     await configStore.init()
     const dependencyStore = useDependencyStore()
     await dependencyStore.checkVersions()
+    const nodecgStore = useNodecgStore()
+    await nodecgStore.checkNodecgStatus()
 
     setUpErrorHandler(app)
 

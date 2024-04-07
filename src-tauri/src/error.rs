@@ -16,6 +16,8 @@ pub enum Error {
   TauriShell(#[from] tauri_plugin_shell::Error),
   #[error(transparent)]
   Git(#[from] git2::Error),
+  #[error(transparent)]
+  RmRf(#[from] rm_rf::Error),
 
   #[error("Error installing NodeCG: {0}")]
   NodeCGInstall(String),
@@ -23,6 +25,8 @@ pub enum Error {
   NodeCGLaunch(String),
   #[error("NodeCG install directory is not configured")]
   MissingInstallDir,
+  #[error("Could not determine default install directory for NodeCG. Please select one manually.")]
+  CannotCreateDefaultInstallDir,
   #[error("Bundle {0} is not installed.")]
   MissingBundle(String),
   #[error("Failed to uninstall bundle {0}: {1}")]

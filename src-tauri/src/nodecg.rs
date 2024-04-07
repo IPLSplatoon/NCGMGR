@@ -5,7 +5,7 @@ use std::sync::Mutex;
 use sysinfo::{Pid, ProcessRefreshKind, RefreshKind, System};
 use tar::Archive;
 use tauri::async_runtime::Receiver;
-use tauri::AppHandle;
+use tauri::{AppHandle, Manager};
 use tauri_plugin_http::reqwest;
 use tauri_plugin_shell::process::{CommandChild, CommandEvent};
 use tauri_plugin_shell::ShellExt;
@@ -75,10 +75,27 @@ impl ManagedNodecg {
 }
 
 #[tauri::command(async)]
-pub async fn install_nodecg(handle: AppHandle) -> Result<(), Error> {
+pub async fn install_nodecg(handle: AppHandle, use_default_directory: bool) -> Result<(), Error> {
   let logger = LogEmitter::with_progress(&handle, "install-nodecg", 4);
 
+  let install_dir = if use_default_directory {
+    handle.path().app_local_data_dir()
+      .map_err(|_| Error::CannotCreateDefaultInstallDir)?
+      .join("nodecg")
+      .to_str()
+      .ok_or(Error::CannotCreateDefaultInstallDir)?
+      .to_string()
+  } else {
+    config::with_config(handle.clone(), |c| Ok(c.nodecg_install_dir))?.ok_or(Error::MissingInstallDir)?
+  };
+
   logger.emit("Starting NodeCG install...");
+  if use_default_directory {
+    let install_dir_path = Path::new(&install_dir);
+    rm_rf::ensure_removed(install_dir_path)?;
+    fs::create_dir_all(install_dir_path)?;
+    config::update_install_dir(handle.clone(), install_dir.clone())?;
+  }
 
   logger.emit("Loading version list...");
   let client = reqwest::Client::builder().build()?;
@@ -117,8 +134,6 @@ pub async fn install_nodecg(handle: AppHandle) -> Result<(), Error> {
   logger.emit("Extracting archive...");
   let gz = GzDecoder::new(tarball.iter().as_slice());
   let mut archive = Archive::new(gz);
-  let install_dir = config::with_config(handle.clone(), |c| Ok(c.nodecg_install_dir))?
-    .ok_or(Error::MissingInstallDir)?;
   match archive.entries().map(|entries| {
     entries
       .filter_map(|e| e.ok())
