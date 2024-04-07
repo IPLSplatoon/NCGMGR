@@ -25,10 +25,7 @@
                 class="m-t-8 max-width"
                 color="secondary"
             >
-                <log-display
-                    :log-key="logKey"
-                    class="m-t-8"
-                />
+                <log-display :log-key="logKey" />
             </ipl-expanding-space>
         </div>
     </mgr-overlay>
