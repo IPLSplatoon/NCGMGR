@@ -4,7 +4,9 @@
         color="secondary"
     >
         <ipl-label>Current install folder</ipl-label>
-        <div>{{ configStore.userConfig.nodecgInstallDir ?? 'N/A' }}</div>
+        <div class="text-overflow-anywhere">
+            {{ configStore.userConfig.nodecgInstallDir ?? 'N/A' }}
+        </div>
         <div class="layout horizontal m-t-8">
             <ipl-button
                 v-if="configStore.userConfig.nodecgInstallDir != null"
