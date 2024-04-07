@@ -41,11 +41,15 @@ export const useConfigStore = defineStore('config', () => {
     }
 
     async function patch(values: Partial<Configuration>) {
+        const newConfig = {
+            ...userConfig.value,
+            ...values
+        }
+
         return invoke('update_config', {
-            config: {
-                ...userConfig.value,
-                ...values
-            }
+            config: newConfig
+        }).then(() => {
+            userConfig.value = newConfig
         })
     }
 
