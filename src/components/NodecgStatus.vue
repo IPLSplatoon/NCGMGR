@@ -25,7 +25,7 @@
         <ipl-button
             color="red"
             class="m-t-8"
-            label="Reset install folder"
+            label="Change install folder"
             @click="unsetInstallDir"
         />
     </template>

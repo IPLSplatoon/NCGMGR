@@ -29,34 +29,45 @@ NCGMGR needs Node.js to be installed to function. It will check for a Node.js in
 When a Node.js installation is not found, an alert will be displayed to the user. To download Node.js, visit its [website.](https://nodejs.dev/)
 The LTS version of Node.js is sufficient for the majority of users.
 
-### Installing a new copy of NodeCG
+## Installing a new copy of NodeCG
 
-![Message displayed when prompted to select an install directory](img/select-install-directory.png)
+![The application after it is first started](img/first-install.png)
 
-When a Node.js installation is found, you will be prompted to choose a directory to install NodeCG in.
-Click "Select folder" and pick a directory. In order to install NodeCG from scratch, select an empty directory.
-After selecting a suitable directory, click "Install" to start the installation process.
+When a Node.js installation is found, NCGMGR can either automatically select a directory and install NodeCG into it, 
+install NodeCG into a custom user directory or manage an existing installation of NodeCG.
 
-### Using an existing installation of NodeCG
+## Managing bundles and using NodeCG
 
-To use an existing installation of NodeCG, click "Select folder" and select the directory NodeCG was installed in.
-NCGMGR will automatically look for a NodeCG installation when a new install directory is selected.
-
-### Starting NodeCG
-
-After setting up a NodeCG installation, click on "Start" to start NodeCG. A log window will appear, showing any messages
-that appear while NodeCG is running. While NodeCG is running, click "Open dashboard" to open the NodeCG dashboard in a
-web browser. NodeCG may be stopped by clicking on the "Stop" button.
-
-## Managing bundles
-
+After NodeCG has been installed, the interface will display options to start and stop NodeCG and manage bundles. 
 A *bundle* in NodeCG contains graphics, dashboard panels and Node.js code (Extensions).
 
-![The bundle management interface](img/bundle-management.jpg)
+![The main application interface](img/main-view.png)
 
 ### Installing bundles
 
-Bundles can be installed from the following sources:
+Bundles can be installed by selecting "Add Bundle" in the main application window and typing one of the following as the
+repository path:
 
 - A GitHub username/repository name pair (`inkfarer/ipl-overlay-controls`)
 - A git repository URL (`https://github.com/inkfarer/ipl-overlay-controls.git`)
+
+## Settings
+
+![The application settings window](img/settings.png)
+
+Click the settings wrench along the top of the application window to access the settings page.
+
+### NodeCG status
+
+From the settings page, the currently selected NodeCG installation directory can be viewed. 
+Select "Change Install Folder" to return to the first-time setup page and select a different NodeCG installation or 
+install NodeCG again.
+
+### Dependency status
+
+The settings page displays the detected version of Node.js.
+
+### Error log
+
+The error log, when enabled, displays a list of errors that have occurred while the application is running. It can be 
+used to diagnose technical issues with NCGMGR itself.
