@@ -37,9 +37,6 @@ tauri-plugin-store = "2.0.0-beta.4"
 [target.'cfg(macos)'.dependencies]
 openssl = { version = "0.10", features = ["vendored"] }
 
-[target.'cfg(not(macos))'.dependencies]
-openssl = { version = "0.10" }
-
 [dependencies.tauri]
 version = "2.0.0-beta"
 features = [ "macos-private-api"]
