@@ -1,6 +1,8 @@
 <template>
     <ipl-label>Current install folder</ipl-label>
-    <div>{{ configStore.userConfig.nodecgInstallDir ?? 'N/A' }}</div>
+    <div class="text-overflow-anywhere">
+        {{ configStore.userConfig.nodecgInstallDir ?? 'N/A' }}
+    </div>
     <status-row
         :color="statusColor"
         class="m-t-6"
@@ -33,7 +35,7 @@
 
 <script setup lang="ts">
 import { computed } from 'vue'
-import { InstallStatus, useNodecgStore } from '@/store/nodecgStore'
+import { InstallStatus, RunStatus, useNodecgStore } from '@/store/nodecgStore'
 import { useConfigStore } from '@/store/configStore'
 import StatusRow from '@/components/StatusRow.vue'
 import { IplButton, IplLabel } from '@iplsplatoon/vue-components'
@@ -73,6 +75,9 @@ async function openInstallFolderInTerminal() {
 }
 
 async function unsetInstallDir() {
+    if (nodecgStore.status.runStatus === RunStatus.RUNNING) {
+        await invoke('stop_nodecg')
+    }
     await configStore.patch({
         nodecgInstallDir: null
     })
