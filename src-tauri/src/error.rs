@@ -1,39 +1,48 @@
-use std::error::Error;
-use std::fmt;
+use serde::Serializer;
+use std::io;
+use tauri_plugin_http::reqwest;
 
-pub trait MgrErrorCause: fmt::Display + fmt::Debug {}
-impl<T: fmt::Display + fmt::Debug> MgrErrorCause for T {}
+#[derive(Debug, thiserror::Error)]
+pub enum Error {
+  #[error(transparent)]
+  Request(#[from] reqwest::Error),
+  #[error(transparent)]
+  Io(#[from] io::Error),
+  #[error(transparent)]
+  Tauri(#[from] tauri::Error),
+  #[error(transparent)]
+  TauriStore(#[from] tauri_plugin_store::Error),
+  #[error(transparent)]
+  TauriShell(#[from] tauri_plugin_shell::Error),
+  #[error(transparent)]
+  Git(#[from] git2::Error),
+  #[error(transparent)]
+  RmRf(#[from] rm_rf::Error),
 
-#[derive(Debug)]
-pub struct MgrError {
-    pub description: String,
-    pub cause: Option<Box<dyn MgrErrorCause>>
+  #[error("Error installing NodeCG: {0}")]
+  NodeCGInstall(String),
+  #[error("Error launching NodeCG: {0}")]
+  NodeCGLaunch(String),
+  #[error("NodeCG install directory is not configured")]
+  MissingInstallDir,
+  #[error("Could not determine default install directory for NodeCG. Please select one manually.")]
+  CannotCreateDefaultInstallDir,
+  #[error("Bundle {0} is not installed.")]
+  MissingBundle(String),
+  #[error("Failed to uninstall bundle {0}: {1}")]
+  BundleUninstall(String, String),
+  #[error("Invalid bundle URL provided.")]
+  InvalidBundleURL,
+
+  #[error("Error installing npm dependencies: {0}")]
+  NPMInstall(String),
 }
 
-impl MgrError {
-    pub fn new(msg: &str) -> MgrError {
-        MgrError { description: msg.to_string(), cause: None }
-    }
-
-    pub fn with_cause<T: 'static + MgrErrorCause>(msg: &str, cause: T) -> MgrError {
-        MgrError { description: msg.to_string(), cause: Some(Box::new(cause)) }
-    }
-
-    pub fn boxed(self) -> Box<MgrError> {
-        Box::new(self)
-    }
-}
-
-impl fmt::Display for MgrError {
-    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        if self.cause.is_none() {
-            write!(f, "{}", self.description)
-        } else {
-            write!(f, "{}: {}", self.description, self.cause.as_ref().unwrap())
-        }
-    }
-}
-
-impl Error for MgrError {
-
+impl serde::Serialize for Error {
+  fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+  where
+    S: Serializer,
+  {
+    serializer.serialize_str(self.to_string().as_ref())
+  }
 }

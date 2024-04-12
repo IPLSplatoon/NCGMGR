@@ -16,33 +16,28 @@
                 :disabled="disableVersionChange"
                 :options="versionOptions"
                 label="Version"
-                data-test="version-selector"
             />
             <ipl-button
                 label="Change version"
                 :disabled="disableVersionChange || bundle.version === selectedVersion"
                 class="m-t-8"
-                data-test="set-version-button"
                 @click="setVersion"
             />
             <log-overlay
                 v-model:visible="showInstallLog"
                 title="Installing..."
-                data-test="bundle-log-overlay"
                 log-key="change-bundle-version"
             />
         </ipl-space>
         <ipl-space class="max-width m-l-8 h-max-content">
             <ipl-button
                 label="Open folder"
-                data-test="open-folder-button"
                 @click="openBundleFolder"
             />
             <ipl-button
                 label="Open in terminal"
-                :disabled="!enableOpenTerminal"
+                :disabled="!configStore.allowOpenInTerminal"
                 class="m-t-8"
-                data-test="open-in-terminal-button"
                 @click="openBundleInTerminal"
             />
             <ipl-button
@@ -50,7 +45,6 @@
                 :color="hasConfigFile ? 'blue' : 'green'"
                 :disabled="configFileLoading"
                 class="m-t-8"
-                data-test="open-config-file-button"
                 @click="openOrCreateConfigFile"
             />
         </ipl-space>
@@ -65,10 +59,9 @@ import { IplButton, IplMessage, IplSelect, IplSpace } from '@iplsplatoon/vue-com
 import { useConfigStore } from '@/store/configStore'
 import LogOverlay from '@/components/log/LogOverlay.vue'
 import { useLogStore } from '@/store/logStore'
-import { invoke } from '@tauri-apps/api/tauri'
+import { invoke } from '@tauri-apps/api/core'
 import { useNodecgStore } from '@/store/nodecgStore'
-import { open } from '@tauri-apps/api/shell'
-import { type } from '@tauri-apps/api/os'
+import { open } from '@tauri-apps/plugin-shell'
 
 export default defineComponent({
     name: 'BundleConfig',
@@ -94,11 +87,6 @@ export default defineComponent({
         const showInstallLog = ref(false)
         const hasConfigFile = ref(false)
         const configFileLoading = ref(true)
-        const enableOpenTerminal = ref(false)
-
-        type().then(type => {
-            enableOpenTerminal.value = type === 'Darwin' || type === 'Windows_NT'
-        })
 
         watch(showInstallLog, newValue => {
             if (!newValue) {
@@ -107,7 +95,7 @@ export default defineComponent({
         })
 
         watch(() => props.bundle.name, newValue => {
-            getBundleVersions(newValue, configStore.installPath).then(result => {
+            getBundleVersions(newValue).then(result => {
                 versions.value = result
                 if (result.length > 0) {
                     selectedVersion.value = props.bundle.version
@@ -124,7 +112,7 @@ export default defineComponent({
         async function checkConfigFile (bundleName: string): Promise<void> {
             configFileLoading.value = true
             hasConfigFile.value = false
-            configFileExists(bundleName, useConfigStore().installPath).then(result => {
+            configFileExists(bundleName, configStore.userConfig.nodecgInstallDir).then(result => {
                 hasConfigFile.value = result
             }).catch(e => {
                 hasConfigFile.value = false
@@ -135,11 +123,11 @@ export default defineComponent({
         }
 
         function getBundlePath () {
-            return `${useConfigStore().installPath}/bundles/${props.bundle.name}`
+            return `${configStore.userConfig.nodecgInstallDir}/bundles/${props.bundle.name}`
         }
 
         return {
-            enableOpenTerminal,
+            configStore,
             hasConfigFile,
             configFileLoading,
             showInstallLog,
@@ -164,8 +152,7 @@ export default defineComponent({
                 showInstallLog.value = true
                 const invocation = invoke('set_bundle_version', {
                     bundleName: props.bundle.name,
-                    version: selectedVersion.value,
-                    nodecgPath: configStore.installPath
+                    version: selectedVersion.value
                 })
                 logStore.logPromiseResult({ promise: invocation, key: logKey })
                 logStore.listenForProcessExit({ key: logKey })
@@ -174,13 +161,12 @@ export default defineComponent({
                 await open(getBundlePath())
             },
             async openOrCreateConfigFile () {
-                const configStore = useConfigStore()
                 if (!hasConfigFile.value) {
-                    await createConfigFile(props.bundle.name, configStore.installPath)
+                    await createConfigFile(props.bundle.name, configStore.userConfig.nodecgInstallDir)
                     checkConfigFile(props.bundle.name)
                 }
 
-                await openConfigFile(props.bundle.name, configStore.installPath)
+                await openConfigFile(props.bundle.name, configStore.userConfig.nodecgInstallDir)
             },
             async openBundleInTerminal () {
                 await invoke('open_path_in_terminal', { path: getBundlePath() })

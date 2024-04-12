@@ -6,8 +6,6 @@ NodeCG ManaGeR, built with [Tauri](https://tauri.app/) and Vue.js.
 
 ## Commands
 
-- `yarn test:unit` - Run tests
-- `yarn test:update` - Run tests and update snapshots
 - `yarn lint` - Run linter to check for errors in JS
 - `yarn lint:fix` - Fix automatically fixable linter errors
 - `yarn tauri build` - Build and bundle the application

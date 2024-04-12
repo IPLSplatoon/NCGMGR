@@ -22,6 +22,7 @@
             <mgr-overlay
                 :id="`status-item-dialog_${key}`"
                 v-model:visible="item.overlayVisible.value"
+                class="fixed-width"
             >
                 <ipl-dialog-title
                     color="secondary"
@@ -29,7 +30,10 @@
                     @close="item.overlayVisible.value = false"
                 />
                 <div class="m-t-8">
-                    <component :is="item.component" />
+                    <component
+                        :is="item.component"
+                        @close="item.overlayVisible.value = false"
+                    />
                 </div>
             </mgr-overlay>
         </template>
@@ -84,7 +88,7 @@ export default defineComponent({
         return {
             items: computed(() => pick(items, [
                 'dependencyCheck',
-                ...(configStore.enableErrorLog ? ['errorLog'] : [])
+                ...(configStore.userConfig.enableErrorLog ? ['errorLog'] : [])
             ]))
         }
     }

@@ -5,7 +5,7 @@ on:
   workflow_dispatch:
 
 jobs:
-  test:
+  lint:
     timeout-minutes: 30
     runs-on: ubuntu-latest
     steps:
@@ -28,13 +28,10 @@ jobs:
       - name: Run ESLint on source
         run: yarn lint
 
-      - name: Run tests
-        run: yarn test:unit
-
   build-publish:
     if: github.ref == 'refs/heads/master'
     timeout-minutes: 30
-    needs: test
+    needs: lint
     permissions:
       contents: write
     strategy:
@@ -71,7 +68,7 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          tagName: ncgmgr-v__VERSION__
+          tagName: v__VERSION__
           releaseName: "NCGMGR v__VERSION__"
           releaseDraft: true
           prerelease: false

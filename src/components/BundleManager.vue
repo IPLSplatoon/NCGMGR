@@ -13,18 +13,21 @@
                 tooltip="Refresh"
                 class="button"
                 async
-                data-test="refresh-button"
                 @click="refreshBundles"
             />
             <ipl-button
-                icon="plus-circle"
                 :color="installingBundle ? themeColors.backgroundTertiary : 'green'"
                 small
-                tooltip="Install new bundle"
-                class="button m-l-4"
-                data-test="install-new-bundle-button"
+                inline
+                class="add-bundle-button m-l-4"
                 @click="installingBundle = !installingBundle"
-            />
+            >
+                Add Bundle
+                <font-awesome-icon
+                    icon="plus-circle"
+                    class="icon"
+                />
+            </ipl-button>
         </div>
         <bundle-installer
             v-show="installingBundle"
@@ -44,13 +47,14 @@ import { faPlusCircle } from '@fortawesome/free-solid-svg-icons/faPlusCircle'
 import BundleInstaller from '@/components/BundleInstaller.vue'
 import BundleList from '@/components/bundleList/BundleList.vue'
 import { themeColors } from '@/styles/colors'
+import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
 
 library.add(faSync, faPlusCircle)
 
 export default defineComponent({
     name: 'BundleManager',
 
-    components: { BundleList, BundleInstaller, IplButton, IplSpace },
+    components: { BundleList, BundleInstaller, IplButton, IplSpace, FontAwesomeIcon },
 
     setup () {
         const nodecgStore = useNodecgStore()
@@ -77,5 +81,14 @@ export default defineComponent({
 
 .header {
     padding: 8px;
+}
+
+.add-bundle-button {
+    padding: .4em .6em;
+    height: 2.4em;
+
+    :deep(.label) {
+        font-size: 1.25em;
+    }
 }
 </style>

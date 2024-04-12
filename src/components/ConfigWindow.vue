@@ -4,12 +4,25 @@
         color="secondary"
     >
         <div class="bold m-b-6">
+            NodeCG status
+        </div>
+        <nodecg-status @close="$emit('close')" />
+    </ipl-space>
+    <ipl-space
+        class="m-b-8"
+        color="secondary"
+    >
+        <div class="bold m-b-6">
             Dependency status
         </div>
         <dependency-checker />
     </ipl-space>
     <ipl-space color="secondary">
-        <ipl-small-toggle v-model="errorLogEnabled">
+        <ipl-small-toggle
+            :model-value="configStore.userConfig.enableErrorLog"
+            :disabled="errorLogToggleDisabled"
+            @update:model-value="onErrorLogToggleChange"
+        >
             Enable error log<br>
             <ipl-label>The error log is useful for diagnosing technical issues.</ipl-label>
         </ipl-small-toggle>
@@ -17,30 +30,36 @@
 </template>
 
 <script lang="ts">
-import { defineComponent } from 'vue'
+import { defineComponent, ref } from 'vue'
 import { IplLabel, IplSmallToggle, IplSpace } from '@iplsplatoon/vue-components'
-import { computed } from 'vue'
 import { useConfigStore } from '@/store/configStore'
 import DependencyChecker from '@/components/DependencyChecker.vue'
+import NodecgStatus from '@/components/NodecgStatus.vue'
 
 export default defineComponent({
     name: 'ConfigWindow',
 
-    components: { DependencyChecker, IplLabel, IplSmallToggle, IplSpace },
+    components: { NodecgStatus, DependencyChecker, IplLabel, IplSmallToggle, IplSpace },
+
+    emits: ['close'],
 
     setup () {
         const configStore = useConfigStore()
+        const errorLogToggleDisabled = ref(false)
 
         return {
-            errorLogEnabled: computed({
-                get () {
-                    return configStore.enableErrorLog
-                },
-                set (value: boolean) {
-                    configStore.enableErrorLog = value
-                    configStore.persist()
+            configStore,
+            errorLogToggleDisabled,
+            async onErrorLogToggleChange(newValue: boolean) {
+                errorLogToggleDisabled.value = true
+                try {
+                    await configStore.patch({
+                        enableErrorLog: newValue
+                    })
+                } finally {
+                    errorLogToggleDisabled.value = false
                 }
-            })
+            }
         }
     }
 })

@@ -79,6 +79,10 @@ export default defineComponent({
 
     background-color: rgba(0, 0, 0, 0.5);
 
+    &.fixed-width .mgr-overlay__content {
+        max-width: 400px;
+    }
+
     .mgr-overlay__content {
         max-width: 90%;
         max-height: 80%;

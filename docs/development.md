@@ -21,13 +21,6 @@ On macOS, the build will create a DMG package in the `src-tauri/target/release/b
 
 During development, use the `yarn tauri:serve` command to take advantage of hot-reloading and faster build times.
 
-## Tests
-
-NCGMGR has a suite of frontend tests running on the Jest framework.
-
-To run frontend tests, run `yarn test:unit`.  
-To run tests while updating snapshots, run `yarn test:update`.  
-
 ## Code style
 
 NCGMGR uses ESLint to automatically enforce a consistent code style. ESLint is run automatically by GitHub Actions

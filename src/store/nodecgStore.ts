@@ -7,7 +7,9 @@ export enum InstallStatus {
     UNKNOWN,
     READY_TO_INSTALL,
     INSTALLED,
-    UNABLE_TO_INSTALL
+    UNABLE_TO_INSTALL,
+    MISSING_INSTALL_DIRECTORY,
+    BAD_INSTALL_DIRECTORY
 }
 
 export enum RunStatus {
@@ -39,11 +41,9 @@ export const useNodecgStore = defineStore('nodecg', {
     actions: {
         async checkNodecgStatus () {
             const configStore = useConfigStore()
-            this.status.installStatus = InstallStatus.UNKNOWN
-            this.status.message = 'Checking status...'
 
             try {
-                const { status, message } = await getNodecgStatus(configStore.installPath)
+                const { status, message } = await getNodecgStatus(configStore.userConfig.nodecgInstallDir)
                 this.status.message = message
                 this.status.installStatus = status
                 if (status === InstallStatus.INSTALLED) {
@@ -61,7 +61,7 @@ export const useNodecgStore = defineStore('nodecg', {
             const configStore = useConfigStore()
             this.status.bundlesLoading = true
             try {
-                this.bundles = await getBundles(configStore.installPath)
+                this.bundles = await getBundles(configStore.userConfig.nodecgInstallDir)
             } finally {
                 this.status.bundlesLoading = false
             }
