@@ -30,7 +30,7 @@ pub fn install_npm_dependencies(
 ) -> Result<Receiver<CommandEvent>, Error> {
   let command = shell
     .command("cmd")
-    .args(["/c", "npm", "i", "--omit=dev", "--no-progress"])
+    .args(["/c", "npm", "i", "--omit=dev", "--no-progress", "--save=false"])
     .current_dir(PathBuf::from(path))
     .spawn();
   match command {
@@ -46,7 +46,7 @@ pub fn install_npm_dependencies(
 ) -> Result<Receiver<CommandEvent>, Error> {
   let command = shell
     .command("npm")
-    .args(["i", "--omit=dev", "--no-progress"])
+    .args(["i", "--omit=dev", "--no-progress", "--save=false"])
     .current_dir(PathBuf::from(path))
     .spawn();
   match command {
