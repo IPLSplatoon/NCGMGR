@@ -1,5 +1,6 @@
 <template>
     <ipl-progress-bar
+        v-show="progress != null"
         :value="progress"
         :color="progressBarColor"
         background-color="primary"
@@ -32,12 +33,16 @@ export default defineComponent({
 
         return {
             progress: computed(() => {
+                const entry = logStore.progressEntries[props.logKey]
+                if (entry.maxStep == null) {
+                    return null
+                }
+
                 if (actionState.value != null && actionState.value !== ActionState.INCOMPLETE) {
                     return 100
                 }
 
-                const entry = logStore.progressEntries[props.logKey]
-                return !entry ? 0 : (entry.step / entry.max_step) * 100
+                return !entry ? 0 : (entry.step ?? 0 / entry.maxStep) * 100
             }),
             progressBarColor: computed(() => {
                 switch (actionState.value) {

@@ -54,7 +54,8 @@ export default defineComponent({
                 showInstallLog.value = true
                 const invocation = invoke('install_bundle', { bundleUrl: bundlePath.value })
                 logStore.logPromiseResult({ promise: invocation, key: logKey })
-                logStore.listenForProcessExit({ key: logKey, callback: () => nodecgStore.getBundleList() })
+                await invocation
+                await nodecgStore.getBundleList()
             }
         }
     }

@@ -6,8 +6,7 @@ use tauri_plugin_shell::ShellExt;
 use crate::error::Error;
 use crate::git::{get_tag_name_at_head, try_open_repository};
 use crate::log::LogEmitter;
-use crate::{config, git};
-use crate::{log_npm_install, npm};
+use crate::{config, git, log, npm};
 
 #[derive(PartialEq, Debug)]
 struct ParsedBundleUrl {
@@ -34,41 +33,38 @@ fn parse_bundle_url(url: String) -> Result<ParsedBundleUrl, Error> {
   }
 }
 
-#[tauri::command(async)]
-pub fn install_bundle(handle: tauri::AppHandle, bundle_url: String) -> Result<(), Error> {
-  let logger = LogEmitter::with_progress(&handle, "install-bundle", 5);
+#[tauri::command]
+pub async fn install_bundle(handle: tauri::AppHandle, bundle_url: String) -> Result<(), Error> {
+  let logger = LogEmitter::stepped(&handle, "install-bundle", 5);
   let parsed_url = parse_bundle_url(bundle_url)?;
-
-  logger.emit(&format!("Installing {}...", parsed_url.bundle_name));
+  logger.emit_progress_stepped(0, &format!("Installing {}...", parsed_url.bundle_name));
 
   let install_dir = config::with_config(handle.clone(), |c| Ok(c.nodecg_install_dir))?
     .ok_or(Error::MissingInstallDir)?;
   let dir_bundles = format!("{}/bundles", install_dir);
   if !Path::new(&dir_bundles).exists() {
-    logger.emit("Creating missing bundles directory");
+    logger.emit_log("Creating missing bundles directory");
     fs::create_dir(dir_bundles)?;
   }
-  logger.emit_progress(1);
 
-  logger.emit("Fetching version list...");
+  logger.emit_progress_stepped(1, "Loading version list...");
   let versions = git::fetch_versions_for_url(&parsed_url.bundle_url)?;
-  logger.emit_progress(2);
 
-  logger.emit("Cloning repository...");
+  logger.emit_progress_stepped(2, "Cloning repository...");
   let bundle_path = format!("{}/bundles/{}", install_dir, parsed_url.bundle_name);
   let repo = Repository::clone(&parsed_url.bundle_url, bundle_path.clone())?;
-  logger.emit_progress(3);
   if versions.len() > 1 {
     let latest_version = versions.first().unwrap();
-    logger.emit(&format!("Checking out version {}...", latest_version));
+    logger.emit_progress_stepped(3, &format!("Checking out version {}...", latest_version));
 
     git::checkout_version(&repo, latest_version.to_string())?;
   }
-  logger.emit_progress(4);
 
+  logger.emit_progress_stepped(4, "Installing npm dependencies...");
   let shell = handle.shell();
   let child = npm::install_npm_dependencies(shell, &bundle_path)?;
-  log_npm_install(logger, child);
+  log::emit_tauri_process_output(&logger, child).await?;
+  logger.emit_progress_stepped(5, "Done!");
   Ok(())
 }
 
@@ -99,14 +95,15 @@ pub fn fetch_bundle_versions(
 }
 
 #[tauri::command(async)]
-pub fn set_bundle_version(
+pub async fn set_bundle_version(
   handle: tauri::AppHandle,
   bundle_name: String,
   version: String,
 ) -> Result<(), Error> {
   let install_dir = config::with_config(handle.clone(), |c| Ok(c.nodecg_install_dir))?
     .ok_or(Error::MissingInstallDir)?;
-  let logger = LogEmitter::with_progress(&handle, "change-bundle-version", 4);
+  let logger = LogEmitter::stepped(&handle, "change-bundle-version", 2);
+  logger.emit_progress_stepped(0, &format!("Installing {} {}...", bundle_name, version));
   let bundle_dir = format!("{}/bundles/{}", install_dir, bundle_name);
   let path = Path::new(&bundle_dir);
 
@@ -114,22 +111,22 @@ pub fn set_bundle_version(
     return Err(Error::MissingBundle(bundle_name));
   }
 
-  logger.emit_progress(1);
-  logger.emit(&format!("Installing {} {}...", bundle_name, version));
-  let repo = Repository::open(path)?;
-  logger.emit_progress(2);
-  let mut remote = git::get_remote(&repo)?;
-  remote.fetch(
-    &[""],
-    Some(FetchOptions::new().download_tags(AutotagOption::All)),
-    None,
-  )?;
-  git::checkout_version(&repo, version.clone())?;
-  logger.emit_progress(3);
+  {
+    let repo = Repository::open(path)?;
+    let mut remote = git::get_remote(&repo)?;
+    remote.fetch(
+      &[""],
+      Some(FetchOptions::new().download_tags(AutotagOption::All)),
+      None,
+    )?;
+    git::checkout_version(&repo, version.clone())?;
+  }
 
   let shell = handle.shell();
   let child = npm::install_npm_dependencies(shell, &bundle_dir)?;
-  log_npm_install(logger, child);
+  logger.emit_progress_stepped(1, "Installing npm dependencies...");
+  log::emit_tauri_process_output(&logger, child).await?;
+  logger.emit_progress_stepped(2, "Done!");
   Ok(())
 }
 

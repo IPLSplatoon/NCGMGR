@@ -4,9 +4,7 @@
 )]
 
 use crate::log::{err_to_string, format_error, LogEmitter};
-use tauri::async_runtime::{JoinHandle, Receiver};
 use tauri::{Manager, RunEvent};
-use tauri_plugin_shell::process::CommandEvent;
 
 mod bundles;
 mod config;
@@ -18,14 +16,6 @@ mod nodecg;
 mod npm;
 
 use nodecg::ManagedNodecg;
-
-fn log_npm_install(
-  logger: LogEmitter,
-  receiver: Receiver<CommandEvent>,
-) -> JoinHandle<Option<i32>> {
-  logger.emit("Installing npm dependencies...");
-  log::emit_tauri_process_output(logger, receiver)
-}
 
 #[tauri::command(async)]
 fn open_path_in_terminal(path: String) -> Result<(), String> {
@@ -95,7 +85,7 @@ fn main() {
         Ok(_) => {}
         Err(e) => {
           let logger = LogEmitter::new(&handle, "run-nodecg");
-          logger.emit(&err_to_string("Failed to shut down NodeCG", e));
+          logger.emit_log(&err_to_string("Failed to shut down NodeCG", e));
           api.prevent_exit();
         }
       }

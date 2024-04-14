@@ -4,9 +4,9 @@ export interface LogEvent {
 }
 
 export interface ProgressEvent {
-    step: number
-    // eslint-disable-next-line camelcase
-    max_step: number
+    message: string
+    step?: number
+    maxStep?: number
 }
 
 export enum ActionState {

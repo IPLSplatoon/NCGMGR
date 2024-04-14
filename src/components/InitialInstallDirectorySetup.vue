@@ -219,12 +219,8 @@ async function installNodecg(useDefaultDirectory: boolean) {
     emit('installing')
     const invocation = invoke('install_nodecg', { useDefaultDirectory })
     logStore.logPromiseResult({ promise: invocation, key: logKey })
-    logStore.listenForProcessExit({
-        key: logKey,
-        callback: () => {
-            nodecgStore.checkNodecgStatus()
-        }
-    })
+    await invocation
+    await nodecgStore.checkNodecgStatus()
 }
 </script>
 

@@ -1,7 +1,6 @@
 import { ActionState, LogEvent, ProgressEvent } from '@/types/log'
 import { listen, UnlistenFn } from '@tauri-apps/api/event'
 import { defineStore } from 'pinia'
-import { listenForProcessExit } from '@/service/messagingService'
 
 export interface LogStore {
     lines: Record<string, LogEvent[]>
@@ -24,8 +23,49 @@ export const useLogStore = defineStore('log', {
             }
             this.lines[key].push(line)
         },
-        setProgress (key: string, progress: ProgressEvent) {
-            this.progressEntries[key] = progress
+        setProgress (key: string, event: ProgressEvent) {
+            const existingEntry = this.progressEntries[key]
+            if (existingEntry == null) {
+                this.progressEntries[key] = event
+                this.logProgressEvent(key, event)
+            } else {
+                existingEntry.message = event.message
+                if (event.maxStep != null) {
+                    existingEntry.maxStep = event.maxStep
+                }
+                if (event.step != null) {
+                    existingEntry.step = event.step
+
+                    if (event.step === event.maxStep) {
+                        this.setActionState({ key, state: ActionState.COMPLETED_SUCCESS })
+                    }
+                }
+
+                this.logProgressEvent(key, {
+                    message: event.message,
+                    step: event.step,
+                    maxStep: existingEntry.maxStep
+                })
+            }
+        },
+        logProgressEvent(key: string, event: ProgressEvent) {
+            if (event.step != null) {
+                this.insertLine({
+                    line: {
+                        message: `[${event.step}/${event.maxStep}] ${event.message}`,
+                        type: 'info'
+                    },
+                    key
+                })
+            } else {
+                this.insertLine({
+                    line: {
+                        message: event.message,
+                        type: 'info'
+                    },
+                    key
+                })
+            }
         },
         reset (key: string) {
             delete this.progressEntries[key]
@@ -72,18 +112,6 @@ export const useLogStore = defineStore('log', {
                     key
                 })
                 this.setActionState({ key, state: ActionState.COMPLETED_ERROR })
-            })
-        },
-        async listenForProcessExit ({ key, callback }: { key: string, callback?: () => void }): Promise<void> {
-            const unlisten = await listenForProcessExit(key, event => {
-                this.setActionState({
-                    key,
-                    state: event.payload.success ? ActionState.COMPLETED_SUCCESS : ActionState.COMPLETED_ERROR
-                })
-                unlisten()
-                if (callback) {
-                    callback()
-                }
             })
         }
     }

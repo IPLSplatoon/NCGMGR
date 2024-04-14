@@ -83,7 +83,7 @@ export default defineComponent({
                     case ActionState.COMPLETED_SUCCESS:
                         return 'Done!'
                     default:
-                        return 'Please wait...'
+                        return logStore.progressEntries[props.logKey]?.message ?? 'Please wait...'
                 }
             }),
             moreDetailsShown: ref(false),
