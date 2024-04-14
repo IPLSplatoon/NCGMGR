@@ -1,7 +1,8 @@
 import { Bundle, getBundles, getNodecgStatus } from '@/service/nodecgService'
 import { useConfigStore } from '@/store/configStore'
 import { defineStore } from 'pinia'
-import { listenForProcessExit } from '@/service/messagingService'
+import { listen } from '@tauri-apps/api/event'
+import { useLogStore } from '@/store/logStore'
 
 export enum InstallStatus {
     UNKNOWN,
@@ -65,10 +66,16 @@ export const useNodecgStore = defineStore('nodecg', {
             } finally {
                 this.status.bundlesLoading = false
             }
+        },
+        async listenForRunStatus () {
+            const logStore = useLogStore()
+            return listen<'NotRunning' | 'Running'>('nodecg-status-change', event => {
+                const isRunning = event.payload === 'Running'
+                if (isRunning) {
+                    logStore.reset('run-nodecg')
+                }
+                this.status.runStatus = isRunning ? RunStatus.RUNNING : RunStatus.STOPPED
+            })
         }
     }
-})
-
-listenForProcessExit('run-nodecg', () => {
-    useNodecgStore().$state.status.runStatus = RunStatus.STOPPED
 })

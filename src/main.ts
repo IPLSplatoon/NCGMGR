@@ -6,6 +6,7 @@ import { setUpErrorHandler } from '@/store/errorHandlerStore'
 import { useConfigStore } from '@/store/configStore'
 import { useDependencyStore } from '@/store/dependencyStore'
 import { useNodecgStore } from '@/store/nodecgStore'
+import { useLogStore } from '@/store/logStore'
 
 function setColorTheme(useLightMode: boolean) {
     if (useLightMode) {
@@ -31,6 +32,9 @@ function setColorTheme(useLightMode: boolean) {
     await dependencyStore.checkVersions()
     const nodecgStore = useNodecgStore()
     await nodecgStore.checkNodecgStatus()
+    await nodecgStore.listenForRunStatus()
+    const logStore = useLogStore()
+    await logStore.listen('run-nodecg')
 
     setUpErrorHandler(app)
 

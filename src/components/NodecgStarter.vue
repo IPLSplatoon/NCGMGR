@@ -45,7 +45,7 @@
 </template>
 
 <script lang="ts">
-import { computed, defineComponent, onMounted, ref } from 'vue'
+import { computed, defineComponent, ref } from 'vue'
 import { invoke } from '@tauri-apps/api/core'
 import { useConfigStore } from '@/store/configStore'
 import { useLogStore } from '@/store/logStore'
@@ -68,10 +68,6 @@ export default defineComponent({
         const installFolder = computed(() => config.userConfig.nodecgInstallDir)
         const nodecgStatus = computed<InstallStatus>(() => nodecgStore.status.installStatus)
 
-        onMounted(() => {
-            logStore.listen('run-nodecg')
-        })
-
         return {
             installFolder,
             showLog,
@@ -87,8 +83,6 @@ export default defineComponent({
                     logStore.reset('run-nodecg')
                     const invocation = invoke('start_nodecg')
                     logStore.logPromiseResult({ promise: invocation, key: 'run-nodecg' })
-                    await invocation
-                    nodecgStore.status.runStatus = RunStatus.RUNNING
                 }
             },
             openDashboard () {
