@@ -37,8 +37,10 @@ export default defineComponent({
 }
 
 .status-row {
+    overflow-wrap: anywhere;
+
     .status-row__status-light {
-        width: 12px;
+        min-width: 12px;
         height: 12px;
         border-radius: 50%;
         margin: 0 8px 0 4px;
