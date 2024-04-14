@@ -75,22 +75,19 @@ export const useLogStore = defineStore('log', {
         setActionState ({ key, state }: { key: string, state: ActionState }) {
             this.actionStates[key] = state
         },
-        listen (key: string, listenForProgress = false) {
+        listen (key: string) {
             if (unlistenFns[key]) {
                 return
             }
 
-            const listenPromises: Array<Promise<UnlistenFn>> = []
-
-            listenPromises.push(listen<LogEvent>(`log:${key}`, event => {
-                this.insertLine({ line: event.payload, key })
-            }))
-
-            if (listenForProgress) {
-                listenPromises.push(listen<ProgressEvent>(`progress:${key}`, event => {
+            const listenPromises: Array<Promise<UnlistenFn>> = [
+                listen<LogEvent>(`log:${key}`, event => {
+                    this.insertLine({ line: event.payload, key })
+                }),
+                listen<ProgressEvent>(`progress:${key}`, event => {
                     this.setProgress(key, event.payload)
-                }))
-            }
+                })
+            ]
 
             return Promise.all(listenPromises).then(result => {
                 unlistenFns[key] = result
