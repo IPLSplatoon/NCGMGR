@@ -23,6 +23,8 @@ pub enum Error {
   NodeCGInstall(String),
   #[error("Error launching NodeCG: {0}")]
   NodeCGLaunch(String),
+  #[error("Error stopping NodeCG: {0}")]
+  NodeCGStop(String),
   #[error("NodeCG install directory is not configured")]
   MissingInstallDir,
   #[error("Could not determine default install directory for NodeCG. Please select one manually.")]

@@ -155,7 +155,6 @@ export default defineComponent({
                     version: selectedVersion.value
                 })
                 logStore.logPromiseResult({ promise: invocation, key: logKey })
-                logStore.listenForProcessExit({ key: logKey })
             },
             async openBundleFolder () {
                 await open(getBundlePath())

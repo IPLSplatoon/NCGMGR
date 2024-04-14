@@ -83,8 +83,6 @@ export default defineComponent({
                     logStore.reset('run-nodecg')
                     const invocation = invoke('start_nodecg')
                     logStore.logPromiseResult({ promise: invocation, key: 'run-nodecg' })
-                    await invocation
-                    nodecgStore.status.runStatus = RunStatus.RUNNING
                 }
             },
             openDashboard () {

@@ -27,6 +27,9 @@
             <ipl-label>The error log is useful for diagnosing technical issues.</ipl-label>
         </ipl-small-toggle>
     </ipl-space>
+    <div class="version-string m-t-8">
+        {{ versionString }}
+    </div>
 </template>
 
 <script lang="ts">
@@ -35,6 +38,7 @@ import { IplLabel, IplSmallToggle, IplSpace } from '@iplsplatoon/vue-components'
 import { useConfigStore } from '@/store/configStore'
 import DependencyChecker from '@/components/DependencyChecker.vue'
 import NodecgStatus from '@/components/NodecgStatus.vue'
+import { getName, getTauriVersion, getVersion } from '@tauri-apps/api/app'
 
 export default defineComponent({
     name: 'ConfigWindow',
@@ -46,8 +50,14 @@ export default defineComponent({
     setup () {
         const configStore = useConfigStore()
         const errorLogToggleDisabled = ref(false)
+        const versionString = ref<string | null>(null)
+
+        Promise.all([getName(), getVersion(), getTauriVersion()]).then(versionInfo => {
+            versionString.value = `${versionInfo[0]} version ${versionInfo[1]} (Running on Tauri ${versionInfo[2]})`
+        })
 
         return {
+            versionString,
             configStore,
             errorLogToggleDisabled,
             async onErrorLogToggleChange(newValue: boolean) {
@@ -64,3 +74,11 @@ export default defineComponent({
     }
 })
 </script>
+
+<style lang="scss" scoped>
+.version-string {
+    text-align: center;
+    color: var(--ipl-input-color);
+    font-size: 0.75em;
+}
+</style>

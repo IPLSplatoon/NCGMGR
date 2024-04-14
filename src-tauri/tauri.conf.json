@@ -36,7 +36,7 @@
     "devUrl": "http://localhost:5173"
   },
   "productName": "NCGMGR",
-  "version": "0.7.0",
+  "version": "0.8.0",
   "identifier": "com.inkfarer.ncgmgr",
   "plugins": {},
   "app": {

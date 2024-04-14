@@ -24,7 +24,7 @@
 </template>
 
 <script lang="ts">
-import { computed, defineComponent, onMounted, onUnmounted, watch } from 'vue'
+import { computed, defineComponent } from 'vue'
 import { useLogStore } from '@/store/logStore'
 import Anser from 'anser'
 
@@ -40,21 +40,6 @@ export default defineComponent({
 
     setup (props) {
         const logStore = useLogStore()
-
-        watch(() => props.logKey, (newValue, oldValue) => {
-            if (oldValue) {
-                logStore.unlisten(oldValue)
-            }
-            logStore.listen(newValue)
-        })
-
-        onMounted(() => {
-            logStore.listen(props.logKey)
-        })
-
-        onUnmounted(() => {
-            logStore.unlisten(props.logKey)
-        })
 
         return {
             log: computed(() => {

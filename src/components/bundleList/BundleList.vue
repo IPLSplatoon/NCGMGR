@@ -113,7 +113,6 @@ export default defineComponent({
             },
             cancelUninstall: () => {
                 uninstallOverlayProps.visible = false
-                uninstallOverlayProps.bundleName = ''
             },
             doUninstall: async () => {
                 try {

@@ -4,9 +4,7 @@
 )]
 
 use crate::log::{err_to_string, format_error, LogEmitter};
-use tauri::async_runtime::{JoinHandle, Receiver};
 use tauri::{Manager, RunEvent};
-use tauri_plugin_shell::process::CommandEvent;
 
 mod bundles;
 mod config;
@@ -19,23 +17,29 @@ mod npm;
 
 use nodecg::ManagedNodecg;
 
-fn log_npm_install(
-  logger: LogEmitter,
-  receiver: Receiver<CommandEvent>,
-) -> JoinHandle<Option<i32>> {
-  logger.emit("Installing npm dependencies...");
-  log::emit_tauri_process_output(logger, receiver)
-}
-
 #[tauri::command(async)]
 fn open_path_in_terminal(path: String) -> Result<(), String> {
   if cfg!(target_os = "windows") {
-    return match std::process::Command::new("cmd")
-      .args(["/c", "start", "cmd.exe", "/k", &format!("cd /D {}", path)])
-      .spawn()
-    {
-      Ok(_) => Ok(()),
-      Err(e) => format_error("Failed to open path", e),
+    /*
+    Needs to be different when in development mode, or else the new command line will open in the
+    same command prompt that the application was originally launched from
+    */
+    return if cfg!(debug_assertions) {
+      match std::process::Command::new("cmd")
+          .args(["/c", "start", "cmd.exe", "/k", &format!("cd /D {}", path)])
+          .spawn()
+      {
+        Ok(_) => Ok(()),
+        Err(e) => format_error("Failed to open path", e),
+      }
+    } else {
+      match std::process::Command::new("cmd")
+          .args(["/k", &format!("cd /D {}", path)])
+          .spawn()
+      {
+        Ok(_) => Ok(()),
+        Err(e) => format_error("Failed to open path", e),
+      }
     };
   } else if cfg!(target_os = "macos") {
     return match std::process::Command::new("open")
@@ -95,7 +99,7 @@ fn main() {
         Ok(_) => {}
         Err(e) => {
           let logger = LogEmitter::new(&handle, "run-nodecg");
-          logger.emit(&err_to_string("Failed to shut down NodeCG", e));
+          logger.emit_log(&err_to_string("Failed to shut down NodeCG", e));
           api.prevent_exit();
         }
       }
