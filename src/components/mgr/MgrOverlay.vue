@@ -1,22 +1,22 @@
 <template>
-    <transition name="overlay">
-        <div
-            v-if="visible"
-            class="mgr-overlay__wrapper layout horizontal center-horizontal center-vertical"
-            @click.self="close"
-        >
-            <div
-                class="mgr-overlay__content"
-                :class="{ 'max-width': maxWidth }"
-            >
-                <slot />
-            </div>
+    <dialog
+        ref="dialog"
+        @close="onClose"
+        @cancel.prevent="onCancel"
+        @click.self="onClick"
+    >
+        <div class="content">
+            <slot />
         </div>
-    </transition>
+    </dialog>
 </template>
 
 <script lang="ts">
-import { defineComponent } from 'vue'
+import { defineComponent, onMounted, ref, watch } from 'vue'
+
+async function animationsComplete(element: HTMLElement): Promise<unknown> {
+    return Promise.allSettled(element.getAnimations().map(animation => animation.finished))
+}
 
 export default defineComponent({
     name: 'MgrOverlay',
@@ -39,10 +39,45 @@ export default defineComponent({
     emits: ['update:visible'],
 
     setup (props, { emit }) {
+        const dialog = ref<HTMLDialogElement | null>(null)
+
+        async function onClose() {
+            if (!dialog.value) return
+            dialog.value.setAttribute('inert', '')
+            await animationsComplete(dialog.value)
+            dialog.value.close()
+        }
+
+        onMounted(() => {
+            if (!props.visible) {
+                dialog.value?.setAttribute('inert', '')
+            } else {
+                dialog.value?.showModal()
+            }
+
+            watch(() => props.visible, newValue => {
+                if (newValue) {
+                    dialog.value?.removeAttribute('inert')
+                    dialog.value?.showModal()
+                } else {
+                    onClose()
+                }
+            })
+        })
+
         return {
-            close () {
+            dialog,
+            onClose() {
+                emit('update:visible', false)
+            },
+            onCancel() {
                 if (!props.noBackgroundClose) {
-                    emit('update:visible', false)
+                    onClose()
+                }
+            },
+            onClick() {
+                if (!props.noBackgroundClose) {
+                    onClose()
                 }
             }
         }
@@ -51,50 +86,97 @@ export default defineComponent({
 </script>
 
 <style lang="scss" scoped>
-@import '../../styles/layout';
-@import '../../styles/colors';
-@import '../../styles/constants';
+@use '../../styles/constants';
 
-.overlay-leave-active {
-    transition: opacity $transition-duration-low ease-in;
-}
-
-.overlay-enter-active {
-    transition: opacity $transition-duration-low ease-out;
-}
-
-.overlay-enter-from,
-.overlay-leave-to {
-    opacity: 0;
-}
-
-.mgr-overlay__wrapper {
+dialog {
+    border: none;
+    background-color: var(--ipl-bg-primary);
+    color: var(--ipl-body-text-color);
+    width: 85%;
+    max-height: 80%;
+    height: max-content;
+    box-sizing: border-box;
+    //margin: 0;
+    padding: 0;
+    inset: 0;
+    display: block;
     position: fixed;
-    width: 100%;
-    height: 100%;
-    top: 0;
-    left: 0;
+    // Unfortunately, if you want animation, you'll have to put up with this.
+    z-index: 999999;
+    transform: scale(0.9);
+    opacity: 0;
+    border-radius: constants.$border-radius-outer;
 
-    z-index: 1000;
-
-    background-color: rgba(0, 0, 0, 0.5);
-
-    &.fixed-width .mgr-overlay__content {
-        max-width: 400px;
+    &:not([open]) {
+        pointer-events: none;
     }
 
-    .mgr-overlay__content {
-        max-width: 90%;
-        max-height: 80%;
-        min-width: 400px;
-        background-color: var(--ipl-bg-primary);
-        overflow-y: auto;
-        overflow-x: hidden;
+    &[open] {
+        animation: enter constants.$transition-duration-low ease-out forwards;
+
+        &::backdrop {
+            animation: backdrop-in constants.$transition-duration-low ease-out forwards;
+        }
+
+        &[inert] {
+            animation: exit constants.$transition-duration-low ease-in forwards;
+
+            &::backdrop {
+                animation: backdrop-out constants.$transition-duration-low ease-out forwards;
+            }
+        }
+    }
+
+    &::backdrop {
+        background: var(--ipl-page-overlay-color);
+    }
+
+    > .content {
         padding: 8px;
-        display: block;
-        position: relative;
-        border-radius: $border-radius-outer;
-        filter: drop-shadow(2px 2px 3px rgba(0, 0, 0, 0.5));
+        box-sizing: border-box;
+    }
+
+    &:focus-visible {
+        outline: var(--ipl-focus-outline-color) solid var(--ipl-focus-outline-width);
+    }
+}
+
+@keyframes enter {
+    to {
+        transform: scale(1);
+        opacity: 1;
+    }
+}
+
+@keyframes exit {
+    0% {
+        transform: scale(1);
+        opacity: 1;
+    }
+
+    100% {
+        transform: scale(0.9);
+        opacity: 0;
+    }
+}
+
+@keyframes backdrop-in {
+    0% {
+        opacity: 0;
+    }
+
+    100% {
+        opacity: 1;
+    }
+}
+
+@keyframes backdrop-out {
+    0% {
+        opacity: 1;
+    }
+
+    100% {
+        opacity: 0;
     }
 }
 </style>
